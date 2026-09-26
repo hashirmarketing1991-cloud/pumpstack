@@ -1,0 +1,46 @@
+{%- comment -%}
+  Branded tub render used wherever a product has no photo yet.
+  Accepts: name (string), sub (string), tone ('ink' | 'bone' | 'accent')
+  Replace with real packaging photos by uploading product images in admin.
+{%- endcomment -%}
+{%- liquid
+  assign tone = tone | default: 'ink'
+  case tone
+    when 'bone'
+      assign body = '#efece5'
+      assign lid = '#0b0b0c'
+      assign text = '#0b0b0c'
+    when 'accent'
+      assign body = '#e4202e'
+      assign lid = '#0b0b0c'
+      assign text = '#ffffff'
+    else
+      assign body = '#141416'
+      assign lid = '#e4202e'
+      assign text = '#f5f3ee'
+  endcase
+  assign uid = name | handleize | append: tone
+-%}
+<svg class="ps-tub" viewBox="0 0 400 460" role="img" aria-label="{{ name | escape }}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ps-shade-{{ uid }}" x1="0" x2="1">
+      <stop offset="0" stop-color="#000" stop-opacity=".28"/>
+      <stop offset=".22" stop-color="#fff" stop-opacity=".10"/>
+      <stop offset=".55" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".34"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="200" cy="438" rx="150" ry="14" fill="#000" opacity=".16"/>
+  <rect x="62" y="40" width="276" height="54" rx="14" fill="{{ lid }}"/>
+  <rect x="62" y="40" width="276" height="54" rx="14" fill="url(#ps-shade-{{ uid }})"/>
+  <path d="M70 94h260l-10 330a14 14 0 0 1-14 13H94a14 14 0 0 1-14-13z" fill="{{ body }}"/>
+  <path d="M70 94h260l-10 330a14 14 0 0 1-14 13H94a14 14 0 0 1-14-13z" fill="url(#ps-shade-{{ uid }})"/>
+  <text x="200" y="170" text-anchor="middle" fill="{{ text }}" font-family="Inter, Arial, sans-serif" font-weight="900" font-size="40" letter-spacing="-1">PUMP</text>
+  <text x="200" y="210" text-anchor="middle" fill="{{ text }}" font-family="Inter, Arial, sans-serif" font-weight="900" font-size="40" letter-spacing="-1">STACK</text>
+  <rect x="150" y="228" width="100" height="4" rx="2" fill="{{ lid }}"/>
+  <text x="200" y="278" text-anchor="middle" fill="{{ text }}" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="22" letter-spacing="2">{{ name | upcase | truncate: 18, '' | escape }}</text>
+  {%- if sub != blank -%}
+    <text x="200" y="306" text-anchor="middle" fill="{{ text }}" opacity=".7" font-family="Inter, Arial, sans-serif" font-weight="600" font-size="14" letter-spacing="3">{{ sub | upcase | escape }}</text>
+  {%- endif -%}
+  <text x="200" y="400" text-anchor="middle" fill="{{ text }}" opacity=".55" font-family="Inter, Arial, sans-serif" font-weight="600" font-size="11" letter-spacing="3">THIRD-PARTY TESTED</text>
+</svg>

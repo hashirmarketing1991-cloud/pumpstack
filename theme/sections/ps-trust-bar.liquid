@@ -1,0 +1,76 @@
+{{ 'pump-stack.css' | asset_url | stylesheet_tag }}
+
+<section class="ps ps--{{ section.settings.tone }} ps-trust">
+  <div class="ps-wrap">
+    <ul class="ps-trust__list">
+      {%- for block in section.blocks -%}
+        <li class="ps-trust__item" {{ block.shopify_attributes }}>
+          <span class="ps-trust__icon" aria-hidden="true">
+            {%- case block.settings.icon -%}
+              {%- when 'lab' -%}
+                <svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4.5 18.5A2 2 0 0 0 6.2 21.5h11.6a2 2 0 0 0 1.7-3L14 9V3"/><path d="M7 15h10"/></svg>
+              {%- when 'label' -%}
+                <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+              {%- when 'truck' -%}
+                <svg viewBox="0 0 24 24"><path d="M3 6h11v10H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              {%- when 'shield' -%}
+                <svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+              {%- else -%}
+                <svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>
+            {%- endcase -%}
+          </span>
+          <span>
+            <strong>{{ block.settings.title }}</strong>
+            {%- if block.settings.text != blank -%}<small>{{ block.settings.text }}</small>{%- endif -%}
+          </span>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .ps-trust { padding: 22px 0; border-block: 1px solid rgba(0, 0, 0, .06); }
+  .ps-trust__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 16px; }
+  .ps-trust__item { display: flex; align-items: center; gap: 12px; }
+  .ps-trust__item strong { display: block; font-size: 14px; font-weight: 800; letter-spacing: .01em; }
+  .ps-trust__item small { display: block; font-size: 12px; opacity: .65; margin-top: 2px; }
+  .ps-trust__icon { flex: 0 0 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--ps-ink); color: #fff; }
+  .ps--dark .ps-trust__icon { background: var(--ps-accent); }
+  .ps-trust__icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  @media (min-width: 990px) { .ps-trust__list { grid-template-columns: repeat(4, 1fr); } }
+</style>
+
+{% schema %}
+{
+  "name": "PS Trust bar",
+  "settings": [
+    { "type": "select", "id": "tone", "label": "Background", "default": "bone",
+      "options": [{ "value": "bone", "label": "Bone" }, { "value": "white", "label": "White" }, { "value": "dark", "label": "Dark" }] }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "limit": 4,
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "default": "lab",
+          "options": [{ "value": "lab", "label": "Lab" }, { "value": "label", "label": "Label" }, { "value": "truck", "label": "Truck" }, { "value": "shield", "label": "Shield" }, { "value": "bolt", "label": "Bolt" }] },
+        { "type": "text", "id": "title", "label": "Title", "default": "Third-party tested" },
+        { "type": "text", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PS Trust bar",
+      "blocks": [
+        { "type": "item", "settings": { "icon": "lab", "title": "Third-party tested", "text": "Every batch, independent lab" } },
+        { "type": "item", "settings": { "icon": "label", "title": "Fully disclosed label", "text": "No proprietary blends" } },
+        { "type": "item", "settings": { "icon": "truck", "title": "Free US shipping", "text": "On orders over $75" } },
+        { "type": "item", "settings": { "icon": "shield", "title": "30-day guarantee", "text": "Love it or your money back" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

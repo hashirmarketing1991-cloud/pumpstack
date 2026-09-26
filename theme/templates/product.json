@@ -1,0 +1,497 @@
+{
+  "sections": {
+    "main": {
+      "type": "product-information",
+      "blocks": {
+        "media-gallery": {
+          "type": "_product-media-gallery",
+          "static": true,
+          "settings": {
+            "media_presentation": "carousel",
+            "media_columns": "one",
+            "image_gap": 4,
+            "large_first_image": true,
+            "slideshow_controls_style": "thumbnails",
+            "slideshow_mobile_controls_style": "dots",
+            "thumbnail_position": "bottom",
+            "thumbnail_width": 64,
+            "thumbnail_radius": 10,
+            "aspect_ratio": "1",
+            "constrain_to_viewport": true,
+            "media_fit": "contain",
+            "media_radius": 18,
+            "extend_media": false,
+            "zoom": true,
+            "video_loop": false,
+            "hide_variants": false
+          },
+          "blocks": {}
+        },
+        "product-details": {
+          "type": "_product-details",
+          "static": true,
+          "settings": {
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "details_position": "flex-start",
+            "gap": 20,
+            "sticky_details_desktop": true,
+            "padding-block-start": 24,
+            "padding-block-end": 24
+          },
+          "blocks": {
+            "eyebrow": {
+              "type": "text",
+              "name": "Eyebrow",
+              "settings": {
+                "text": "<p><strong>THIRD-PARTY TESTED · FULLY DISCLOSED LABEL</strong></p>",
+                "width": "100%",
+                "alignment": "left",
+                "type_preset": "paragraph",
+                "text_color": "#e4202e"
+              },
+              "blocks": {}
+            },
+            "title_group": {
+              "type": "group",
+              "name": "Title and price",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 10,
+                "width": "fill",
+                "height": "fit"
+              },
+              "blocks": {
+                "title": {
+                  "type": "text",
+                  "name": "t:names.product_title",
+                  "settings": {
+                    "text": "<h1>{{ closest.product.title }}</h1>",
+                    "width": "100%",
+                    "alignment": "left",
+                    "type_preset": "h2"
+                  },
+                  "blocks": {}
+                },
+                "price": {
+                  "type": "price",
+                  "settings": {
+                    "show_sale_price_first": true,
+                    "show_installments": true,
+                    "show_tax_info": false,
+                    "type_preset": "h4",
+                    "width": "100%",
+                    "alignment": "left"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "title",
+                "price"
+              ]
+            },
+            "hook": {
+              "type": "text",
+              "name": "Short pitch",
+              "settings": {
+                "text": "<p>Clean, fully disclosed formula built for people who lift. Pick your pack below. The more you stack, the more you save.</p>",
+                "width": "100%",
+                "alignment": "left",
+                "type_preset": "paragraph"
+              },
+              "blocks": {}
+            },
+            "variant_picker": {
+              "type": "variant-picker",
+              "settings": {
+                "variant_style": "buttons",
+                "show_swatches": false,
+                "alignment": "left"
+              },
+              "blocks": {}
+            },
+            "buy_buttons": {
+              "type": "buy-buttons",
+              "settings": {
+                "stacking": true,
+                "show_pickup_availability": false,
+                "gift_card_form": true
+              },
+              "blocks": {
+                "quantity": {
+                  "type": "quantity",
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                },
+                "add-to-cart": {
+                  "type": "add-to-cart",
+                  "static": true,
+                  "settings": {
+                    "style_class": "button",
+                    "custom_button_background": "#e4202e",
+                    "custom_button_text": "#ffffff",
+                    "custom_button_border": "#e4202e"
+                  },
+                  "blocks": {}
+                },
+                "accelerated-checkout": {
+                  "type": "accelerated-checkout",
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                }
+              },
+              "block_order": []
+            },
+            "trust_line": {
+              "type": "text",
+              "name": "Trust line",
+              "settings": {
+                "text": "<p>✓ Free US shipping over $75<br>✓ 30-day money-back guarantee<br>✓ Third-party tested, every batch</p>",
+                "width": "100%",
+                "alignment": "left",
+                "type_preset": "paragraph"
+              },
+              "blocks": {}
+            },
+            "divider": {
+              "type": "_divider",
+              "name": "t:names.divider",
+              "settings": {
+                "thickness": 1,
+                "divider_color": "{{ settings.color_palette.color2 }}",
+                "width_percent": 100
+              },
+              "blocks": {}
+            },
+            "description": {
+              "type": "text",
+              "name": "t:names.product_description",
+              "settings": {
+                "text": "{{ closest.product.description }}",
+                "width": "100%",
+                "alignment": "left",
+                "type_preset": "rte"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "eyebrow",
+            "title_group",
+            "hook",
+            "variant_picker",
+            "buy_buttons",
+            "trust_line",
+            "divider",
+            "description"
+          ]
+        }
+      },
+      "block_order": [],
+      "settings": {
+        "content_width": "content-center-aligned",
+        "desktop_media_position": "left",
+        "equal_columns": true,
+        "limit_details_width": true,
+        "gap": 48,
+        "enable_sticky_add_to_cart": true,
+        "background_color": "{{ settings.color_palette.background }}",
+        "padding-block-start": 16,
+        "padding-block-end": 32
+      }
+    },
+    "trust": {
+      "type": "ps-trust-bar",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "icon": "lab",
+            "title": "Third-party tested",
+            "text": "Every batch, independent lab"
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "icon": "label",
+            "title": "Fully disclosed label",
+            "text": "No proprietary blends"
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Free US shipping",
+            "text": "On orders over $75"
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "title": "30-day guarantee",
+            "text": "Love it or your money back"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4"
+      ],
+      "settings": {
+        "tone": "white"
+      }
+    },
+    "stack": {
+      "type": "ps-stack",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "when": "Before",
+            "title": "Pre-Workout",
+            "text": "Energy, focus and pump for the session ahead"
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "when": "During",
+            "title": "Electrolyte Hydration",
+            "text": "Replace what you sweat out, set after set"
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "when": "Every day",
+            "title": "Creatine Monohydrate",
+            "text": "Strength and power that builds over time"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "product": "the-full-pump-stack",
+        "eyebrow": "Complete your stack",
+        "heading": "Get all three and save",
+        "text": "Pre-workout, creatine and electrolytes in one box, for less than buying them separately.",
+        "button_label": "Get the full stack"
+      }
+    },
+    "compare": {
+      "type": "ps-comparison",
+      "blocks": {
+        "r1": {
+          "type": "row",
+          "settings": {
+            "feature": "Every dose on the label",
+            "us": true,
+            "them": false
+          }
+        },
+        "r2": {
+          "type": "row",
+          "settings": {
+            "feature": "No proprietary blends",
+            "us": true,
+            "them": false
+          }
+        },
+        "r3": {
+          "type": "row",
+          "settings": {
+            "feature": "Third-party tested every batch",
+            "us": true,
+            "them": false
+          }
+        },
+        "r4": {
+          "type": "row",
+          "settings": {
+            "feature": "30-day money-back guarantee",
+            "us": true,
+            "them": false
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
+      "settings": {
+        "eyebrow": "The difference",
+        "heading": "Pump Stack vs. the rest",
+        "us_label": "Pump Stack",
+        "them_label": "Typical brand",
+        "cta_label": "",
+        "tone": "bone"
+      }
+    },
+    "guarantee": {
+      "type": "ps-guarantee",
+      "settings": {
+        "days": "30",
+        "tone": "sand"
+      }
+    },
+    "faq": {
+      "type": "ps-faq",
+      "blocks": {
+        "q1": {
+          "type": "qa",
+          "settings": {
+            "question": "How do I use it?",
+            "answer": "<p>Full directions are in the product description above. Start with a half serving on day one to see how your body responds.</p>"
+          }
+        },
+        "q2": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I stack it with other Pump Stack products?",
+            "answer": "<p>Yes. Our pre-workout, creatine and electrolytes are designed to be taken together. The Full Pump Stack gets you all three for less.</p>"
+          }
+        },
+        "q3": {
+          "type": "qa",
+          "settings": {
+            "question": "Is it third-party tested?",
+            "answer": "<p>Yes. Every batch is tested by an independent lab before it ships.</p>"
+          }
+        },
+        "q4": {
+          "type": "qa",
+          "settings": {
+            "question": "What if it does not work for me?",
+            "answer": "<p>You are covered by our 30-day money-back guarantee. Email us and we will sort out a refund.</p>"
+          }
+        },
+        "q5": {
+          "type": "qa",
+          "settings": {
+            "question": "How long does shipping take?",
+            "answer": "<p>Orders ship within 1 to 2 business days. Most US orders arrive in 3 to 5 business days. Shipping is free on orders over $75.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ],
+      "settings": {
+        "eyebrow": "Questions",
+        "heading": "Good to know",
+        "open_first": true,
+        "tone": "bone"
+      }
+    },
+    "recommendations": {
+      "type": "product-recommendations",
+      "blocks": {
+        "heading": {
+          "type": "text",
+          "name": "t:names.header",
+          "settings": {
+            "text": "<h3>Stack it with</h3>",
+            "width": "fit-content",
+            "alignment": "left",
+            "type_preset": "h3"
+          },
+          "blocks": {}
+        },
+        "static-product-card": {
+          "type": "_product-card",
+          "name": "t:names.product_card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 8,
+            "padding-block-end": 8
+          },
+          "blocks": {
+            "gallery": {
+              "type": "_product-card-gallery",
+              "name": "t:names.product_card_media",
+              "settings": {
+                "image_ratio": "square"
+              },
+              "blocks": {}
+            },
+            "title": {
+              "type": "product-title",
+              "name": "t:names.product_title",
+              "settings": {
+                "type_preset": "rte",
+                "padding-block-start": 4
+              },
+              "blocks": {}
+            },
+            "price": {
+              "type": "price",
+              "settings": {
+                "show_sale_price_first": true,
+                "type_preset": "h6"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "gallery",
+            "title",
+            "price"
+          ]
+        }
+      },
+      "block_order": [
+        "heading"
+      ],
+      "settings": {
+        "product": "{{ closest.product }}",
+        "recommendation_type": "related",
+        "layout_type": "grid",
+        "max_products": 4,
+        "columns": 4,
+        "mobile_columns": "2",
+        "columns_gap": 12,
+        "rows_gap": 24,
+        "section_width": "page-width",
+        "gap": 28,
+        "background_color": "{{ settings.color_palette.background }}",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    }
+  },
+  "order": [
+    "main",
+    "trust",
+    "stack",
+    "compare",
+    "guarantee",
+    "faq",
+    "recommendations"
+  ]
+}

@@ -1,0 +1,84 @@
+{{ 'pump-stack.css' | asset_url | stylesheet_tag }}
+
+<section class="ps ps--{{ section.settings.tone }} ps-section ps-compare">
+  <div class="ps-wrap">
+    <div class="ps-head ps-center">
+      {%- if section.settings.eyebrow != blank -%}<p class="ps-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="ps-h2">{{ section.settings.heading }}</h2>
+    </div>
+    <div class="ps-compare__table" role="table" aria-label="{{ section.settings.heading | escape }}">
+      <div class="ps-compare__row ps-compare__row--head" role="row">
+        <span role="columnheader"><span class="visually-hidden">Feature</span></span>
+        <span role="columnheader" class="ps-compare__us">{{ section.settings.us_label }}</span>
+        <span role="columnheader">{{ section.settings.them_label }}</span>
+      </div>
+      {%- for block in section.blocks -%}
+        <div class="ps-compare__row" role="row" {{ block.shopify_attributes }}>
+          <span role="rowheader">{{ block.settings.feature }}</span>
+          <span role="cell" class="ps-compare__us">{%- if block.settings.us -%}<i class="ps-yes" aria-label="Yes"></i>{%- else -%}<i class="ps-no" aria-label="No"></i>{%- endif -%}</span>
+          <span role="cell">{%- if block.settings.them -%}<i class="ps-yes ps-yes--muted" aria-label="Yes"></i>{%- else -%}<i class="ps-no" aria-label="No"></i>{%- endif -%}</span>
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.cta_label != blank -%}
+      <div class="ps-center" style="margin-top: 36px;">
+        <a class="ps-btn ps-btn--accent" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">{{ section.settings.cta_label }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .ps-compare__table { max-width: 820px; margin: 0 auto; border-radius: var(--ps-radius-lg); overflow: hidden; background: #fff; box-shadow: var(--ps-shadow); color: var(--ps-ink); }
+  .ps-compare__row { display: grid; grid-template-columns: 1.6fr 1fr 1fr; align-items: center; min-height: 60px; border-top: 1px solid #eee9df; }
+  .ps-compare__row > span { padding: 14px 16px; font-size: 15px; font-weight: 600; }
+  .ps-compare__row > span:not(:first-child) { display: grid; place-items: center; text-align: center; }
+  .ps-compare__row--head { border-top: 0; min-height: 64px; }
+  .ps-compare__row--head > span { font-size: 12px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+  .ps-compare__us { background: var(--ps-ink); color: #fff; align-self: stretch; }
+  .ps-compare__row--head .ps-compare__us { background: var(--ps-accent); }
+  .ps-yes, .ps-no { display: inline-block; width: 26px; height: 26px; border-radius: 50%; }
+  .ps-yes { background: var(--ps-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.5l3 3 6-7' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat; }
+  .ps-yes--muted { background-color: #9a958b; }
+  .ps-no { background: #efece5 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7 7l6 6M13 7l-6 6' fill='none' stroke='%239a958b' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") center/100% no-repeat; }
+  @media (max-width: 600px) { .ps-compare__row > span { padding: 12px 10px; font-size: 13px; } }
+</style>
+
+{% schema %}
+{
+  "name": "PS Comparison",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The difference" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Pump Stack vs. the rest" },
+    { "type": "text", "id": "us_label", "label": "Our column", "default": "Pump Stack" },
+    { "type": "text", "id": "them_label", "label": "Their column", "default": "Typical brand" },
+    { "type": "text", "id": "cta_label", "label": "Button", "default": "Shop the stack" },
+    { "type": "url", "id": "cta_link", "label": "Button link" },
+    { "type": "select", "id": "tone", "label": "Background", "default": "bone",
+      "options": [{ "value": "bone", "label": "Bone" }, { "value": "white", "label": "White" }, { "value": "dark", "label": "Dark" }] }
+  ],
+  "blocks": [
+    {
+      "type": "row", "name": "Row", "limit": 8,
+      "settings": [
+        { "type": "text", "id": "feature", "label": "Feature", "default": "Every dose on the label" },
+        { "type": "checkbox", "id": "us", "label": "Pump Stack has it", "default": true },
+        { "type": "checkbox", "id": "them", "label": "Typical brand has it", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PS Comparison",
+      "blocks": [
+        { "type": "row", "settings": { "feature": "Every dose on the label", "us": true, "them": false } },
+        { "type": "row", "settings": { "feature": "No proprietary blends", "us": true, "them": false } },
+        { "type": "row", "settings": { "feature": "Third-party tested every batch", "us": true, "them": false } },
+        { "type": "row", "settings": { "feature": "Designed to stack together", "us": true, "them": false } },
+        { "type": "row", "settings": { "feature": "30-day money-back guarantee", "us": true, "them": false } },
+        { "type": "row", "settings": { "feature": "Tastes good", "us": true, "them": true } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,68 @@
+{{ 'pump-stack.css' | asset_url | stylesheet_tag }}
+
+<section class="ps ps--{{ section.settings.tone }} ps-section ps-features">
+  <div class="ps-wrap">
+    <div class="ps-head ps-center">
+      {%- if section.settings.eyebrow != blank -%}<p class="ps-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="ps-h2">{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}<p class="ps-lead">{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+    <div class="ps-features__list">
+      {%- for block in section.blocks -%}
+        <div class="ps-feature" {{ block.shopify_attributes }}>
+          <span class="ps-feature__num">{{ forloop.index | prepend: '0' }}</span>
+          <h3 class="ps-h3">{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+    {%- if section.settings.footnote != blank -%}
+      <p class="ps-fine ps-center ps-features__foot">{{ section.settings.footnote }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .ps-features__list { display: grid; gap: 14px; }
+  .ps-feature { padding: clamp(22px, 3vw, 34px); border-radius: var(--ps-radius-lg); background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); }
+  .ps--bone .ps-feature, .ps--white .ps-feature, .ps--sand .ps-feature { background: #fff; border-color: rgba(0,0,0,.06); box-shadow: var(--ps-shadow); }
+  .ps-feature__num { display: block; font-weight: 900; font-size: 13px; letter-spacing: .1em; color: var(--ps-accent); margin-bottom: 18px; }
+  .ps-feature p { margin: 10px 0 0; line-height: 1.55; opacity: .75; font-size: 15px; }
+  .ps-features__foot { margin: 28px auto 0; max-width: 70ch; }
+  @media (min-width: 750px) { .ps-features__list { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .ps-features__list { grid-template-columns: repeat({{ section.blocks.size | at_least: 1 | at_most: 4 }}, 1fr); } }
+</style>
+
+{% schema %}
+{
+  "name": "PS Features",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why Pump Stack" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "No guesswork. No filler." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Most supplement labels hide the doses that matter. Ours shows every one." },
+    { "type": "text", "id": "footnote", "label": "Footnote", "default": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease." },
+    { "type": "select", "id": "tone", "label": "Background", "default": "dark",
+      "options": [{ "value": "dark", "label": "Dark" }, { "value": "bone", "label": "Bone" }, { "value": "white", "label": "White" }] }
+  ],
+  "blocks": [
+    {
+      "type": "feature", "name": "Feature", "limit": 4,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Fully disclosed" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PS Features",
+      "blocks": [
+        { "type": "feature", "settings": { "title": "Fully disclosed labels", "text": "Every ingredient and every dose, printed on the tub. No proprietary blends hiding cheap filler." } },
+        { "type": "feature", "settings": { "title": "Third-party tested", "text": "Each batch goes to an independent lab before it ships, so what is on the label is what is in the scoop." } },
+        { "type": "feature", "settings": { "title": "Built to stack", "text": "Pre-workout, creatine and electrolytes designed to work together. One routine, better sessions." } },
+        { "type": "feature", "settings": { "title": "Taste you look forward to", "text": "Mixes clean in seconds. No gritty sludge at the bottom of your shaker." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

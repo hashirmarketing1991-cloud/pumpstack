@@ -1,0 +1,134 @@
+{{ 'pump-stack.css' | asset_url | stylesheet_tag }}
+
+<section class="ps ps--dark ps-hero" aria-label="{{ section.settings.heading | strip_html | escape }}">
+  <div class="ps-wrap ps-hero__grid">
+    <div class="ps-hero__copy">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="ps-eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      <h1 class="ps-h1">{{ section.settings.heading }}</h1>
+      {%- if section.settings.subheading != blank -%}
+        <p class="ps-lead">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="ps-checks">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}>{{ block.settings.text }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <div class="ps-hero__ctas">
+        {%- if section.settings.cta_label != blank -%}
+          <a class="ps-btn ps-btn--accent" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">
+            {{ section.settings.cta_label }}
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        {%- endif -%}
+        {%- if section.settings.cta2_label != blank -%}
+          <a class="ps-btn ps-btn--ghost" href="{{ section.settings.cta2_link | default: routes.all_products_collection_url }}">
+            {{ section.settings.cta2_label }}
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.microcopy != blank -%}
+        <p class="ps-hero__micro">{{ section.settings.microcopy }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="ps-hero__visual">
+      {%- if section.settings.image -%}
+        <div class="ps-media ps-hero__img">
+          {{ section.settings.image | image_url: width: 1600 | image_tag:
+            loading: 'eager', fetchpriority: 'high',
+            sizes: '(min-width: 990px) 50vw, 100vw',
+            widths: '600, 900, 1200, 1600' }}
+        </div>
+      {%- else -%}
+        {%- assign p = section.settings.product -%}
+        <div class="ps-hero__stack">
+          {%- if p != blank -%}
+            <div class="ps-hero__tub">{% render 'ps-product-visual', product: p, loading: 'eager', sizes: '50vw' %}</div>
+          {%- else -%}
+            <div class="ps-hero__tub">{% render 'ps-tub-mock', name: 'Pre-Workout', sub: 'Pump formula', tone: 'ink' %}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+      {%- if section.settings.badge != blank -%}
+        <div class="ps-hero__seal"><span>{{ section.settings.badge }}</span></div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .ps-hero { position: relative; overflow: hidden; padding: clamp(40px, 7vw, 96px) 0 clamp(48px, 8vw, 110px); }
+  .ps-hero::before {
+    content: ""; position: absolute; inset: auto -20% -40% auto; width: 80vw; height: 80vw; max-width: 900px; max-height: 900px;
+    background: radial-gradient(closest-side, rgba(228, 32, 46, .35), transparent 70%); pointer-events: none;
+  }
+  .ps-hero__grid { position: relative; display: grid; gap: clamp(28px, 5vw, 64px); align-items: center; }
+  .ps-hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .ps-hero__micro { margin: 16px 0 0; font-size: 13px; opacity: .65; letter-spacing: .02em; }
+  .ps-hero__visual { position: relative; }
+  .ps-hero__img { aspect-ratio: 4 / 5; }
+  .ps-hero__stack { display: grid; place-items: center; }
+  .ps-hero__tub { width: min(460px, 86%); filter: drop-shadow(0 30px 60px rgba(0, 0, 0, .55)); }
+  .ps-hero__tub img { border-radius: var(--ps-radius-lg); }
+  .ps-hero__seal {
+    position: absolute; top: 4%; right: 4%; width: 112px; height: 112px; border-radius: 50%;
+    background: var(--ps-accent); color: #fff; display: grid; place-items: center; text-align: center;
+    font-weight: 900; font-size: 13px; line-height: 1.15; letter-spacing: .06em; text-transform: uppercase;
+    transform: rotate(-10deg); padding: 14px; box-shadow: 0 12px 30px rgba(228, 32, 46, .45);
+  }
+  @media (min-width: 990px) {
+    .ps-hero__grid { grid-template-columns: 1.05fr .95fr; }
+  }
+  @media (max-width: 989px) {
+    .ps-hero__visual { order: -1; }
+    .ps-hero__tub { width: min(300px, 70%); }
+    .ps-hero__seal { width: 88px; height: 88px; font-size: 11px; }
+    .ps-hero__ctas .ps-btn { flex: 1 1 100%; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "PS Hero",
+  "tag": "div",
+  "class": "ps-section-hero",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Third-party tested. Fully disclosed." },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Bigger pumps. Harder sets." },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Clean supplements built for people who lift. No proprietary blends, no hidden doses, no filler. Just the stack that gets you more out of every session." },
+    { "type": "text", "id": "cta_label", "label": "Primary button", "default": "Shop the stack" },
+    { "type": "url", "id": "cta_link", "label": "Primary link" },
+    { "type": "text", "id": "cta2_label", "label": "Secondary button", "default": "Shop pre-workout" },
+    { "type": "url", "id": "cta2_link", "label": "Secondary link" },
+    { "type": "text", "id": "microcopy", "label": "Microcopy under buttons", "default": "Free US shipping over $75. 30-day money-back guarantee." },
+    { "type": "text", "id": "badge", "label": "Round badge text", "default": "Save up to 17%" },
+    { "type": "image_picker", "id": "image", "label": "Hero image (lifestyle or packaging shot)" },
+    { "type": "product", "id": "product", "label": "Product shown when no image is set" }
+  ],
+  "blocks": [
+    {
+      "type": "bullet",
+      "name": "Bullet",
+      "limit": 5,
+      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Full pump feel from set one" }]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PS Hero",
+      "blocks": [
+        { "type": "bullet", "settings": { "text": "Full pump feel from the first set" } },
+        { "type": "bullet", "settings": { "text": "Steady energy and sharp focus" } },
+        { "type": "bullet", "settings": { "text": "Every ingredient and dose on the label" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

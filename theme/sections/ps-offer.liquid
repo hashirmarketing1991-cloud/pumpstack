@@ -1,0 +1,124 @@
+{{ 'pump-stack.css' | asset_url | stylesheet_tag }}
+
+{%- assign product = section.settings.product -%}
+<section class="ps ps--{{ section.settings.tone }} ps-section ps-offer" id="offer-{{ section.id }}">
+  <div class="ps-wrap ps-offer__grid">
+    <div class="ps-offer__visual">
+      {%- if product != blank -%}
+        <a href="{{ product.url }}" class="ps-offer__media" aria-label="{{ product.title | escape }}">
+          {% render 'ps-product-visual', product: product, loading: 'lazy', sizes: '(min-width: 990px) 45vw, 100vw' %}
+        </a>
+      {%- else -%}
+        <div class="ps-offer__media">{% render 'ps-tub-mock', name: 'Pre-Workout', sub: 'Pump formula', tone: 'ink' %}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="ps-offer__copy">
+      {%- if section.settings.eyebrow != blank -%}<p class="ps-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="ps-h2">{{ section.settings.heading | default: product.title }}</h2>
+      {%- if section.settings.text != blank -%}<p class="ps-lead">{{ section.settings.text }}</p>{%- endif -%}
+
+      {%- if product != blank -%}
+        {%- liquid
+          assign default_variant = product.selected_or_first_available_variant
+          if section.settings.preselect_last
+            for variant in product.variants reversed
+              if variant.available
+                assign default_variant = variant
+                break
+              endif
+            endfor
+          endif
+        -%}
+        {%- form 'product', product, class: 'ps-offer__form' -%}
+          <fieldset class="ps-packs">
+            <legend class="ps-packs__legend">Choose your pack</legend>
+            {%- for variant in product.variants -%}
+              {%- liquid
+                assign save = 0
+                assign pct = 0
+                if variant.compare_at_price > variant.price
+                  assign save = variant.compare_at_price | minus: variant.price
+                  assign pct = save | times: 100 | divided_by: variant.compare_at_price
+                endif
+                assign label = variant.title | split: ' - ' | first
+              -%}
+              <label class="ps-pack{% if forloop.last and product.variants.size > 1 %} ps-pack--best{% endif %}">
+                <input type="radio" name="id" value="{{ variant.id }}"
+                  {% if variant == default_variant %}checked{% endif %}
+                  {% unless variant.available %}disabled{% endunless %}>
+                <span class="ps-pack__dot" aria-hidden="true"></span>
+                <span class="ps-pack__main">
+                  <span class="ps-pack__title">{{ label }}</span>
+                  {%- if pct > 0 -%}<span class="ps-pack__save">Save {{ pct }}% · {{ save | money }} off</span>{%- endif -%}
+                </span>
+                <span class="ps-pack__price">
+                  <strong>{{ variant.price | money }}</strong>
+                  {%- if save > 0 -%}<s>{{ variant.compare_at_price | money }}</s>{%- endif -%}
+                </span>
+                {%- if forloop.last and product.variants.size > 1 -%}<span class="ps-pack__flag">Most popular</span>{%- endif -%}
+              </label>
+            {%- endfor -%}
+          </fieldset>
+
+          <button type="submit" class="ps-btn ps-btn--accent ps-btn--block" {% unless product.available %}disabled{% endunless %}>
+            {%- if product.available -%}{{ section.settings.button_label }}{%- else -%}Sold out{%- endif -%}
+          </button>
+          {%- if section.settings.show_dynamic_checkout -%}{{ form | payment_button }}{%- endif -%}
+        {%- endform -%}
+      {%- endif -%}
+
+      {%- if section.settings.reassurance != blank -%}
+        <p class="ps-offer__reassure">{{ section.settings.reassurance }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .ps-offer__grid { display: grid; gap: clamp(28px, 5vw, 64px); align-items: center; }
+  .ps-offer__media { display: grid; place-items: center; aspect-ratio: 1; border-radius: var(--ps-radius-lg); background: radial-gradient(closest-side, #fff, var(--ps-sand)); padding: 10%; }
+  .ps--dark .ps-offer__media { background: radial-gradient(closest-side, #2a2a2e, var(--ps-ink-2)); }
+  .ps-offer__media img { width: 100%; height: 100%; object-fit: contain; }
+  .ps-offer__media .ps-tub { width: 80%; filter: drop-shadow(0 24px 40px rgba(0,0,0,.25)); }
+  .ps-offer__form { margin-top: 28px; display: grid; gap: 14px; }
+  .ps-packs { border: 0; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .ps-packs__legend { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; opacity: .7; }
+  .ps-pack { position: relative; display: flex; align-items: center; gap: 14px; padding: 16px 18px; border: 2px solid #d9d4c9; border-radius: var(--ps-radius); background: #fff; color: var(--ps-ink); cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease; }
+  .ps-pack input { position: absolute; opacity: 0; pointer-events: none; }
+  .ps-pack__dot { flex: 0 0 22px; height: 22px; border-radius: 50%; border: 2px solid #b9b3a6; display: grid; place-items: center; }
+  .ps-pack__main { flex: 1; display: grid; gap: 2px; }
+  .ps-pack__title { font-weight: 800; font-size: 16px; }
+  .ps-pack__save { font-size: 12px; font-weight: 800; color: var(--ps-accent); letter-spacing: .03em; text-transform: uppercase; }
+  .ps-pack__price { text-align: right; display: grid; }
+  .ps-pack__price strong { font-size: 18px; }
+  .ps-pack__price s { font-size: 13px; opacity: .5; }
+  .ps-pack__flag { position: absolute; top: -11px; right: 16px; background: var(--ps-accent); color: #fff; font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
+  .ps-pack:has(input:checked) { border-color: var(--ps-ink); box-shadow: 0 0 0 1px var(--ps-ink); }
+  .ps-pack:has(input:checked) .ps-pack__dot { border-color: var(--ps-accent); }
+  .ps-pack:has(input:checked) .ps-pack__dot::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--ps-accent); }
+  .ps-pack:has(input:focus-visible) { outline: 3px solid var(--ps-accent); outline-offset: 2px; }
+  .ps-pack:has(input:disabled) { opacity: .45; cursor: not-allowed; }
+  .ps-offer__reassure { margin: 14px 0 0; font-size: 13px; opacity: .7; text-align: center; }
+  .ps-offer .shopify-payment-button__button { border-radius: 999px; min-height: 52px; }
+  @media (min-width: 990px) { .ps-offer__grid { grid-template-columns: 1fr 1fr; } }
+</style>
+
+{% schema %}
+{
+  "name": "PS Offer (buy box)",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our bestseller" },
+    { "type": "text", "id": "heading", "label": "Heading (defaults to product title)" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "One scoop before training. Energy, focus and a pump you can feel on the first set. Stock up and save." },
+    { "type": "checkbox", "id": "preselect_last", "label": "Preselect the biggest pack", "default": true },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Add to cart" },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show Shop Pay / express checkout", "default": true },
+    { "type": "text", "id": "reassurance", "label": "Reassurance line", "default": "30-day money-back guarantee. Free US shipping over $75." },
+    { "type": "select", "id": "tone", "label": "Background", "default": "white",
+      "options": [{ "value": "white", "label": "White" }, { "value": "bone", "label": "Bone" }, { "value": "dark", "label": "Dark" }] }
+  ],
+  "presets": [{ "name": "PS Offer (buy box)" }]
+}
+{% endschema %}

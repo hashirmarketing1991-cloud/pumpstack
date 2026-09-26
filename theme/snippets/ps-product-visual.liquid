@@ -1,0 +1,29 @@
+{%- comment -%}
+  Product photo if one exists, otherwise the branded tub render.
+  Accepts: product, sizes (string), loading ('lazy' | 'eager')
+{%- endcomment -%}
+{%- if product.featured_media -%}
+  {{ product.featured_media | image_url: width: 1200 | image_tag:
+    sizes: sizes,
+    widths: '360, 540, 720, 900, 1200',
+    loading: loading,
+    alt: product.featured_media.alt | default: product.title
+  }}
+{%- else -%}
+  {%- liquid
+    assign short = product.title | remove_first: 'Pump Stack ' | remove_first: 'The '
+    case product.type
+      when 'Creatine', 'Gummies'
+        assign tone = 'bone'
+      when 'Hydration', 'Bundle'
+        assign tone = 'accent'
+      else
+        assign tone = 'ink'
+    endcase
+    assign sub = product.type
+    if product.type == 'Bundle'
+      assign sub = '3-product stack'
+    endif
+  -%}
+  {% render 'ps-tub-mock', name: short, sub: sub, tone: tone %}
+{%- endif -%}
