@@ -1,15 +1,15 @@
 # Pump Stack launch checklist
 
-Built so far: 6 draft products, 3 collections, a custom unpublished theme ("Pump Stack CRO Build"), and brand settings. This file lists what still needs you before the store can take real orders.
+Built so far: 7 active products (both whey listings use real packaging photos), 3 collections, a custom unpublished theme ("Pump Stack CRO Build"), and brand settings. This file lists what still needs you before the store can take real orders.
 
 ## 1. Blockers (store cannot launch without these)
 
 | # | Item | Where | Why |
 |---|------|-------|-----|
-| 1 | **Upload packaging photos** for all 6 products (front, back label, supplement facts panel, lifestyle). | Products > each product > Media | Until then, a branded tub render shows. Real photos are the biggest single CVR lever. |
+| 1 | **Upload packaging photos** for pre-workout, creatine, electrolyte, gummies and the bundle (whey is done) (front, back label, supplement facts panel, lifestyle). | Products > each product > Media | Until then, a branded tub render shows. Real photos are the biggest single CVR lever. |
 | 2 | **Confirm final formulas and doses** for pre-workout, electrolyte and whey. Add a Supplement Facts image. | Product media + description | The copy says "fully disclosed label". That has to be true on day one. |
 | 3 | **Set inventory** for every variant. Inventory tracking is on, so everything shows as sold out at 0. | Products > Inventory | Sold-out buttons kill conversion. |
-| 4 | **Set products to Active.** All 6 are Draft. | Products > bulk select > Set as active | Nothing shows on the storefront while they are Draft. |
+| 4 | ~~Set products to Active.~~ Done. | | |
 | 5 | **Publish the theme.** | Online Store > Themes > Pump Stack CRO Build > Publish | Preview it first. The live Horizon theme is untouched. |
 | 6 | **Rename the store** from "My Store" to "Pump Stack" and upload a logo. | Settings > General, then Theme editor > Header | The header logo reads the store name. |
 | 7 | **Payments, domain, remove the password page.** | Settings > Payments, Domains, Preferences | Standard launch items. |
@@ -65,3 +65,9 @@ Add next, in this order:
 4. **Free shipping progress bar** in the cart drawer, to push AOV over $75.
 5. **Post-purchase upsell** (for example the gummies at 20% off) with a one-click upsell app.
 6. After 1,000 sessions, run A/B tests: hero headline, then default pack selection, then bundle price.
+
+## 6. Packaging notes
+
+- Whey Concentrate (Milk Chocolate) bag shows **30 servings** on the front badge and **31 servings** in the small print. Fix the artwork before printing.
+- Whey Isolate (Vanilla Cream) listing is new at $59.99 (2 bags $107.99).
+- The AI "customer review" photos in Higgsfield were not used. Presenting generated people as real customers breaks the FTC fake review rule.
