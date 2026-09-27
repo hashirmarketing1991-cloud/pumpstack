@@ -1,0 +1,108 @@
+{{ 'cs-privacy.css' | asset_url | stylesheet_tag }}
+
+{%- assign p = section.settings.product -%}
+<section class="cs cs--dark cs-hero" aria-label="{{ section.settings.heading | strip_html | escape }}">
+  <div class="cs-wrap cs-hero__grid">
+    <div class="cs-hero__copy">
+      {%- if section.settings.rating_text != blank -%}
+        <p class="cs-hero__rating"><span class="cs-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span> {{ section.settings.rating_text }}</p>
+      {%- endif -%}
+      {%- if section.settings.eyebrow != blank -%}<p class="cs-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h1 class="cs-h1">{{ section.settings.heading }}</h1>
+      {%- if section.settings.subheading != blank -%}<p class="cs-lead">{{ section.settings.subheading }}</p>{%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="cs-checks">
+          {%- for block in section.blocks -%}<li {{ block.shopify_attributes }}>{{ block.settings.text }}</li>{%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <div class="cs-hero__cta">
+        <a class="cs-btn" href="{{ section.settings.cta_link | default: '#buy' }}">
+          {{ section.settings.cta_label }}
+          {%- if p != blank %} &middot; {{ p.price | money }}{% endif %}
+        </a>
+        {%- if p != blank and p.compare_at_price > p.price -%}
+          <p class="cs-hero__save">
+            <s>{{ p.compare_at_price | money }}</s>
+            <strong>Save {{ p.compare_at_price | minus: p.price | money }}</strong>
+          </p>
+        {%- endif -%}
+      </div>
+
+      <ul class="cs-trust">
+        {%- if section.settings.trust_1 != blank -%}<li>{{ section.settings.trust_1 }}</li>{%- endif -%}
+        {%- if section.settings.trust_2 != blank -%}<li>{{ section.settings.trust_2 }}</li>{%- endif -%}
+        {%- if section.settings.trust_3 != blank -%}<li>{{ section.settings.trust_3 }}</li>{%- endif -%}
+      </ul>
+    </div>
+
+    <div class="cs-hero__visual">
+      {%- assign hero_img = section.settings.image | default: p.featured_image -%}
+      {%- assign hero_alt = section.settings.heading | strip_html -%}
+      {%- if hero_img != blank -%}
+        <div class="cs-media cs-hero__img">
+          {{ hero_img | image_url: width: 1600 | image_tag:
+            loading: 'eager', fetchpriority: 'high',
+            sizes: '(min-width: 990px) 50vw, 100vw',
+            widths: '600, 900, 1200, 1600',
+            alt: hero_alt }}
+        </div>
+      {%- else -%}
+        <div class="cs-placeholder">{{ 'product-1' | placeholder_svg_tag }}</div>
+      {%- endif -%}
+      {%- if section.settings.badge != blank -%}
+        <div class="cs-hero__badge">{{ section.settings.badge }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cs-hero { padding: 64px 0 80px; background: radial-gradient(1200px 600px at 85% 20%, rgba(47,107,255,.28), transparent 60%), var(--cs-ink); }
+  .cs-hero__grid { display: grid; gap: 40px; align-items: center; }
+  .cs-hero__rating { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; font-size: 14px; font-weight: 700; color: #fff; }
+  .cs-hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; }
+  .cs-hero__save { margin: 0; display: flex; gap: 10px; align-items: center; font-size: 15px; }
+  .cs-hero__save s { opacity: .6; }
+  .cs-hero__save strong { padding: 4px 10px; border-radius: 99px; background: var(--cs-accent-2); color: var(--cs-ink); font-size: 13px; }
+  .cs-hero__visual { position: relative; }
+  .cs-hero__img { aspect-ratio: 4 / 5; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+  .cs-hero__badge { position: absolute; left: -12px; bottom: 28px; padding: 14px 18px; border-radius: 14px; background: #fff; color: var(--cs-ink); font-weight: 900; font-size: 14px; box-shadow: var(--cs-shadow); max-width: 220px; line-height: 1.3; }
+  @media (min-width: 990px) { .cs-hero__grid { grid-template-columns: 1.05fr .95fr; gap: 72px; } }
+  @media (max-width: 749px) { .cs-hero__visual { order: -1; } .cs-hero__badge { left: 12px; bottom: 12px; } }
+</style>
+
+{% schema %}
+{
+  "name": "CS Hero",
+  "tag": "div",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product (for price)" },
+    { "type": "image_picker", "id": "image", "label": "Hero image", "info": "Best: phone at an angle, screen blacked out from the side. Falls back to the product photo." },
+    { "type": "text", "id": "rating_text", "label": "Rating line", "info": "Only use real numbers from your reviews app. Leave blank until you have them." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Privacy screen protector for iPhone" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Your screen. Your eyes only.</p>" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Tempered privacy glass that goes dark from the side, so the person next to you on the train sees nothing. You still see everything, crystal clear." },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Get my privacy glass" },
+    { "type": "url", "id": "cta_link", "label": "Button link", "info": "Leave blank to scroll to the buy box." },
+    { "type": "text", "id": "badge", "label": "Image badge", "default": "Applies in 2 minutes. No bubbles." },
+    { "type": "text", "id": "trust_1", "label": "Trust point 1", "default": "Free shipping" },
+    { "type": "text", "id": "trust_2", "label": "Trust point 2", "default": "30-day returns" },
+    { "type": "text", "id": "trust_3", "label": "Trust point 3", "default": "Secure checkout" }
+  ],
+  "blocks": [
+    { "type": "point", "name": "Bullet", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Blocks side views from nosy onlookers" } ] }
+  ],
+  "presets": [
+    {
+      "name": "CS Hero",
+      "blocks": [
+        { "type": "point", "settings": { "text": "Blocks side views from nosy onlookers" } },
+        { "type": "point", "settings": { "text": "9H tempered glass that takes the hit, not your screen" } },
+        { "type": "point", "settings": { "text": "Auto-align kit, perfect fit on the first try" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

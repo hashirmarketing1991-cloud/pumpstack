@@ -1,0 +1,181 @@
+{{ 'cs-privacy.css' | asset_url | stylesheet_tag }}
+
+{%- assign p = section.settings.product -%}
+{%- assign v = p.selected_or_first_available_variant -%}
+<section id="buy" class="cs cs-buy" aria-label="{{ p.title | default: 'Product' | escape }}">
+  <div class="cs-wrap cs-buy__grid">
+    <div class="cs-buy__gallery" data-cs-gallery>
+      <div class="cs-media cs-buy__main">
+        {%- if p.featured_media -%}
+          {{ p.featured_media | image_url: width: 1400 | image_tag:
+            sizes: '(min-width: 990px) 50vw, 100vw', widths: '500, 800, 1100, 1400',
+            class: 'cs-buy__mainimg', alt: p.title }}
+        {%- else -%}
+          <div class="cs-placeholder">{{ 'product-1' | placeholder_svg_tag }}</div>
+        {%- endif -%}
+      </div>
+      {%- if p.media.size > 1 -%}
+        <div class="cs-buy__thumbs" role="list">
+          {%- for m in p.media limit: 8 -%}
+            {%- if m.media_type == 'image' -%}
+              <button type="button" class="cs-buy__thumb{% if forloop.first %} is-active{% endif %}" role="listitem"
+                data-src="{{ m | image_url: width: 1400 }}" aria-label="Show image {{ forloop.index }}">
+                {{ m | image_url: width: 160 | image_tag: loading: 'lazy', alt: m.alt | default: p.title }}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="cs-buy__info">
+      {%- if section.settings.eyebrow != blank -%}<p class="cs-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2 class="cs-h2">{{ section.settings.heading | default: p.title }}</h2>
+
+      <div class="cs-buy__price" data-cs-price>
+        <span class="cs-buy__now">{{ v.price | default: 0 | money }}</span>
+        {%- if v.compare_at_price > v.price -%}
+          <s class="cs-buy__was">{{ v.compare_at_price | money }}</s>
+          <span class="cs-buy__tag">Save {{ v.compare_at_price | minus: v.price | times: 100 | divided_by: v.compare_at_price }}%</span>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.text != blank -%}<div class="cs-buy__text">{{ section.settings.text }}</div>{%- endif -%}
+
+      {%- if p != blank -%}
+        {%- form 'product', p, class: 'cs-buy__form', data-cs-form: '' -%}
+          {%- unless p.has_only_default_variant -%}
+            <label class="cs-buy__label" for="cs-variant-{{ section.id }}">{{ section.settings.variant_label }}</label>
+            <select id="cs-variant-{{ section.id }}" name="id" class="cs-buy__select" data-cs-variant>
+              {%- for variant in p.variants -%}
+                <option value="{{ variant.id }}"
+                  data-price="{{ variant.price | money }}"
+                  data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money }}{% endif %}"
+                  data-save="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | minus: variant.price | times: 100 | divided_by: variant.compare_at_price }}{% endif %}"
+                  {% if variant == v %}selected{% endif %}
+                  {% unless variant.available %}disabled{% endunless %}>
+                  {{ variant.title }}{% unless variant.available %} (sold out){% endunless %}
+                </option>
+              {%- endfor -%}
+            </select>
+          {%- else -%}
+            <input type="hidden" name="id" value="{{ v.id }}">
+          {%- endunless -%}
+
+          <div class="cs-buy__row">
+            <div class="cs-buy__qty">
+              <button type="button" data-cs-qty="-1" aria-label="Decrease quantity">&minus;</button>
+              <input type="number" name="quantity" value="1" min="1" aria-label="Quantity">
+              <button type="button" data-cs-qty="1" aria-label="Increase quantity">+</button>
+            </div>
+            <button type="submit" class="cs-btn cs-buy__add" {% unless v.available %}disabled{% endunless %}>
+              {%- if v.available -%}{{ section.settings.button_label }}{%- else -%}Sold out{%- endif -%}
+            </button>
+          </div>
+          {%- if section.settings.show_dynamic_checkout -%}{{ form | payment_button }}{%- endif -%}
+        {%- endform -%}
+      {%- else -%}
+        <p class="cs-small">Pick your privacy glass product in the section settings to turn on the buy box.</p>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="cs-buy__perks">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}><strong>{{ block.settings.title }}</strong><span>{{ block.settings.text }}</span></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cs-buy__grid { display: grid; gap: 36px; align-items: start; }
+  .cs-buy__main { aspect-ratio: 1 / 1; }
+  .cs-buy__thumbs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 12px; }
+  .cs-buy__thumb { padding: 0; border: 2px solid transparent; border-radius: 12px; overflow: hidden; background: var(--cs-soft); cursor: pointer; aspect-ratio: 1; }
+  .cs-buy__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cs-buy__thumb.is-active { border-color: var(--cs-accent); }
+  .cs-buy__price { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0 0 18px; }
+  .cs-buy__now { font-size: 30px; font-weight: 900; color: var(--cs-ink); }
+  .cs-buy__was { font-size: 18px; color: var(--cs-muted); }
+  .cs-buy__tag { padding: 5px 11px; border-radius: 99px; background: #e8fff9; color: #007a61; font-size: 13px; font-weight: 800; }
+  .cs-buy__text { margin: 0 0 22px; }
+  .cs-buy__text p { margin: 0 0 10px; }
+  .cs-buy__label { display: block; margin: 0 0 8px; font-weight: 800; color: var(--cs-ink); font-size: 14px; }
+  .cs-buy__select { width: 100%; min-height: 54px; margin: 0 0 16px; padding: 0 16px; border: 2px solid var(--cs-line); border-radius: 14px; background: #fff; font: inherit; font-weight: 700; color: var(--cs-ink); }
+  .cs-buy__row { display: flex; gap: 12px; margin: 0 0 12px; }
+  .cs-buy__qty { display: flex; align-items: center; border: 2px solid var(--cs-line); border-radius: 999px; overflow: hidden; flex: 0 0 auto; }
+  .cs-buy__qty button { width: 44px; height: 52px; border: 0; background: none; font-size: 20px; cursor: pointer; color: var(--cs-ink); }
+  .cs-buy__qty input { width: 40px; border: 0; text-align: center; font: inherit; font-weight: 800; -moz-appearance: textfield; background: none; color: var(--cs-ink); }
+  .cs-buy__qty input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .cs-buy__add { flex: 1; }
+  .cs-buy__perks { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 12px; }
+  .cs-buy__perks li { display: grid; gap: 2px; padding: 14px 16px; border-radius: 14px; background: var(--cs-soft); font-size: 14px; }
+  .cs-buy__perks strong { color: var(--cs-ink); }
+  @media (min-width: 990px) { .cs-buy__grid { grid-template-columns: 1.05fr .95fr; gap: 64px; } .cs-buy__info { position: sticky; top: 90px; } }
+  @media (max-width: 749px) { .cs-buy__row { flex-direction: row; } .cs-buy__add { width: auto; } }
+</style>
+
+<script>
+  (function () {
+    var root = document.getElementById('buy');
+    if (!root) return;
+    var main = root.querySelector('.cs-buy__mainimg');
+    root.querySelectorAll('.cs-buy__thumb').forEach(function (t) {
+      t.addEventListener('click', function () {
+        if (main) { main.removeAttribute('srcset'); main.src = t.dataset.src; }
+        root.querySelectorAll('.cs-buy__thumb').forEach(function (x) { x.classList.remove('is-active'); });
+        t.classList.add('is-active');
+      });
+    });
+    root.querySelectorAll('[data-cs-qty]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var input = root.querySelector('input[name="quantity"]');
+        input.value = Math.max(1, (parseInt(input.value, 10) || 1) + parseInt(b.dataset.csQty, 10));
+      });
+    });
+    var sel = root.querySelector('[data-cs-variant]');
+    if (sel) sel.addEventListener('change', function () {
+      var o = sel.options[sel.selectedIndex];
+      var html = '<span class="cs-buy__now">' + o.dataset.price + '</span>';
+      if (o.dataset.compare) html += '<s class="cs-buy__was">' + o.dataset.compare + '</s><span class="cs-buy__tag">Save ' + o.dataset.save + '%</span>';
+      root.querySelector('[data-cs-price]').innerHTML = html;
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "CS Product buy box",
+  "tag": "div",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Anti-spy privacy glass" },
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Leave blank to use the product title.", "default": "Privacy Anti-Spy Glass Screen Protector" },
+    { "type": "richtext", "id": "text", "label": "Short description", "default": "<p>Looks like a normal clear screen when you face it. Tilt it away and it goes black. Your texts, bank app and work email stay between you and your phone.</p>" },
+    { "type": "text", "id": "variant_label", "label": "Variant label", "default": "Choose your iPhone model" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Add to cart" },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show Shop Pay / Buy it now", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "perk", "name": "Perk",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Free auto-align kit" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Frame, wipes and dust stickers included." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CS Product buy box",
+      "blocks": [
+        { "type": "perk", "settings": { "title": "Auto-align kit in the box", "text": "The frame lines it up for you. Straight and bubble free on the first try." } },
+        { "type": "perk", "settings": { "title": "Case friendly", "text": "Edges stop just short of the curve, so it works with almost every case." } },
+        { "type": "perk", "settings": { "title": "30-day returns", "text": "Not happy with it? Send it back within 30 days." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
