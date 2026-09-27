@@ -2,9 +2,9 @@
 
 {%- liquid
   assign p = section.settings.product
-  assign img_alt = section.settings.heading | escape
+  assign img_alt = section.settings.heading
 -%}
-<section class="cs cs-cta" aria-label="{{ img_alt }}">
+<section class="cs cs-cta" aria-label="{{ img_alt | escape }}">
   <div class="cs-wrap">
     <div class="cs-cta__box">
       <div class="cs-cta__copy">

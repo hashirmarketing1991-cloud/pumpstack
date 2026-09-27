@@ -5,9 +5,9 @@
   assign rows = section.blocks | where: 'type', 'compare'
   assign shots = section.blocks | where: 'type', 'shot'
   assign reviews = section.blocks | where: 'type', 'review'
-  assign img_alt = section.settings.heading | escape
+  assign img_alt = section.settings.heading
 -%}
-<section class="cs cs--dark cs-proof" aria-label="{{ img_alt }}">
+<section class="cs cs--dark cs-proof" aria-label="{{ img_alt | escape }}">
   <div class="cs-wrap">
     <div class="cs-proof__top">
       {%- if section.settings.image -%}

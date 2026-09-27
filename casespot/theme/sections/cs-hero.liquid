@@ -3,9 +3,9 @@
 {%- liquid
   assign p = section.settings.product
   assign hero_img = section.settings.image | default: p.featured_image
-  assign hero_alt = section.settings.heading | strip_html | escape
+  assign hero_alt = section.settings.heading | strip_html
 -%}
-<section class="cs cs--dark cs-hero" aria-label="{{ hero_alt }}">
+<section class="cs cs--dark cs-hero" aria-label="{{ hero_alt | escape }}">
   <div class="cs-wrap cs-hero__grid">
     <div class="cs-hero__copy">
       {%- if section.settings.eyebrow != blank -%}<p class="cs-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}

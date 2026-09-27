@@ -3,9 +3,9 @@
 {%- liquid
   assign specs = section.blocks | where: 'type', 'spec'
   assign faqs = section.blocks | where: 'type', 'faq'
-  assign img_alt = section.settings.heading | escape
+  assign img_alt = section.settings.heading
 -%}
-<section class="cs cs--soft cs-det" aria-label="{{ img_alt }}">
+<section class="cs cs--soft cs-det" aria-label="{{ img_alt | escape }}">
   <div class="cs-wrap">
     <div class="cs-head">
       {%- if section.settings.eyebrow != blank -%}<p class="cs-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}

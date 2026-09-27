@@ -1,0 +1,495 @@
+<style> html body .cs{--cs-ink:#121212;--cs-text:#45464d;--cs-muted:#7a7b82;--cs-line:#e8e6e1;--cs-bg:#ffffff;--cs-soft:#f6f5f2;--cs-dark:#16150f;--cs-accent:#ee5626;--cs-accent-dark:#d4461a;--cs-good:#12a150;--cs-star:#ffb400;--cs-radius:20px;--cs-radius-sm:14px;--cs-shadow:0 1px 2px rgba(18,18,18,.04),0 12px 32px rgba(18,18,18,.07);--cs-font:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;display:block;padding:88px 0;background:var(--cs-bg);color:var(--cs-text);font-family:var(--cs-font);font-size:16px;line-height:1.6;letter-spacing:0;-webkit-font-smoothing:antialiased;overflow-x:clip}
+html body .cs *,html body .cs *::before,html body .cs *::after{box-sizing:border-box}
+html body .cs :where(p){margin:0}
+html body .cs img{max-width:100%}
+html body .cs a{text-decoration:none}
+html body .cs--soft{background:var(--cs-soft)}
+html body .cs--dark{background:var(--cs-dark);color:#b9b8b1}
+html body .cs-wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 24px}
+html body .cs-head{max-width:680px;margin:0 auto 48px;text-align:center}
+html body .cs-head .cs-lead{margin-top:14px}
+html body .cs .cs-eyebrow{display:inline-flex;align-items:center;gap:8px;margin:0 0 16px;color:var(--cs-accent);font-family:var(--cs-font);font-size:13px;font-weight:700;line-height:1;letter-spacing:.08em;text-transform:uppercase}
+html body .cs .cs-eyebrow::before{content:"";width:18px;height:2px;border-radius:2px;background:currentColor}
+html body .cs .cs-h1,html body .cs .cs-h2,html body .cs .cs-h3{margin:0;font-family:var(--cs-font);color:var(--cs-ink);letter-spacing:-.025em}
+html body .cs .cs-h1{font-size:clamp(38px,5.6vw,64px);line-height:1.04;font-weight:800}
+html body .cs .cs-h2{font-size:clamp(30px,3.8vw,44px);line-height:1.1;font-weight:800}
+html body .cs .cs-h3{font-size:19px;line-height:1.3;font-weight:700;letter-spacing:-.01em}
+html body .cs--dark .cs-h1,html body .cs--dark .cs-h2,html body .cs--dark .cs-h3{color:#fff}
+html body .cs .cs-h1 em,html body .cs .cs-h2 em{font-style:normal;color:var(--cs-accent)}
+html body .cs-lead{font-size:18px;line-height:1.6;color:var(--cs-text)}
+html body .cs--dark .cs-lead{color:#c9c8c1}
+html body .cs .cs-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:58px;padding:0 32px;border:0;border-radius:999px;background:var(--cs-accent);color:#fff;font-family:var(--cs-font);font-size:17px;font-weight:700;line-height:1;letter-spacing:0;text-decoration:none;cursor:pointer;box-shadow:0 10px 24px rgba(238,86,38,.32);transition:background .15s ease,transform .15s ease,box-shadow .15s ease;-webkit-appearance:none;appearance:none}
+html body .cs .cs-btn:hover{background:var(--cs-accent-dark);transform:translateY(-1px);box-shadow:0 14px 28px rgba(238,86,38,.38)}
+html body .cs .cs-btn:focus-visible{outline:3px solid var(--cs-ink);outline-offset:3px}
+html body .cs .cs-btn svg{width:18px;height:18px;flex:none}
+html body .cs .cs-btn--ghost{background:transparent;color:var(--cs-ink);box-shadow:inset 0 0 0 1.5px var(--cs-line)}
+html body .cs .cs-btn--ghost:hover{background:var(--cs-soft);box-shadow:inset 0 0 0 1.5px #d6d3cc}
+html body .cs--dark .cs-btn--ghost{color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.25)}
+html body .cs--dark .cs-btn--ghost:hover{background:rgba(255,255,255,.06)}
+html body .cs .cs-btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+html body .cs-media{position:relative;overflow:hidden;border-radius:var(--cs-radius);background:#ecebe7}
+html body .cs-media img,html body .cs-media video{display:block;width:100%;height:100%;object-fit:cover}
+html body .cs-stars{display:inline-flex;gap:1px;color:var(--cs-star);font-size:15px;line-height:1;letter-spacing:0}
+html body .cs-checks{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+html body .cs-checks li{position:relative;padding-left:32px;font-size:16px;line-height:1.45;font-weight:500;color:var(--cs-ink)}
+html body .cs--dark .cs-checks li{color:#fff}
+html body .cs-checks li::before{content:"";position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:50%;background:var(--cs-accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 12px no-repeat}
+html body .cs-trust{display:flex;flex-wrap:wrap;gap:10px 22px;margin:0;padding:0;list-style:none}
+html body .cs-trust li{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;line-height:1.3}
+html body .cs-trust svg{width:18px;height:18px;flex:none;color:var(--cs-accent)}
+@media (max-width:749px){html body .cs{padding:60px 0;font-size:15px}
+html body .cs-wrap{padding:0 18px}
+html body .cs-head{margin-bottom:32px}
+html body .cs-lead{font-size:16px}
+html body .cs .cs-btn{width:100%;min-height:56px;font-size:16px}
+}
+html body .cs-hero{padding:72px 0 88px;background:radial-gradient(900px 520px at 88% 12%,rgba(238,86,38,.20),transparent 62%),var(--cs-dark)}
+html body .cs-hero__grid{display:grid;grid-template-columns:minmax(0,1fr);gap:40px;align-items:center}
+html body .cs-hero__sub{max-width:540px;margin-top:20px}
+html body .cs-hero__checks{margin-top:28px}
+html body .cs-hero__buy{display:flex;flex-wrap:wrap;align-items:center;gap:18px 24px;margin-top:36px}
+html body .cs-hero__price{display:flex;flex-direction:column;line-height:1.1}
+html body .cs-hero__from{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#9d9c95}
+html body .cs-hero__price strong{font-size:30px;font-weight:800;color:#fff;letter-spacing:-.02em}
+html body .cs-hero__trust{margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);color:#fff}
+html body .cs-hero__visual{position:relative}
+html body .cs-hero__img{aspect-ratio:1 / 1;box-shadow:0 40px 90px rgba(0,0,0,.5)}
+html body .cs-hero__img .cs-ph{width:100%;height:100%;background:#2a2922;fill:#555}
+html body .cs-hero__badge{position:absolute;left:-18px;bottom:32px;display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:16px;background:#fff;color:var(--cs-ink);box-shadow:0 18px 40px rgba(0,0,0,.25);font-size:14px;line-height:1.3}
+html body .cs-hero__badge strong{display:block;font-size:15px;font-weight:800}
+html body .cs-hero__dot{width:10px;height:10px;border-radius:50%;background:var(--cs-good);box-shadow:0 0 0 5px rgba(18,161,80,.18);flex:none}
+@media (min-width:990px){html body .cs-hero{padding:96px 0 112px}
+html body .cs-hero__grid{grid-template-columns:1.05fr .95fr;gap:80px}
+}
+@media (max-width:749px){html body .cs-hero{padding:28px 0 56px}
+html body .cs-hero__grid{gap:28px}
+html body .cs-hero__visual{order:-1}
+html body .cs-hero__img{aspect-ratio:5 / 4}
+html body .cs-hero__badge{left:12px;bottom:12px;padding:10px 14px}
+html body .cs-hero__buy{flex-direction:column;align-items:stretch;margin-top:28px}
+html body .cs-hero__price{flex-direction:row;align-items:baseline;gap:8px}
+html body .cs-hero__trust{flex-direction:column;gap:10px}
+}
+html body .cs-buy__grid{display:grid;grid-template-columns:minmax(0,1fr);gap:36px;align-items:start}
+html body .cs-buy__main{aspect-ratio:1 / 1;background:#f3f2ef}
+html body .cs-buy__main .cs-ph{width:100%;height:100%}
+html body .cs-buy__imgbadge{position:absolute;left:16px;top:16px;padding:8px 14px;border-radius:999px;background:var(--cs-ink);color:#fff;font-size:13px;font-weight:700;line-height:1}
+html body .cs-buy__thumbs{display:flex;gap:10px;margin-top:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+html body .cs-buy__thumbs::-webkit-scrollbar{display:none}
+html body .cs .cs-buy__thumb{flex:0 0 76px;height:76px;padding:0;border:2px solid transparent;border-radius:12px;overflow:hidden;background:#f3f2ef;cursor:pointer;transition:border-color .15s}
+html body .cs-buy__thumb img{width:100%;height:100%;object-fit:cover;display:block}
+html body .cs .cs-buy__thumb.is-active,html body .cs .cs-buy__thumb:hover{border-color:var(--cs-accent)}
+html body .cs-buy__title{font-size:clamp(28px,3.2vw,38px)}
+html body .cs-buy__price{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:18px 0 20px}
+html body .cs-buy__now{font-size:32px;line-height:1;font-weight:800;color:var(--cs-ink);letter-spacing:-.02em}
+html body .cs-buy__was{font-size:19px;color:var(--cs-muted)}
+html body .cs-buy__tag{padding:6px 12px;border-radius:999px;background:#fdeee8;color:var(--cs-accent-dark);font-size:13px;font-weight:700;line-height:1}
+html body .cs-buy__text{margin:0 0 26px;color:var(--cs-text)}
+html body .cs-buy__text p + p{margin-top:10px}
+html body .cs-buy__form{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+html body .cs-buy__label{display:block;margin:0 0 8px;font-size:14px;font-weight:700;color:var(--cs-ink)}
+html body .cs-buy__selectwrap{position:relative;margin-bottom:6px}
+html body .cs-buy__selectwrap::after{content:"";position:absolute;right:20px;top:50%;width:9px;height:9px;border-right:2px solid var(--cs-ink);border-bottom:2px solid var(--cs-ink);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+html body .cs .cs-buy__select{display:block;width:100%;height:58px;margin:0;padding:0 48px 0 18px;border:1.5px solid #d9d6cf;border-radius:var(--cs-radius-sm);background:#fff;color:var(--cs-ink);font-family:var(--cs-font);font-size:16px;font-weight:600;letter-spacing:0;cursor:pointer;-webkit-appearance:none;appearance:none;transition:border-color .15s}
+html body .cs .cs-buy__select:hover,html body .cs .cs-buy__select:focus{border-color:var(--cs-ink);outline:none}
+html body .cs-buy__qtyrow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+html body .cs-buy__qtyrow .cs-buy__label{margin:0}
+html body .cs-buy__qty{display:inline-flex;align-items:center;height:48px;border:1.5px solid #d9d6cf;border-radius:999px;overflow:hidden;background:#fff}
+html body .cs .cs-buy__qty button{width:46px;height:100%;padding:0;border:0;background:none;color:var(--cs-ink);font-size:20px;line-height:1;cursor:pointer}
+html body .cs .cs-buy__qty button:hover{background:var(--cs-soft)}
+html body .cs .cs-buy__qty input{width:40px;height:100%;padding:0;border:0;background:none;color:var(--cs-ink);font-family:var(--cs-font);font-size:16px;font-weight:700;text-align:center;-moz-appearance:textfield;box-shadow:none}
+html body .cs .cs-buy__qty input::-webkit-inner-spin-button,html body .cs .cs-buy__qty input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+html body .cs .cs-buy__order,html body .cs .cs-buy__cart{width:100%}
+html body .cs-buy__micro{text-align:center;font-size:13px;color:var(--cs-muted)}
+html body .cs-buy__perks{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:10px}
+html body .cs-buy__perks li{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:var(--cs-radius-sm);background:var(--cs-soft);font-size:14px;line-height:1.45}
+html body .cs-buy__perks strong{display:block;margin-bottom:2px;color:var(--cs-ink);font-size:15px}
+html body .cs-buy__perkicon{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#fff;color:var(--cs-accent);flex:none}
+html body .cs-buy__perkicon svg{width:20px;height:20px}
+html body .cs-buy.is-loading .cs-buy__order,html body .cs-buy.is-loading .cs-buy__cart{opacity:.6;pointer-events:none}
+@media (max-width:749px){html body .cs .cs-buy__select{font-size:15px;padding-left:16px}
+}
+@media (min-width:990px){html body .cs-buy__grid{grid-template-columns:1.08fr .92fr;gap:72px}
+html body .cs-buy__info{position:sticky;top:100px}
+html body .cs .cs-buy__thumb{flex-basis:84px;height:84px}
+}
+html body .cs-feat__grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+html body .cs-feat__card{padding:28px 26px;border-radius:var(--cs-radius);background:#fff;box-shadow:var(--cs-shadow)}
+html body .cs-feat__card p{margin-top:8px;font-size:15px;line-height:1.6}
+html body .cs-feat__icon{display:grid;place-items:center;width:50px;height:50px;margin-bottom:20px;border-radius:14px;background:#fdeee8;color:var(--cs-accent)}
+html body .cs-feat__icon svg{width:24px;height:24px}
+html body .cs-feat__row{display:grid;grid-template-columns:minmax(0,1fr);gap:32px;align-items:center;margin-top:64px}
+html body .cs-feat__img{aspect-ratio:3 / 2}
+html body .cs .cs-feat__rowh{font-size:clamp(26px,3vw,36px);margin-bottom:14px}
+html body .cs-feat__chips{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 0;padding:0;list-style:none}
+html body .cs-feat__chips li{padding:9px 14px;border-radius:999px;background:#fff;border:1px solid var(--cs-line);color:var(--cs-ink);font-size:14px;font-weight:600;line-height:1.2}
+@media (min-width:750px){html body .cs-feat__grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (min-width:990px){html body .cs-feat__grid{grid-template-columns:repeat(4,1fr);gap:20px}
+html body .cs-feat__row{grid-template-columns:1.1fr .9fr;gap:72px;margin-top:88px}
+}
+html body .cs-how__grid{display:grid;grid-template-columns:minmax(0,1fr);gap:36px;align-items:center}
+html body .cs-how__video{aspect-ratio:4 / 5;background:#111}
+html body .cs-how__video video{object-fit:cover}
+html body .cs-how__steps{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+html body .cs-how__step{position:relative;display:flex;gap:18px;align-items:flex-start;padding:22px 22px;border:1px solid var(--cs-line);border-radius:var(--cs-radius);background:#fff}
+html body .cs-how__step p{margin-top:6px;font-size:15px}
+html body .cs-how__n{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--cs-ink);color:#fff;font-size:17px;font-weight:800;flex:none}
+html body .cs-how__step:first-child .cs-how__n{background:var(--cs-accent)}
+html body .cs-how__cta{margin-top:12px}
+@media (min-width:990px){html body .cs-how__grid{grid-template-columns:.85fr 1.15fr;gap:72px}
+html body .cs-how__step{padding:26px 28px}
+}
+@media (max-width:749px){html body .cs-how__video{aspect-ratio:1 / 1}
+}
+html body .cs-det__grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+html body .cs-det__card{padding:30px 28px;border-radius:var(--cs-radius);background:#fff;box-shadow:var(--cs-shadow)}
+html body .cs .cs-det__sub{margin-bottom:18px}
+html body .cs-det__img{aspect-ratio:4 / 3;margin-bottom:26px}
+html body .cs-det__specs{margin:0}
+html body .cs-det__specs>div{display:grid;grid-template-columns:42% 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--cs-line);font-size:15px;line-height:1.45}
+html body .cs-det__specs>div:first-child{padding-top:0}
+html body .cs-det__specs>div:last-child{border-bottom:0;padding-bottom:0}
+html body .cs-det__specs dt{font-weight:700;color:var(--cs-ink)}
+html body .cs-det__specs dd{margin:0}
+html body .cs-det__faq{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;margin-top:80px}
+html body .cs .cs-det__faqh{font-size:clamp(28px,3.2vw,38px)}
+html body .cs-det__faqlist{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+html body .cs-det__q{border-radius:var(--cs-radius-sm);background:#fff;box-shadow:var(--cs-shadow)}
+html body .cs-det__q summary{position:relative;display:block;padding:20px 60px 20px 22px;list-style:none;cursor:pointer;font-size:16px;font-weight:700;line-height:1.4;color:var(--cs-ink)}
+html body .cs-det__q summary::-webkit-details-marker{display:none}
+html body .cs-det__q summary:focus-visible{outline:2px solid var(--cs-accent);outline-offset:2px;border-radius:var(--cs-radius-sm)}
+html body .cs-det__plus{position:absolute;right:20px;top:50%;width:28px;height:28px;margin-top:-14px;border-radius:50%;background:var(--cs-soft);transition:background .2s,transform .2s}
+html body .cs-det__plus::before,html body .cs-det__plus::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;margin:-1px 0 0 -6px;border-radius:2px;background:var(--cs-ink)}
+html body .cs-det__plus::after{transform:rotate(90deg);transition:transform .2s}
+html body .cs-det__q[open] .cs-det__plus{background:var(--cs-accent)}
+html body .cs-det__q[open] .cs-det__plus::before,html body .cs-det__q[open] .cs-det__plus::after{background:#fff}
+html body .cs-det__q[open] .cs-det__plus::after{transform:rotate(0deg)}
+html body .cs-det__a{padding:0 22px 22px;font-size:15px;line-height:1.65}
+html body .cs-det__a p + p{margin-top:8px}
+@media (min-width:990px){html body .cs-det__grid{grid-template-columns:1fr 1fr;gap:24px}
+html body .cs-det__card{padding:40px}
+html body .cs-det__faq{grid-template-columns:.75fr 1.25fr;gap:64px;align-items:start;margin-top:104px}
+}
+html body .cs-proof__top{display:grid;grid-template-columns:minmax(0,1fr);gap:36px;align-items:center}
+html body .cs-proof__img{aspect-ratio:1 / 1}
+html body .cs-proof__lab{position:absolute;top:16px;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:700;line-height:1}
+html body .cs-proof__lab--l{left:16px;background:#fff;color:var(--cs-ink)}
+html body .cs-proof__lab--r{right:16px;background:var(--cs-ink);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
+html body .cs-proof__lead{margin-top:16px}
+html body .cs-proof__stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:32px}
+html body .cs-proof__stat{padding:20px 16px;border-radius:var(--cs-radius-sm);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+html body .cs-proof__stat strong{display:block;color:#fff;font-size:clamp(24px,2.6vw,32px);font-weight:800;line-height:1.05;letter-spacing:-.02em}
+html body .cs-proof__stat span{display:block;margin-top:6px;font-size:13px;line-height:1.4;color:#a9a8a1}
+html body .cs-proof__compare{margin-top:96px}
+html body .cs .cs-proof__ch{margin-bottom:28px;font-size:clamp(26px,3vw,36px);text-align:center}
+html body .cs-proof__table{max-width:900px;margin:0 auto;border-radius:var(--cs-radius);overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+html body .cs-proof__tr{display:grid;grid-template-columns:1.1fr 1fr 1fr;align-items:stretch;border-top:1px solid rgba(255,255,255,.08)}
+html body .cs-proof__tr:first-child{border-top:0}
+html body .cs-proof__tr>span{display:flex;align-items:center;gap:10px;padding:16px 18px;font-size:15px;line-height:1.35}
+html body .cs-proof__tr>span:first-child{color:#fff;font-weight:700}
+html body .cs-proof__tr--head>span{padding-top:18px;padding-bottom:18px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#a9a8a1}
+html body .cs-proof__us{background:rgba(238,86,38,.10);color:#fff}
+html body .cs-proof__tr--head .cs-proof__us{color:var(--cs-accent)}
+html body .cs-proof__them{color:#8f8e87}
+html body .cs-yes,html body .cs-no{display:inline-block;width:20px;height:20px;border-radius:50%;flex:none;background-position:center;background-repeat:no-repeat;background-size:11px}
+html body .cs-yes{background-color:var(--cs-accent);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E")}
+html body .cs-no{background-color:rgba(255,255,255,.1);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E")}
+html body .cs-proof__shots{margin-top:96px}
+html body .cs .cs-proof__sh{margin-bottom:20px}
+html body .cs-proof__rail{display:grid;grid-auto-flow:column;grid-auto-columns:72%;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;scrollbar-width:thin}
+html body .cs-proof__shot{aspect-ratio:1 / 1;scroll-snap-align:start}
+html body .cs-proof__reviews{margin-top:96px}
+html body .cs-proof__app{background:#fff;border-radius:var(--cs-radius);padding:24px;color:var(--cs-ink)}
+html body .cs-proof__rgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:20px}
+html body .cs .cs-proof__review{margin:0;border-left:1px solid rgba(255,255,255,.08);font-style:normal;padding:26px;border-radius:var(--cs-radius);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+html body .cs-proof__review p{margin-top:12px;color:#e3e2dc;font-size:15px}
+html body .cs-proof__review footer{margin-top:16px;font-size:14px;color:#a9a8a1}
+html body .cs-proof__review strong{color:#fff}
+@media (min-width:750px){html body .cs-proof__rail{grid-auto-columns:calc((100% - 28px) / 3)}
+html body .cs-proof__rgrid{grid-template-columns:repeat(3,1fr)}
+}
+@media (min-width:990px){html body .cs-proof__top{grid-template-columns:1fr 1fr;gap:80px}
+html body .cs-proof__rail{grid-auto-columns:calc((100% - 42px) / 4)}
+}
+@media (max-width:749px){html body .cs-proof__compare,html body .cs-proof__shots,html body .cs-proof__reviews{margin-top:64px}
+html body .cs-proof__stats{gap:8px}
+html body .cs-proof__stat{padding:16px 12px}
+html body .cs-proof__tr{grid-template-columns:1fr 1fr 1fr}
+html body .cs-proof__tr>span{padding:14px 10px;font-size:13px;gap:6px}
+html body .cs-proof__tr--head>span{font-size:11px}
+html body .cs-yes,html body .cs-no{width:16px;height:16px;background-size:9px}
+}
+html body .cs-cta{padding-bottom:72px}
+html body .cs-cta__box{display:grid;grid-template-columns:minmax(0,1fr);gap:32px;align-items:center;padding:40px 28px;border-radius:28px;background:radial-gradient(700px 400px at 100% 0%,rgba(238,86,38,.25),transparent 60%),var(--cs-dark);overflow:hidden}
+html body .cs-cta__box .cs-h2{color:#fff}
+html body .cs-cta__lead{margin-top:14px;color:#c9c8c1}
+html body .cs-cta__actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 22px;margin-top:28px}
+html body .cs-cta__price{color:#c9c8c1;font-size:15px}
+html body .cs-cta__price strong{color:#fff;font-size:20px}
+html body .cs-cta__img{aspect-ratio:16 / 10}
+html body .cs-cta__trust{display:grid;grid-template-columns:repeat(2,1fr);gap:20px 16px;margin:48px 0 0;padding:0;list-style:none}
+html body .cs-cta__trust li{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.4}
+html body .cs-cta__trust strong{display:block;color:var(--cs-ink);font-size:15px}
+html body .cs-cta__ticon{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#fdeee8;color:var(--cs-accent);flex:none}
+html body .cs-cta__ticon svg{width:20px;height:20px}
+html body .cs-sticky{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:0;background:transparent;transform:translateY(110%);transition:transform .25s ease;pointer-events:none}
+html body .cs-sticky.is-on{transform:none;pointer-events:auto}
+html body .cs-sticky__in{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 auto;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--cs-line);box-shadow:0 -10px 30px rgba(0,0,0,.08)}
+html body .cs-sticky__txt{display:flex;flex-direction:column;min-width:0;font-size:12px;line-height:1.35;color:var(--cs-muted)}
+html body .cs-sticky__txt strong{color:var(--cs-ink);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body .cs .cs-sticky__in .cs-btn{width:auto;min-height:48px;padding:0 22px;font-size:15px;white-space:nowrap;box-shadow:none}
+@media (min-width:750px){html body .cs-cta__trust{grid-template-columns:repeat(4,1fr)}
+html body .cs-sticky__in{max-width:560px;margin-bottom:20px;border:1px solid var(--cs-line);border-radius:999px;padding:10px 10px 10px 26px}
+}
+@media (min-width:990px){html body .cs-cta__box{grid-template-columns:1.1fr .9fr;gap:64px;padding:64px}
+}
+html body .main-page-title{display:none}
+html body .page-width:has(.cs-lp){max-width:none!important;padding:0!important}
+html body .section:has(#ContactForm){display:none!important}
+html body .rte:has(.cs-lp){margin:0}
+html body .cs-lp{display:block;width:100%}
+html body .cs-lp ul,html body .cs-lp ol{list-style:none;padding-left:0}
+html body .cs-lp img{border:0;box-shadow:none;margin:0;border-radius:0;height:100%}
+html body .cs-lp .cs-media img{border-radius:0}
+html body .cs-lp h1,html body .cs-lp h2,html body .cs-lp h3{margin-top:0}
+html body .cs-lp a{text-decoration:none}
+</style>
+<div class="cs-lp">
+<section class="cs cs--dark cs-hero" aria-label="Your screen is nobody else&#39;s business.">
+<div class="cs-wrap cs-hero__grid">
+<div class="cs-hero__copy">
+<p class="cs-eyebrow">iPhone privacy glass</p>
+<h1 class="cs-h1">Your screen is <em>nobody else's</em> business.</h1>
+<p class="cs-lead cs-hero__sub">Anti-spy tempered glass that looks clear to you and black to anyone beside you. Apply it at home in under a minute with the auto-align kit.</p>
+<ul class="cs-checks cs-hero__checks">
+<li >Hides WhatsApp chats, bank apps and photos from side views</li>
+<li >9H tempered glass takes the scratches and drops</li>
+<li >Auto-align kit: straight and bubble free on the first try</li></ul>
+<div class="cs-hero__buy">
+<p class="cs-hero__price"><span class="cs-hero__from">From</span><strong>Rs.1,699</strong></p><a class="cs-btn cs-hero__btn" href="#buy"> Choose my iPhone model <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<ul class="cs-trust cs-hero__trust">
+<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Cash on delivery</li>
+<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>Delivered in 2 to 4 days</li>
+<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>No shop visit needed</li></ul></div>
+<div class="cs-hero__visual">
+<div class="cs-media cs-hero__img"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/543d6010-e53f-4bcb-917d-3bed31e24b87.png?v=1790177703&width=1400" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/543d6010-e53f-4bcb-917d-3bed31e24b87.png?v=1790177703&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/543d6010-e53f-4bcb-917d-3bed31e24b87.png?v=1790177703&width=1400 1400w" sizes="(min-width: 990px) 46vw, 100vw" loading="eager" fetchpriority="high" alt="Your screen is nobody else's business."></div>
+<div class="cs-hero__badge"><span class="cs-hero__dot" aria-hidden="true"></span><span><strong>Clear for you. Black for them.</strong>Privacy from side angles</span></div></div></div></section>
+<section id="buy" class="cs cs-buy" aria-label="iPhone Privacy Anti-Spy Glass Screen Protector with applying kit" data-cs-buy>
+<div class="cs-wrap cs-buy__grid">
+<div class="cs-buy__gallery">
+<div class="cs-media cs-buy__main"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H9a04d93794ee42db830e7fe78a650e45V.jpg?v=1772085517&width=1400" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H9a04d93794ee42db830e7fe78a650e45V.jpg?v=1772085517&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H9a04d93794ee42db830e7fe78a650e45V.jpg?v=1772085517&width=1400 1400w" sizes="(min-width: 990px) 52vw, 100vw" loading="lazy" class="cs-buy__mainimg" alt="iPhone Privacy Anti-Spy Glass Screen Protector with applying kit"><span class="cs-buy__imgbadge">Kit included</span></div>
+<div class="cs-buy__thumbs">
+<button type="button" class="cs-buy__thumb is-active" data-src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H9a04d93794ee42db830e7fe78a650e45V.jpg?v=1772085517&width=1400" aria-label="Show image 1"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H9a04d93794ee42db830e7fe78a650e45V.jpg?v=1772085517&width=180" loading="lazy" alt=""></button>
+<button type="button" class="cs-buy__thumb" data-src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H432085ad286f4d83b5fc8b1047881d98E.jpg?v=1772085517&width=1400" aria-label="Show image 2"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H432085ad286f4d83b5fc8b1047881d98E.jpg?v=1772085517&width=180" loading="lazy" alt=""></button>
+<button type="button" class="cs-buy__thumb" data-src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H529886cedefe477ead5030b534adeb30L.jpg?v=1772085517&width=1400" aria-label="Show image 3"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H529886cedefe477ead5030b534adeb30L.jpg?v=1772085517&width=180" loading="lazy" alt=""></button>
+<button type="button" class="cs-buy__thumb" data-src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H208e5ed109684344afd058e5cfb90416V.jpg?v=1772085517&width=1400" aria-label="Show image 4"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H208e5ed109684344afd058e5cfb90416V.jpg?v=1772085517&width=180" loading="lazy" alt=""></button>
+<button type="button" class="cs-buy__thumb" data-src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H2d970eabcf6a4b26b20d101e9eb8f99au.jpg?v=1772085517&width=1400" aria-label="Show image 5"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H2d970eabcf6a4b26b20d101e9eb8f99au.jpg?v=1772085517&width=180" loading="lazy" alt=""></button>
+<button type="button" class="cs-buy__thumb" data-src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/Anti-scratch_Anti-Fingerprint_anti-explosion_HighTransparent_Antishock_FULLGLUE_Dirt-resistant_FULLCOVERAGE_Anti-Oil_Anti-Glare_Waterproof_ULTRA-THIN_BubbleFree_HDCLEAR_Foldable_z.jpg?v=1772085517&width=1400" aria-label="Show image 6"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/Anti-scratch_Anti-Fingerprint_anti-explosion_HighTransparent_Antishock_FULLGLUE_Dirt-resistant_FULLCOVERAGE_Anti-Oil_Anti-Glare_Waterproof_ULTRA-THIN_BubbleFree_HDCLEAR_Foldable_z.jpg?v=1772085517&width=180" loading="lazy" alt=""></button>
+<button type="button" class="cs-buy__thumb" data-src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/71LuQndsOuL._AC_SL1500.jpg?v=1772085517&width=1400" aria-label="Show image 7"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/71LuQndsOuL._AC_SL1500.jpg?v=1772085517&width=180" loading="lazy" alt=""></button>
+<button type="button" class="cs-buy__thumb" data-src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H94e7e0fed4b84e4db92b1e4db2a16cd4H.jpg?v=1772085517&width=1400" aria-label="Show image 8"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/H94e7e0fed4b84e4db92b1e4db2a16cd4H.jpg?v=1772085517&width=180" loading="lazy" alt=""></button></div></div>
+<div class="cs-buy__info">
+<p class="cs-eyebrow">Anti-spy privacy glass</p>
+<h2 class="cs-h2 cs-buy__title">iPhone Privacy Glass with Auto-Align Kit</h2>
+<div class="cs-buy__price" data-cs-price aria-live="polite"><span class="cs-buy__now">Rs.2,799</span></div>
+<div class="cs-buy__text">
+<p>Looks like a normal clear screen when you face it. Tilt it away and it goes dark. Your chats, bank app and photos stay between you and your phone.</p></div>
+<form method="post" action="/cart/add" class="cs-buy__form" data-cs-form>
+<input type="hidden" name="return_to" value="/checkout">
+<label class="cs-buy__label" for="cs-variant-buy">Select your iPhone model</label>
+<div class="cs-buy__selectwrap">
+<select id="cs-variant-buy" name="id" class="cs-buy__select" data-cs-variant>
+<option value="50942574264626" data-price="Rs.2,799" data-compare="" data-save="" data-available="true" selected >iPhone 17 Pro Max · with Camera Protector</option>
+<option value="50942574297394" data-price="Rs.2,799" data-compare="" data-save="" data-available="true" >iPhone 17 Pro</option>
+<option value="50942574330162" data-price="Rs.2,799" data-compare="" data-save="" data-available="true" >iPhone 17 Air</option>
+<option value="50942574362930" data-price="Rs.2,799" data-compare="" data-save="" data-available="true" >iPhone 17</option>
+<option value="49488018833714" data-price="Rs.2,199" data-compare="Rs.3,000" data-save="Rs.801" data-available="true" >iPhone 16 Pro Max</option>
+<option value="49488019685682" data-price="Rs.2,199" data-compare="Rs.3,000" data-save="Rs.801" data-available="true" >iPhone 16 Pro</option>
+<option value="51502849360178" data-price="Rs.2,799" data-compare="" data-save="" data-available="true" >iPhone 16</option>
+<option value="49018087506226" data-price="Rs.1,799" data-compare="" data-save="" data-available="true" >iPhone 15 Pro Max</option>
+<option value="49018087538994" data-price="Rs.1,799" data-compare="" data-save="" data-available="true" >iPhone 15 Pro</option>
+<option value="49018087571762" data-price="Rs.1,799" data-compare="" data-save="" data-available="true" >iPhone 15</option>
+<option value="49018087604530" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 14 Pro Max</option>
+<option value="49018087637298" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 14 Pro</option>
+<option value="49018087670066" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 14</option>
+<option value="49018087702834" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 13 Pro Max</option>
+<option value="49018087735602" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 13 Pro</option>
+<option value="49018087768370" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 13</option>
+<option value="49018087801138" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 12 Pro Max</option>
+<option value="49018087833906" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 12 Pro</option>
+<option value="49018087866674" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 12</option>
+<option value="49018087899442" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 11 Pro Max</option>
+<option value="49018087932210" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 11 Pro</option>
+<option value="49018087964978" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone 11</option>
+<option value="49018087997746" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone Xsmax</option>
+<option value="49018088030514" data-price="Rs.1,699" data-compare="" data-save="" data-available="true" >iPhone X</option></select></div>
+<div class="cs-buy__qtyrow"><span class="cs-buy__label">Quantity</span>
+<div class="cs-buy__qty">
+<button type="button" data-cs-qty="-1" aria-label="Decrease quantity">&minus;</button>
+<input type="number" name="quantity" value="1" min="1" max="20" inputmode="numeric" aria-label="Quantity">
+<button type="button" data-cs-qty="1" aria-label="Increase quantity">+</button></div></div>
+<button type="submit" class="cs-btn cs-buy__order" data-cs-order > Order now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<button type="button" class="cs-btn cs-btn--ghost cs-buy__cart" data-cs-cart >Add to cart</button>
+<p class="cs-buy__micro">Pay cash when it arrives. No advance payment.</p></form>
+<ul class="cs-buy__perks">
+<li ><span class="cs-buy__perkicon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 10v4M18 10v4"/></svg></span><span><strong>Cash on delivery</strong>Check your parcel, then pay the rider.</span></li>
+<li ><span class="cs-buy__perkicon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h14v12H1zM15 9h4l4 4v3h-8z"/><circle cx="6" cy="18.5" r="2"/><circle cx="18" cy="18.5" r="2"/></svg></span><span><strong>Delivered in 2 to 4 days</strong>To your door, anywhere in Pakistan.</span></li>
+<li ><span class="cs-buy__perkicon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10 18h4"/></svg></span><span><strong>Auto-align kit in the box</strong>Wipes, dust stickers and the alignment frame. No shop fitting needed.</span></li></ul></div></div></section>
+<script> (function () { var root = document.querySelector('[data-cs-buy]'); if (!root || root.dataset.ready) return; root.dataset.ready = '1'; var main = root.querySelector('.cs-buy__mainimg'); root.querySelectorAll('.cs-buy__thumb').forEach(function (t) { t.addEventListener('click', function () { if (main) { main.removeAttribute('srcset'); main.src = t.dataset.src; } root.querySelectorAll('.cs-buy__thumb').forEach(function (x) { x.classList.remove('is-active'); }); t.classList.add('is-active'); }); }); var qty = root.querySelector('input[name="quantity"]'); root.querySelectorAll('[data-cs-qty]').forEach(function (b) { b.addEventListener('click', function () { qty.value = Math.min(20, Math.max(1, (parseInt(qty.value, 10) || 1) + parseInt(b.dataset.csQty, 10))); }); }); var sel = root.querySelector('[data-cs-variant]'); var btns = root.querySelectorAll('[data-cs-order],[data-cs-cart]'); if (sel) sel.addEventListener('change', function () { var o = sel.options[sel.selectedIndex]; var html = '<span class="cs-buy__now">' + o.dataset.price + '</span>'; if (o.dataset.compare) html += '<s class="cs-buy__was">' + o.dataset.compare + '</s><span class="cs-buy__tag">Save ' + o.dataset.save + '</span>'; root.querySelector('[data-cs-price]').innerHTML = html; btns.forEach(function (b) { b.disabled = o.dataset.available !== 'true'; }); }); var form = root.querySelector('[data-cs-form]'); var cartBtn = root.querySelector('[data-cs-cart]'); if (form && cartBtn) cartBtn.addEventListener('click', function () { root.classList.add('is-loading'); var fd = new FormData(form); fd.delete('return_to'); fetch('/cart/add.js', { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } }) .then(function () { window.location.href = '/cart'; }) .catch(function () { root.classList.remove('is-loading'); form.submit(); }); }); })(); </script>
+<section class="cs cs--soft cs-feat" aria-label="Privacy you notice. Protection you forget is there.">
+<div class="cs-wrap">
+<div class="cs-head">
+<p class="cs-eyebrow">Why CaseSpot privacy glass</p>
+<h2 class="cs-h2">Privacy you notice. Protection you forget is there.</h2>
+<p class="cs-lead">Cheap privacy glass makes your screen dim and grainy. Ours stays bright and sharp for you, and dark for everyone else.</p></div>
+<div class="cs-feat__grid">
+<article class="cs-feat__card" ><span class="cs-feat__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.9 17.9A10 10 0 0 1 12 20C5 20 1 12 1 12a18 18 0 0 1 5.1-5.9M9.9 4.2A9 9 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.2 3.2M1 1l22 22"/></svg></span>
+<h3 class="cs-h3">Blocks side views</h3>
+<p>Face it and it is clear. Anyone beside you sees a dark screen. Made for buses, offices and queues.</p></article>
+<article class="cs-feat__card" ><span class="cs-feat__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M12 21L8 9l4-6 4 6z"/></svg></span>
+<h3 class="cs-h3">9H tempered glass</h3>
+<p>Takes scratches, keys and drops, so your real screen stays like new.</p></article>
+<article class="cs-feat__card" ><span class="cs-feat__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 0 1 4 0v5M13 10a2 2 0 0 1 4 0v1.5M17 11a2 2 0 0 1 4 0v4a7 7 0 0 1-7 7h-1.5a7 7 0 0 1-5.6-2.8L3.5 15.5a2 2 0 0 1 3-2.6L9 15"/></svg></span>
+<h3 class="cs-h3">Full touch and Face ID</h3>
+<p>Smooth, fast touch. Face ID and the front camera keep working normally.</p></article>
+<article class="cs-feat__card" ><span class="cs-feat__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span>
+<h3 class="cs-h3">HD clear for you</h3>
+<p>Sharp and bright straight on, with anti-glare and anti-fingerprint coating.</p></article></div>
+<div class="cs-feat__row">
+<div class="cs-media cs-feat__img"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/304342cc-570a-4aae-96e4-97e4219b7a3c.png?v=1790175831&width=1400" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/304342cc-570a-4aae-96e4-97e4219b7a3c.png?v=1790175831&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/304342cc-570a-4aae-96e4-97e4219b7a3c.png?v=1790175831&width=1400 1400w" sizes="(min-width: 990px) 50vw, 100vw" loading="lazy" alt="Works without an app or setting"></div>
+<div class="cs-feat__rowcopy">
+<h3 class="cs-h2 cs-feat__rowh">Works without an app or setting</h3>
+<p class="cs-lead">Tiny vertical louvers inside the glass let light go straight to your eyes and block it from the sides. Nothing to switch on. It just works.</p>
+<ul class="cs-feat__chips" aria-label="All features">
+<li>Anti-spy</li>
+<li>9H hardness</li>
+<li>Anti-fingerprint</li>
+<li>Anti-glare</li>
+<li>Shatter resistant</li>
+<li>Shock absorbing</li>
+<li>Full glue</li>
+<li>Full coverage</li>
+<li>Oil resistant</li>
+<li>Dust resistant</li>
+<li>Water resistant</li>
+<li>Ultra-thin</li>
+<li>Bubble free</li>
+<li>HD clear</li></ul></div></div></div></section>
+<section class="cs cs-how" aria-label="On your phone in 60 seconds. No shop visit.">
+<div class="cs-wrap">
+<div class="cs-head">
+<p class="cs-eyebrow">Easy install at home</p>
+<h2 class="cs-h2">On your phone in 60 seconds. No shop visit.</h2>
+<p class="cs-lead">The auto-align kit does the hard part. No bubbles, no dust, no crooked edges.</p></div>
+<div class="cs-how__grid">
+<div class="cs-how__visual">
+<div class="cs-media cs-how__video"><video autoplay muted loop playsinline controls preload="metadata" poster="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/download.jpg?v=1790332381&width=1000"><source src="https://cdn.shopify.com/videos/c/o/v/7ae05c093c9c410c9e74406171d2f828.mp4" type="video/mp4"></video></div></div>
+<ol class="cs-how__steps">
+<li class="cs-how__step" ><span class="cs-how__n" aria-hidden="true">1</span>
+<div>
+<h3 class="cs-h3">Clean the screen</h3>
+<p>Use the wet wipe, then the dry cloth. Lift any last dust with a dust sticker.</p></div></li>
+<li class="cs-how__step" ><span class="cs-how__n" aria-hidden="true">2</span>
+<div>
+<h3 class="cs-h3">Place your iPhone in the kit</h3>
+<p>The frame holds your phone in exactly the right spot. Nothing to line up by eye.</p></div></li>
+<li class="cs-how__step" ><span class="cs-how__n" aria-hidden="true">3</span>
+<div>
+<h3 class="cs-h3">Pull the tab and press</h3>
+<p>The glass drops straight into place. Press from the centre out and you are done.</p></div></li>
+<li class="cs-how__cta"><a class="cs-btn" href="#buy">Order my kit</a></li></ol></div></div></section>
+<section class="cs cs--soft cs-det" aria-label="Everything you want to know before you order">
+<div class="cs-wrap">
+<div class="cs-head">
+<p class="cs-eyebrow">Product details</p>
+<h2 class="cs-h2">Everything you want to know before you order</h2></div>
+<div class="cs-det__grid">
+<div class="cs-det__card">
+<h3 class="cs-h3 cs-det__sub">Specifications</h3>
+<dl class="cs-det__specs">
+<div ><dt>Material</dt><dd>Tempered privacy glass</dd></div>
+<div ><dt>Hardness</dt><dd>9H surface hardness</dd></div>
+<div ><dt>Privacy</dt><dd>Clear straight on, dark from the sides</dd></div>
+<div ><dt>Coverage</dt><dd>Full glue, full screen coverage</dd></div>
+<div ><dt>Coating</dt><dd>Anti-fingerprint, anti-oil, anti-glare</dd></div>
+<div ><dt>Touch and Face ID</dt><dd>Work normally</dd></div>
+<div ><dt>Models</dt><dd>iPhone X to iPhone 17 series</dd></div></dl></div>
+<div class="cs-det__card">
+<div class="cs-media cs-det__img"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/download_2.jpg?v=1790333474&width=1000" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/download_2.jpg?v=1790333474&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/download_2.jpg?v=1790333474&width=1000 1000w" sizes="(min-width: 990px) 40vw, 100vw" loading="lazy" alt="Everything you want to know before you order"></div>
+<h3 class="cs-h3 cs-det__sub">In the box</h3>
+<ul class="cs-checks">
+<li>1 privacy tempered glass for your model</li>
+<li>Auto-align installation kit</li>
+<li>Wet and dry cleaning wipes</li>
+<li>Dust removal stickers</li>
+<li>Step-by-step guide</li></ul></div></div>
+<div class="cs-det__faq">
+<h3 class="cs-h2 cs-det__faqh">Questions people ask</h3>
+<div class="cs-det__faqlist">
+<details class="cs-det__q"  open><summary>Can I really apply it myself without going to a shop?<span class="cs-det__plus" aria-hidden="true"></span></summary>
+<div class="cs-det__a">
+<p>Yes. The kit does the alignment for you. Clean the screen with the wipes, place your iPhone in the frame, pull the tab and press. Most people finish in under a minute.</p></div></details>
+<details class="cs-det__q" ><summary>How does the anti-spy glass work?<span class="cs-det__plus" aria-hidden="true"></span></summary>
+<div class="cs-det__a">
+<p>Tiny louvers inside the glass narrow the viewing angle. Looking straight at the phone, the screen is clear. From the side, it looks dark.</p></div></details>
+<details class="cs-det__q" ><summary>Which iPhone models do you have?<span class="cs-det__plus" aria-hidden="true"></span></summary>
+<div class="cs-det__a">
+<p>iPhone X, XS, XS Max, and every model from iPhone 11 to iPhone 17 Pro Max. Pick yours in the dropdown above so you get the exact fit.</p></div></details>
+<details class="cs-det__q" ><summary>Will Face ID and touch still work?<span class="cs-det__plus" aria-hidden="true"></span></summary>
+<div class="cs-det__a">
+<p>Yes. Touch stays smooth and Face ID works normally once the glass is on.</p></div></details>
+<details class="cs-det__q" ><summary>Will my screen look darker?<span class="cs-det__plus" aria-hidden="true"></span></summary>
+<div class="cs-det__a">
+<p>Straight on, it stays clear. Some people turn brightness up one notch in direct sunlight. Most stop noticing within a day.</p></div></details>
+<details class="cs-det__q" ><summary>How do I pay and how long is delivery?<span class="cs-det__plus" aria-hidden="true"></span></summary>
+<div class="cs-det__a">
+<p>Pay cash when the parcel arrives. Orders are delivered to your door in 2 to 4 days across Pakistan.</p></div></details></div></div>
+<script type="application/ld+json"> { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{ "@type": "Question", "name": "Can I really apply it myself without going to a shop?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The kit does the alignment for you. Clean the screen with the wipes, place your iPhone in the frame, pull the tab and press. Most people finish in under a minute." } },{ "@type": "Question", "name": "How does the anti-spy glass work?", "acceptedAnswer": { "@type": "Answer", "text": "Tiny louvers inside the glass narrow the viewing angle. Looking straight at the phone, the screen is clear. From the side, it looks dark." } },{ "@type": "Question", "name": "Which iPhone models do you have?", "acceptedAnswer": { "@type": "Answer", "text": "iPhone X, XS, XS Max, and every model from iPhone 11 to iPhone 17 Pro Max. Pick yours in the dropdown above so you get the exact fit." } },{ "@type": "Question", "name": "Will Face ID and touch still work?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Touch stays smooth and Face ID works normally once the glass is on." } },{ "@type": "Question", "name": "Will my screen look darker?", "acceptedAnswer": { "@type": "Answer", "text": "Straight on, it stays clear. Some people turn brightness up one notch in direct sunlight. Most stop noticing within a day." } },{ "@type": "Question", "name": "How do I pay and how long is delivery?", "acceptedAnswer": { "@type": "Answer", "text": "Pay cash when the parcel arrives. Orders are delivered to your door in 2 to 4 days across Pakistan." } }] } </script></div></section>
+<section class="cs cs--dark cs-proof" aria-label="Clear for you. Black for everyone else.">
+<div class="cs-wrap">
+<div class="cs-proof__top">
+<div class="cs-media cs-proof__img"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/download_1.jpg?v=1790332908&width=1200" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/download_1.jpg?v=1790332908&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/download_1.jpg?v=1790332908&width=1200 1200w" sizes="(min-width: 990px) 48vw, 100vw" loading="lazy" alt="Clear for you. Black for everyone else."></div>
+<div>
+<p class="cs-eyebrow">See the difference</p>
+<h2 class="cs-h2">Clear for you. Black for everyone else.</h2>
+<p class="cs-lead cs-proof__lead">Same phone, same screen, two angles. Look straight at it and everything is sharp. Anyone looking from the side sees a dark screen.</p>
+<div class="cs-proof__stats">
+<div class="cs-proof__stat" ><strong>9H</strong><span>Surface hardness</span></div>
+<div class="cs-proof__stat" ><strong>110 cm</strong><span>Steel ball drop test</span></div>
+<div class="cs-proof__stat" ><strong>60 sec</strong><span>Typical install time</span></div></div></div></div>
+<div class="cs-proof__compare">
+<h3 class="cs-h2 cs-proof__ch">Why not just get it fitted at a shop?</h3>
+<div class="cs-proof__table" role="table" aria-label="Why not just get it fitted at a shop?">
+<div class="cs-proof__tr cs-proof__tr--head" role="row"><span role="columnheader"></span><span role="columnheader" class="cs-proof__us">CaseSpot kit</span><span role="columnheader">Shop fitting</span></div>
+<div class="cs-proof__tr" role="row" ><span role="rowheader">Where</span><span role="cell" class="cs-proof__us"><i class="cs-yes" aria-hidden="true"></i>At home</span><span role="cell" class="cs-proof__them"><i class="cs-no" aria-hidden="true"></i>Visit a shop</span></div>
+<div class="cs-proof__tr" role="row" ><span role="rowheader">Dust under glass</span><span role="cell" class="cs-proof__us"><i class="cs-yes" aria-hidden="true"></i>Sealed kit, dust free</span><span role="cell" class="cs-proof__them"><i class="cs-no" aria-hidden="true"></i>Common</span></div>
+<div class="cs-proof__tr" role="row" ><span role="rowheader">Alignment</span><span role="cell" class="cs-proof__us"><i class="cs-yes" aria-hidden="true"></i>Frame lines it up</span><span role="cell" class="cs-proof__them"><i class="cs-no" aria-hidden="true"></i>Depends on the fitter</span></div>
+<div class="cs-proof__tr" role="row" ><span role="rowheader">Bubbles</span><span role="cell" class="cs-proof__us"><i class="cs-yes" aria-hidden="true"></i>None</span><span role="cell" class="cs-proof__them"><i class="cs-no" aria-hidden="true"></i>Often</span></div>
+<div class="cs-proof__tr" role="row" ><span role="rowheader">Time</span><span role="cell" class="cs-proof__us"><i class="cs-yes" aria-hidden="true"></i>Under 1 minute</span><span role="cell" class="cs-proof__them"><i class="cs-no" aria-hidden="true"></i>Travel and waiting</span></div>
+<div class="cs-proof__tr" role="row" ><span role="rowheader">Delivery</span><span role="cell" class="cs-proof__us"><i class="cs-yes" aria-hidden="true"></i>To your door</span><span role="cell" class="cs-proof__them"><i class="cs-no" aria-hidden="true"></i>You go to them</span></div></div></div>
+<div class="cs-proof__shots">
+<h3 class="cs-h3 cs-proof__sh">Up close</h3>
+<div class="cs-proof__rail">
+<div class="cs-media cs-proof__shot" ><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/4f7dced5-0971-4aba-87c4-6a827fee6961.png?v=1790418490&width=800" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/4f7dced5-0971-4aba-87c4-6a827fee6961.png?v=1790418490&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/4f7dced5-0971-4aba-87c4-6a827fee6961.png?v=1790418490&width=800 800w" sizes="(min-width: 990px) 25vw, 70vw" loading="lazy" alt="CaseSpot privacy glass photo"></div>
+<div class="cs-media cs-proof__shot" ><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/54471468-a3bc-4941-ad4d-fc3a8ede3d8f.png?v=1790418356&width=800" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/54471468-a3bc-4941-ad4d-fc3a8ede3d8f.png?v=1790418356&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/54471468-a3bc-4941-ad4d-fc3a8ede3d8f.png?v=1790418356&width=800 800w" sizes="(min-width: 990px) 25vw, 70vw" loading="lazy" alt="CaseSpot privacy glass photo"></div>
+<div class="cs-media cs-proof__shot" ><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/a853150c-5a3f-4ac6-ab95-c8bffb3c6690.png?v=1790418128&width=800" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/a853150c-5a3f-4ac6-ab95-c8bffb3c6690.png?v=1790418128&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/a853150c-5a3f-4ac6-ab95-c8bffb3c6690.png?v=1790418128&width=800 800w" sizes="(min-width: 990px) 25vw, 70vw" loading="lazy" alt="CaseSpot privacy glass photo"></div>
+<div class="cs-media cs-proof__shot" ><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/ade7763c-b014-4878-afc2-5544fcdb7808.png?v=1790417931&width=800" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/ade7763c-b014-4878-afc2-5544fcdb7808.png?v=1790417931&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/ade7763c-b014-4878-afc2-5544fcdb7808.png?v=1790417931&width=800 800w" sizes="(min-width: 990px) 25vw, 70vw" loading="lazy" alt="CaseSpot privacy glass photo"></div>
+<div class="cs-media cs-proof__shot" ><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/c03eec14-6863-430b-b2c0-558756b4ab33.png?v=1790417426&width=800" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/c03eec14-6863-430b-b2c0-558756b4ab33.png?v=1790417426&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/c03eec14-6863-430b-b2c0-558756b4ab33.png?v=1790417426&width=800 800w" sizes="(min-width: 990px) 25vw, 70vw" loading="lazy" alt="CaseSpot privacy glass photo"></div>
+<div class="cs-media cs-proof__shot" ><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/71LuQndsOuL._AC_SL1500.jpg?v=1772085517&width=800" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/71LuQndsOuL._AC_SL1500.jpg?v=1772085517&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/71LuQndsOuL._AC_SL1500.jpg?v=1772085517&width=800 800w" sizes="(min-width: 990px) 25vw, 70vw" loading="lazy" alt="CaseSpot privacy glass photo"></div></div></div></div></section>
+<section class="cs cs-cta" aria-label="Stop tilting your phone away from people.">
+<div class="cs-wrap">
+<div class="cs-cta__box">
+<div class="cs-cta__copy">
+<h2 class="cs-h2">Stop tilting your phone away from people.</h2>
+<p class="cs-lead cs-cta__lead">Chat, bank and scroll in public without checking who is looking. One minute to install. Pay when it arrives.</p>
+<div class="cs-cta__actions"><a class="cs-btn" href="#buy"> Order now, pay on delivery <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><span class="cs-cta__price">From <strong>Rs.1,699</strong></span></div></div>
+<div class="cs-media cs-cta__img"><img src="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/b6b8de19-9782-4b22-996d-d96234a27b6a.png?v=1790261971&width=1200" srcset="https://cdn.shopify.com/s/files/1/0681/6517/3554/files/b6b8de19-9782-4b22-996d-d96234a27b6a.png?v=1790261971&width=600 600w, https://cdn.shopify.com/s/files/1/0681/6517/3554/files/b6b8de19-9782-4b22-996d-d96234a27b6a.png?v=1790261971&width=1200 1200w" sizes="(min-width: 990px) 42vw, 100vw" loading="lazy" alt="Stop tilting your phone away from people."></div></div>
+<ul class="cs-cta__trust">
+<li><span class="cs-cta__ticon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg></span><span><strong>Cash on delivery</strong>No advance payment</span></li>
+<li><span class="cs-cta__ticon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h14v12H1zM15 9h4l4 4v3h-8z"/><circle cx="6" cy="18.5" r="2"/><circle cx="18" cy="18.5" r="2"/></svg></span><span><strong>2 to 4 day delivery</strong>All over Pakistan</span></li>
+<li><span class="cs-cta__ticon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span><strong>Right fit, every model</strong>iPhone X to iPhone 17</span></li>
+<li><span class="cs-cta__ticon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span><strong>WhatsApp support</strong>Real people, quick replies</span></li></ul></div></section>
+<div class="cs cs-sticky" data-cs-sticky aria-hidden="true">
+<div class="cs-sticky__in"><span class="cs-sticky__txt"><strong>iPhone Privacy Glass</strong><span>From Rs.1,699 &middot; Cash on delivery</span></span><a class="cs-btn" href="#buy" tabindex="-1">Order now</a></div></div>
+<script> (function () { var bar = document.querySelector('[data-cs-sticky]'); var buy = document.getElementById('buy'); if (!bar || !buy || !('IntersectionObserver' in window)) return; var hero = document.querySelector('.cs-hero'); var seen = { hero: true, buy: false }; function update() { var on = !seen.hero && !seen.buy; bar.classList.toggle('is-on', on); bar.setAttribute('aria-hidden', on ? 'false' : 'true'); bar.querySelector('a').tabIndex = on ? 0 : -1; } var io = new IntersectionObserver(function (entries) { entries.forEach(function (e) { seen[e.target === buy ? 'buy' : 'hero'] = e.isIntersecting; }); update(); }); io.observe(buy); if (hero) io.observe(hero); else seen.hero = false; })(); </script></div>
+<script>(function(){fetch('/products/iphone-privacy-anti-spy-glass-screen-protector-with-applying-kit.js').then(function(r){return r.json()}).then(function(p){var f=function(c){return 'Rs.'+Math.round(c/100).toLocaleString('en-US')};var sel=document.querySelector('[data-cs-variant]');if(!sel)return;p.variants.forEach(function(v){var o=sel.querySelector('option[value="'+v.id+'"]');if(!o)return;o.dataset.price=f(v.price);o.dataset.compare=v.compare_at_price>v.price?f(v.compare_at_price):'';o.dataset.save=v.compare_at_price>v.price?f(v.compare_at_price-v.price):'';o.dataset.available=String(v.available);o.disabled=!v.available;});sel.dispatchEvent(new Event('change'));document.querySelectorAll('.cs-hero__price strong,.cs-cta__price strong').forEach(function(e){e.textContent=f(p.price_min)});}).catch(function(){})})();</script>
