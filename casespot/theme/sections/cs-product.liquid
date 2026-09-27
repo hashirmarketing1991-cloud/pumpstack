@@ -1,26 +1,29 @@
 {{ 'cs-privacy.css' | asset_url | stylesheet_tag }}
 
-{%- assign p = section.settings.product -%}
-{%- assign v = p.selected_or_first_available_variant -%}
-<section id="buy" class="cs cs-buy" aria-label="{{ p.title | default: 'Product' | escape }}">
+{%- liquid
+  assign p = section.settings.product
+  assign v = p.selected_or_first_available_variant
+-%}
+<section id="buy" class="cs cs-buy" aria-label="{{ p.title | default: 'Product' | escape }}" data-cs-buy>
   <div class="cs-wrap cs-buy__grid">
-    <div class="cs-buy__gallery" data-cs-gallery>
+    <div class="cs-buy__gallery">
       <div class="cs-media cs-buy__main">
         {%- if p.featured_media -%}
           {{ p.featured_media | image_url: width: 1400 | image_tag:
-            sizes: '(min-width: 990px) 50vw, 100vw', widths: '500, 800, 1100, 1400',
+            sizes: '(min-width: 990px) 52vw, 100vw', widths: '500, 800, 1100, 1400',
             class: 'cs-buy__mainimg', alt: p.title }}
         {%- else -%}
-          <div class="cs-placeholder">{{ 'product-1' | placeholder_svg_tag }}</div>
+          {{ 'product-1' | placeholder_svg_tag: 'cs-ph' }}
         {%- endif -%}
+        {%- if section.settings.image_badge != blank -%}<span class="cs-buy__imgbadge">{{ section.settings.image_badge }}</span>{%- endif -%}
       </div>
       {%- if p.media.size > 1 -%}
-        <div class="cs-buy__thumbs" role="list">
-          {%- for m in p.media limit: 8 -%}
+        <div class="cs-buy__thumbs">
+          {%- for m in p.media limit: 10 -%}
             {%- if m.media_type == 'image' -%}
-              <button type="button" class="cs-buy__thumb{% if forloop.first %} is-active{% endif %}" role="listitem"
+              <button type="button" class="cs-buy__thumb{% if forloop.first %} is-active{% endif %}"
                 data-src="{{ m | image_url: width: 1400 }}" aria-label="Show image {{ forloop.index }}">
-                {{ m | image_url: width: 160 | image_tag: loading: 'lazy', alt: m.alt | default: p.title }}
+                {{ m | image_url: width: 180 | image_tag: loading: 'lazy', alt: '' }}
               </button>
             {%- endif -%}
           {%- endfor -%}
@@ -30,58 +33,76 @@
 
     <div class="cs-buy__info">
       {%- if section.settings.eyebrow != blank -%}<p class="cs-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
-      <h2 class="cs-h2">{{ section.settings.heading | default: p.title }}</h2>
+      <h2 class="cs-h2 cs-buy__title">{{ section.settings.heading | default: p.title }}</h2>
 
-      <div class="cs-buy__price" data-cs-price>
-        <span class="cs-buy__now">{{ v.price | default: 0 | money }}</span>
+      <div class="cs-buy__price" data-cs-price aria-live="polite">
+        <span class="cs-buy__now">{{ v.price | default: 0 | money_without_trailing_zeros }}</span>
         {%- if v.compare_at_price > v.price -%}
-          <s class="cs-buy__was">{{ v.compare_at_price | money }}</s>
-          <span class="cs-buy__tag">Save {{ v.compare_at_price | minus: v.price | times: 100 | divided_by: v.compare_at_price }}%</span>
+          <s class="cs-buy__was">{{ v.compare_at_price | money_without_trailing_zeros }}</s>
+          <span class="cs-buy__tag">Save {{ v.compare_at_price | minus: v.price | money_without_trailing_zeros }}</span>
         {%- endif -%}
       </div>
 
       {%- if section.settings.text != blank -%}<div class="cs-buy__text">{{ section.settings.text }}</div>{%- endif -%}
 
       {%- if p != blank -%}
-        {%- form 'product', p, class: 'cs-buy__form', data-cs-form: '' -%}
+        <form method="post" action="{{ routes.cart_add_url }}" class="cs-buy__form" data-cs-form>
+          <input type="hidden" name="return_to" value="/checkout">
           {%- unless p.has_only_default_variant -%}
             <label class="cs-buy__label" for="cs-variant-{{ section.id }}">{{ section.settings.variant_label }}</label>
-            <select id="cs-variant-{{ section.id }}" name="id" class="cs-buy__select" data-cs-variant>
-              {%- for variant in p.variants -%}
-                <option value="{{ variant.id }}"
-                  data-price="{{ variant.price | money }}"
-                  data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money }}{% endif %}"
-                  data-save="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | minus: variant.price | times: 100 | divided_by: variant.compare_at_price }}{% endif %}"
-                  {% if variant == v %}selected{% endif %}
-                  {% unless variant.available %}disabled{% endunless %}>
-                  {{ variant.title }}{% unless variant.available %} (sold out){% endunless %}
-                </option>
-              {%- endfor -%}
-            </select>
+            <div class="cs-buy__selectwrap">
+              <select id="cs-variant-{{ section.id }}" name="id" class="cs-buy__select" data-cs-variant>
+                {%- for variant in p.variants -%}
+                  <option value="{{ variant.id }}"
+                    data-price="{{ variant.price | money_without_trailing_zeros }}"
+                    data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money_without_trailing_zeros }}{% endif %}"
+                    data-save="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | minus: variant.price | money_without_trailing_zeros }}{% endif %}"
+                    data-available="{{ variant.available }}"
+                    {% if variant.id == v.id %}selected{% endif %}
+                    {% unless variant.available %}disabled{% endunless %}>
+                    {{- variant.title | replace: ' / ', ' · ' }}{% unless variant.available %} (sold out){% endunless -%}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
           {%- else -%}
             <input type="hidden" name="id" value="{{ v.id }}">
           {%- endunless -%}
 
-          <div class="cs-buy__row">
+          <div class="cs-buy__qtyrow">
+            <span class="cs-buy__label">Quantity</span>
             <div class="cs-buy__qty">
               <button type="button" data-cs-qty="-1" aria-label="Decrease quantity">&minus;</button>
-              <input type="number" name="quantity" value="1" min="1" aria-label="Quantity">
+              <input type="number" name="quantity" value="1" min="1" max="20" inputmode="numeric" aria-label="Quantity">
               <button type="button" data-cs-qty="1" aria-label="Increase quantity">+</button>
             </div>
-            <button type="submit" class="cs-btn cs-buy__add" {% unless v.available %}disabled{% endunless %}>
-              {%- if v.available -%}{{ section.settings.button_label }}{%- else -%}Sold out{%- endif -%}
-            </button>
           </div>
-          {%- if section.settings.show_dynamic_checkout -%}{{ form | payment_button }}{%- endif -%}
-        {%- endform -%}
+
+          <button type="submit" class="cs-btn cs-buy__order" data-cs-order {% unless v.available %}disabled{% endunless %}>
+            {{ section.settings.button_label }}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <button type="button" class="cs-btn cs-btn--ghost cs-buy__cart" data-cs-cart {% unless v.available %}disabled{% endunless %}>{{ section.settings.cart_label }}</button>
+          {%- if section.settings.microcopy != blank -%}<p class="cs-buy__micro">{{ section.settings.microcopy }}</p>{%- endif -%}
+        </form>
       {%- else -%}
-        <p class="cs-small">Pick your privacy glass product in the section settings to turn on the buy box.</p>
+        <p class="cs-buy__text">Pick the privacy glass product in this section's settings.</p>
       {%- endif -%}
 
       {%- if section.blocks.size > 0 -%}
         <ul class="cs-buy__perks">
           {%- for block in section.blocks -%}
-            <li {{ block.shopify_attributes }}><strong>{{ block.settings.title }}</strong><span>{{ block.settings.text }}</span></li>
+            <li {{ block.shopify_attributes }}>
+              <span class="cs-buy__perkicon" aria-hidden="true">
+                {%- case block.settings.icon -%}
+                  {%- when 'cash' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 10v4M18 10v4"/></svg>
+                  {%- when 'truck' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h14v12H1zM15 9h4l4 4v3h-8z"/><circle cx="6" cy="18.5" r="2"/><circle cx="18" cy="18.5" r="2"/></svg>
+                  {%- when 'kit' -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10 18h4"/></svg>
+                  {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                {%- endcase -%}
+              </span>
+              <span><strong>{{ block.settings.title }}</strong>{{ block.settings.text }}</span>
+            </li>
           {%- endfor -%}
         </ul>
       {%- endif -%}
@@ -90,37 +111,56 @@
 </section>
 
 <style>
-  .cs-buy__grid { display: grid; gap: 36px; align-items: start; }
-  .cs-buy__main { aspect-ratio: 1 / 1; }
-  .cs-buy__thumbs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 12px; }
-  .cs-buy__thumb { padding: 0; border: 2px solid transparent; border-radius: 12px; overflow: hidden; background: var(--cs-soft); cursor: pointer; aspect-ratio: 1; }
-  .cs-buy__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .cs-buy__thumb.is-active { border-color: var(--cs-accent); }
-  .cs-buy__price { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0 0 18px; }
-  .cs-buy__now { font-size: 30px; font-weight: 900; color: var(--cs-ink); }
-  .cs-buy__was { font-size: 18px; color: var(--cs-muted); }
-  .cs-buy__tag { padding: 5px 11px; border-radius: 99px; background: #e8fff9; color: #007a61; font-size: 13px; font-weight: 800; }
-  .cs-buy__text { margin: 0 0 22px; }
-  .cs-buy__text p { margin: 0 0 10px; }
-  .cs-buy__label { display: block; margin: 0 0 8px; font-weight: 800; color: var(--cs-ink); font-size: 14px; }
-  .cs-buy__select { width: 100%; min-height: 54px; margin: 0 0 16px; padding: 0 16px; border: 2px solid var(--cs-line); border-radius: 14px; background: #fff; font: inherit; font-weight: 700; color: var(--cs-ink); }
-  .cs-buy__row { display: flex; gap: 12px; margin: 0 0 12px; }
-  .cs-buy__qty { display: flex; align-items: center; border: 2px solid var(--cs-line); border-radius: 999px; overflow: hidden; flex: 0 0 auto; }
-  .cs-buy__qty button { width: 44px; height: 52px; border: 0; background: none; font-size: 20px; cursor: pointer; color: var(--cs-ink); }
-  .cs-buy__qty input { width: 40px; border: 0; text-align: center; font: inherit; font-weight: 800; -moz-appearance: textfield; background: none; color: var(--cs-ink); }
-  .cs-buy__qty input::-webkit-inner-spin-button { -webkit-appearance: none; }
-  .cs-buy__add { flex: 1; }
-  .cs-buy__perks { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 12px; }
-  .cs-buy__perks li { display: grid; gap: 2px; padding: 14px 16px; border-radius: 14px; background: var(--cs-soft); font-size: 14px; }
-  .cs-buy__perks strong { color: var(--cs-ink); }
-  @media (min-width: 990px) { .cs-buy__grid { grid-template-columns: 1.05fr .95fr; gap: 64px; } .cs-buy__info { position: sticky; top: 90px; } }
-  @media (max-width: 749px) { .cs-buy__row { flex-direction: row; } .cs-buy__add { width: auto; } }
+  html .cs-buy__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; align-items: start; }
+  html .cs-buy__main { aspect-ratio: 1 / 1; background: #f3f2ef; }
+  html .cs-buy__main .cs-ph { width: 100%; height: 100%; }
+  html .cs-buy__imgbadge { position: absolute; left: 16px; top: 16px; padding: 8px 14px; border-radius: 999px; background: var(--cs-ink); color: #fff; font-size: 13px; font-weight: 700; line-height: 1; }
+  html .cs-buy__thumbs { display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  html .cs-buy__thumbs::-webkit-scrollbar { display: none; }
+  html .cs .cs-buy__thumb { flex: 0 0 76px; height: 76px; padding: 0; border: 2px solid transparent; border-radius: 12px; overflow: hidden; background: #f3f2ef; cursor: pointer; transition: border-color .15s; }
+  html .cs-buy__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  html .cs .cs-buy__thumb.is-active, html .cs .cs-buy__thumb:hover { border-color: var(--cs-accent); }
+  html .cs-buy__title { font-size: clamp(28px, 3.2vw, 38px); }
+  html .cs-buy__price { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 18px 0 20px; }
+  html .cs-buy__now { font-size: 32px; line-height: 1; font-weight: 800; color: var(--cs-ink); letter-spacing: -.02em; }
+  html .cs-buy__was { font-size: 19px; color: var(--cs-muted); }
+  html .cs-buy__tag { padding: 6px 12px; border-radius: 999px; background: #fdeee8; color: var(--cs-accent-dark); font-size: 13px; font-weight: 700; line-height: 1; }
+  html .cs-buy__text { margin: 0 0 26px; color: var(--cs-text); }
+  html .cs-buy__text p + p { margin-top: 10px; }
+  html .cs-buy__form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  html .cs-buy__label { display: block; margin: 0 0 8px; font-size: 14px; font-weight: 700; color: var(--cs-ink); }
+  html .cs-buy__selectwrap { position: relative; margin-bottom: 6px; }
+  html .cs-buy__selectwrap::after { content: ""; position: absolute; right: 20px; top: 50%; width: 9px; height: 9px; border-right: 2px solid var(--cs-ink); border-bottom: 2px solid var(--cs-ink); transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+  html .cs .cs-buy__select { display: block; width: 100%; height: 58px; margin: 0; padding: 0 48px 0 18px; border: 1.5px solid #d9d6cf; border-radius: var(--cs-radius-sm); background: #fff; color: var(--cs-ink); font-family: var(--cs-font); font-size: 16px; font-weight: 600; letter-spacing: 0; cursor: pointer; -webkit-appearance: none; appearance: none; transition: border-color .15s; }
+  html .cs .cs-buy__select:hover, html .cs .cs-buy__select:focus { border-color: var(--cs-ink); outline: none; }
+  html .cs-buy__qtyrow { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+  html .cs-buy__qtyrow .cs-buy__label { margin: 0; }
+  html .cs-buy__qty { display: inline-flex; align-items: center; height: 48px; border: 1.5px solid #d9d6cf; border-radius: 999px; overflow: hidden; background: #fff; }
+  html .cs .cs-buy__qty button { width: 46px; height: 100%; padding: 0; border: 0; background: none; color: var(--cs-ink); font-size: 20px; line-height: 1; cursor: pointer; }
+  html .cs .cs-buy__qty button:hover { background: var(--cs-soft); }
+  html .cs .cs-buy__qty input { width: 40px; height: 100%; padding: 0; border: 0; background: none; color: var(--cs-ink); font-family: var(--cs-font); font-size: 16px; font-weight: 700; text-align: center; -moz-appearance: textfield; box-shadow: none; }
+  html .cs .cs-buy__qty input::-webkit-inner-spin-button, html .cs .cs-buy__qty input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  html .cs .cs-buy__order, html .cs .cs-buy__cart { width: 100%; }
+  html .cs-buy__micro { text-align: center; font-size: 13px; color: var(--cs-muted); }
+  html .cs-buy__perks { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 10px; }
+  html .cs-buy__perks li { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: var(--cs-radius-sm); background: var(--cs-soft); font-size: 14px; line-height: 1.45; }
+  html .cs-buy__perks strong { display: block; margin-bottom: 2px; color: var(--cs-ink); font-size: 15px; }
+  html .cs-buy__perkicon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: #fff; color: var(--cs-accent); flex: none; }
+  html .cs-buy__perkicon svg { width: 20px; height: 20px; }
+  html .cs-buy.is-loading .cs-buy__order, html .cs-buy.is-loading .cs-buy__cart { opacity: .6; pointer-events: none; }
+  @media (max-width: 749px) { html .cs .cs-buy__select { font-size: 15px; padding-left: 16px; } }
+  @media (min-width: 990px) {
+    html .cs-buy__grid { grid-template-columns: 1.08fr .92fr; gap: 72px; }
+    html .cs-buy__info { position: sticky; top: 100px; }
+    html .cs .cs-buy__thumb { flex-basis: 84px; height: 84px; }
+  }
 </style>
 
 <script>
   (function () {
-    var root = document.getElementById('buy');
-    if (!root) return;
+    var root = document.querySelector('[data-cs-buy]');
+    if (!root || root.dataset.ready) return;
+    root.dataset.ready = '1';
     var main = root.querySelector('.cs-buy__mainimg');
     root.querySelectorAll('.cs-buy__thumb').forEach(function (t) {
       t.addEventListener('click', function () {
@@ -129,18 +169,29 @@
         t.classList.add('is-active');
       });
     });
+    var qty = root.querySelector('input[name="quantity"]');
     root.querySelectorAll('[data-cs-qty]').forEach(function (b) {
       b.addEventListener('click', function () {
-        var input = root.querySelector('input[name="quantity"]');
-        input.value = Math.max(1, (parseInt(input.value, 10) || 1) + parseInt(b.dataset.csQty, 10));
+        qty.value = Math.min(20, Math.max(1, (parseInt(qty.value, 10) || 1) + parseInt(b.dataset.csQty, 10)));
       });
     });
     var sel = root.querySelector('[data-cs-variant]');
+    var btns = root.querySelectorAll('[data-cs-order],[data-cs-cart]');
     if (sel) sel.addEventListener('change', function () {
       var o = sel.options[sel.selectedIndex];
       var html = '<span class="cs-buy__now">' + o.dataset.price + '</span>';
-      if (o.dataset.compare) html += '<s class="cs-buy__was">' + o.dataset.compare + '</s><span class="cs-buy__tag">Save ' + o.dataset.save + '%</span>';
+      if (o.dataset.compare) html += '<s class="cs-buy__was">' + o.dataset.compare + '</s><span class="cs-buy__tag">Save ' + o.dataset.save + '</span>';
       root.querySelector('[data-cs-price]').innerHTML = html;
+      btns.forEach(function (b) { b.disabled = o.dataset.available !== 'true'; });
+    });
+    var form = root.querySelector('[data-cs-form]');
+    var cartBtn = root.querySelector('[data-cs-cart]');
+    if (form && cartBtn) cartBtn.addEventListener('click', function () {
+      root.classList.add('is-loading');
+      var fd = new FormData(form); fd.delete('return_to');
+      fetch('{{ routes.cart_add_url }}.js', { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } })
+        .then(function () { window.location.href = '{{ routes.cart_url }}'; })
+        .catch(function () { root.classList.remove('is-loading'); form.submit(); });
     });
   })();
 </script>
@@ -152,18 +203,21 @@
   "settings": [
     { "type": "product", "id": "product", "label": "Product" },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Anti-spy privacy glass" },
-    { "type": "text", "id": "heading", "label": "Heading", "info": "Leave blank to use the product title.", "default": "Privacy Anti-Spy Glass Screen Protector" },
-    { "type": "richtext", "id": "text", "label": "Short description", "default": "<p>Looks like a normal clear screen when you face it. Tilt it away and it goes black. Your texts, bank app and work email stay between you and your phone.</p>" },
-    { "type": "text", "id": "variant_label", "label": "Variant label", "default": "Choose your iPhone model" },
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "Add to cart" },
-    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show Shop Pay / Buy it now", "default": true }
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Leave blank to use the product title.", "default": "iPhone Privacy Glass with Auto-Align Kit" },
+    { "type": "text", "id": "image_badge", "label": "Image badge", "default": "Kit included" },
+    { "type": "richtext", "id": "text", "label": "Short description", "default": "<p>Looks like a normal clear screen when you face it. Tilt it away and it goes black. Your chats, bank app and photos stay between you and your phone.</p>" },
+    { "type": "text", "id": "variant_label", "label": "Variant label", "default": "Select your iPhone model" },
+    { "type": "text", "id": "button_label", "label": "Main button", "default": "Order now" },
+    { "type": "text", "id": "cart_label", "label": "Second button", "default": "Add to cart" },
+    { "type": "text", "id": "microcopy", "label": "Text under buttons", "default": "Pay cash when it arrives. No advance payment." }
   ],
   "blocks": [
     {
       "type": "perk", "name": "Perk",
       "settings": [
-        { "type": "text", "id": "title", "label": "Title", "default": "Free auto-align kit" },
-        { "type": "text", "id": "text", "label": "Text", "default": "Frame, wipes and dust stickers included." }
+        { "type": "select", "id": "icon", "label": "Icon", "default": "shield", "options": [ { "value": "shield", "label": "Shield" }, { "value": "cash", "label": "Cash" }, { "value": "truck", "label": "Delivery" }, { "value": "kit", "label": "Phone" } ] },
+        { "type": "text", "id": "title", "label": "Title", "default": "Cash on delivery" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Pay when it arrives." }
       ]
     }
   ],
@@ -171,9 +225,9 @@
     {
       "name": "CS Product buy box",
       "blocks": [
-        { "type": "perk", "settings": { "title": "Auto-align kit in the box", "text": "The frame lines it up for you. Straight and bubble free on the first try." } },
-        { "type": "perk", "settings": { "title": "Case friendly", "text": "Edges stop just short of the curve, so it works with almost every case." } },
-        { "type": "perk", "settings": { "title": "30-day returns", "text": "Not happy with it? Send it back within 30 days." } }
+        { "type": "perk", "settings": { "icon": "cash", "title": "Cash on delivery", "text": "Check your parcel, then pay the rider." } },
+        { "type": "perk", "settings": { "icon": "truck", "title": "Delivered in 2 to 4 days", "text": "To your door, anywhere in Pakistan." } },
+        { "type": "perk", "settings": { "icon": "kit", "title": "Auto-align kit in the box", "text": "Wipes, dust stickers and the alignment frame. No shop fitting needed." } }
       ]
     }
   ]

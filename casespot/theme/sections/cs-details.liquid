@@ -1,108 +1,118 @@
 {{ 'cs-privacy.css' | asset_url | stylesheet_tag }}
 
-<section class="cs cs--soft cs-det" aria-label="{{ section.settings.heading | escape }}">
-  <div class="cs-wrap cs-det__grid">
-    <div>
+{%- liquid
+  assign specs = section.blocks | where: 'type', 'spec'
+  assign faqs = section.blocks | where: 'type', 'faq'
+  assign img_alt = section.settings.heading | escape
+-%}
+<section class="cs cs--soft cs-det" aria-label="{{ img_alt }}">
+  <div class="cs-wrap">
+    <div class="cs-head">
       {%- if section.settings.eyebrow != blank -%}<p class="cs-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
       <h2 class="cs-h2">{{ section.settings.heading }}</h2>
-      {%- if section.settings.image -%}
-        <div class="cs-media cs-det__img">
-          {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 45vw, 100vw', widths: '500, 800, 1200', alt: section.settings.heading }}
-        </div>
-      {%- endif -%}
-      {%- if section.settings.in_box != blank -%}
-        <h3 class="cs-h3 cs-det__boxh">In the box</h3>
-        <ul class="cs-checks">
-          {%- assign items = section.settings.in_box | newline_to_br | split: '<br />' -%}
-          {%- for i in items -%}{%- assign t = i | strip -%}{%- if t != blank -%}<li>{{ t }}</li>{%- endif -%}{%- endfor -%}
-        </ul>
-      {%- endif -%}
     </div>
 
-    <div>
-      <table class="cs-det__table">
-        <tbody>
-          {%- for block in section.blocks -%}
-            <tr {{ block.shopify_attributes }}><th scope="row">{{ block.settings.label }}</th><td>{{ block.settings.value }}</td></tr>
+    <div class="cs-det__grid">
+      <div class="cs-det__card">
+        <h3 class="cs-h3 cs-det__sub">Specifications</h3>
+        <dl class="cs-det__specs">
+          {%- for block in specs -%}
+            <div {{ block.shopify_attributes }}><dt>{{ block.settings.label }}</dt><dd>{{ block.settings.value }}</dd></div>
           {%- endfor -%}
-        </tbody>
-      </table>
+        </dl>
+      </div>
 
-      {%- if section.settings.faq_1_q != blank or section.settings.faq_2_q != blank or section.settings.faq_3_q != blank -%}
-        <div class="cs-det__faq">
-          {%- for i in (1..3) -%}
-            {%- capture qk %}faq_{{ i }}_q{% endcapture -%}
-            {%- capture ak %}faq_{{ i }}_a{% endcapture -%}
-            {%- if section.settings[qk] != blank -%}
-              <details class="cs-det__q"{% if forloop.first %} open{% endif %}>
-                <summary>{{ section.settings[qk] }}</summary>
-                <div>{{ section.settings[ak] }}</div>
-              </details>
-            {%- endif -%}
+      <div class="cs-det__card">
+        {%- if section.settings.image -%}
+          <div class="cs-media cs-det__img">
+            {{ section.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 40vw, 100vw', widths: '400, 700, 1000', alt: img_alt }}
+          </div>
+        {%- endif -%}
+        <h3 class="cs-h3 cs-det__sub">In the box</h3>
+        {%- if section.settings.in_box != blank -%}
+          <ul class="cs-checks">
+            {%- assign items = section.settings.in_box | newline_to_br | split: '<br />' -%}
+            {%- for i in items -%}{%- assign t = i | strip -%}{%- if t != blank -%}<li>{{ t }}</li>{%- endif -%}{%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if faqs.size > 0 -%}
+      <div class="cs-det__faq">
+        <h3 class="cs-h2 cs-det__faqh">{{ section.settings.faq_heading }}</h3>
+        <div class="cs-det__faqlist">
+          {%- for block in faqs -%}
+            <details class="cs-det__q" {{ block.shopify_attributes }}{% if forloop.first %} open{% endif %}>
+              <summary>{{ block.settings.question }}<span class="cs-det__plus" aria-hidden="true"></span></summary>
+              <div class="cs-det__a">{{ block.settings.answer }}</div>
+            </details>
           {%- endfor -%}
         </div>
-      {%- endif -%}
-    </div>
+      </div>
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {%- for block in faqs -%}
+              { "@type": "Question", "name": {{ block.settings.question | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.answer | strip_html | json }} } }{% unless forloop.last %},{% endunless %}
+            {%- endfor -%}
+          ]
+        }
+      </script>
+    {%- endif -%}
   </div>
 </section>
 
 <style>
-  .cs-det__grid { display: grid; gap: 36px; }
-  .cs-det__img { aspect-ratio: 4 / 3; margin: 10px 0 28px; }
-  .cs-det__boxh { margin-top: 8px; margin-bottom: 14px; }
-  .cs-det__table { width: 100%; border-collapse: collapse; background: #fff; border-radius: var(--cs-radius); overflow: hidden; box-shadow: var(--cs-shadow); font-size: 15px; }
-  .cs-det__table th, .cs-det__table td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--cs-line); vertical-align: top; }
-  .cs-det__table tr:last-child th, .cs-det__table tr:last-child td { border-bottom: 0; }
-  .cs-det__table th { width: 42%; color: var(--cs-ink); font-weight: 800; }
-  .cs-det__faq { display: grid; gap: 10px; margin-top: 24px; }
-  .cs-det__q { background: #fff; border-radius: 14px; box-shadow: var(--cs-shadow); }
-  .cs-det__q summary { list-style: none; cursor: pointer; padding: 18px 50px 18px 20px; font-weight: 800; color: var(--cs-ink); position: relative; }
-  .cs-det__q summary::-webkit-details-marker { display: none; }
-  .cs-det__q summary::after { content: "+"; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 22px; color: var(--cs-accent); transition: transform .2s; }
-  .cs-det__q[open] summary::after { transform: translateY(-50%) rotate(45deg); }
-  .cs-det__q > div { padding: 0 20px 18px; font-size: 15px; }
-  .cs-det__q > div p { margin: 0; }
-  @media (min-width: 990px) { .cs-det__grid { grid-template-columns: .9fr 1.1fr; gap: 64px; } }
+  html .cs-det__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  html .cs-det__card { padding: 30px 28px; border-radius: var(--cs-radius); background: #fff; box-shadow: var(--cs-shadow); }
+  html .cs .cs-det__sub { margin-bottom: 18px; }
+  html .cs-det__img { aspect-ratio: 4 / 3; margin-bottom: 26px; }
+  html .cs-det__specs { margin: 0; }
+  html .cs-det__specs > div { display: grid; grid-template-columns: 42% 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--cs-line); font-size: 15px; line-height: 1.45; }
+  html .cs-det__specs > div:first-child { padding-top: 0; }
+  html .cs-det__specs > div:last-child { border-bottom: 0; padding-bottom: 0; }
+  html .cs-det__specs dt { font-weight: 700; color: var(--cs-ink); }
+  html .cs-det__specs dd { margin: 0; }
+  html .cs-det__faq { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; margin-top: 80px; }
+  html .cs .cs-det__faqh { font-size: clamp(28px, 3.2vw, 38px); }
+  html .cs-det__faqlist { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  html .cs-det__q { border-radius: var(--cs-radius-sm); background: #fff; box-shadow: var(--cs-shadow); }
+  html .cs-det__q summary { position: relative; display: block; padding: 20px 60px 20px 22px; list-style: none; cursor: pointer; font-size: 16px; font-weight: 700; line-height: 1.4; color: var(--cs-ink); }
+  html .cs-det__q summary::-webkit-details-marker { display: none; }
+  html .cs-det__q summary:focus-visible { outline: 2px solid var(--cs-accent); outline-offset: 2px; border-radius: var(--cs-radius-sm); }
+  html .cs-det__plus { position: absolute; right: 20px; top: 50%; width: 28px; height: 28px; margin-top: -14px; border-radius: 50%; background: var(--cs-soft); transition: background .2s, transform .2s; }
+  html .cs-det__plus::before, html .cs-det__plus::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 2px; margin: -1px 0 0 -6px; border-radius: 2px; background: var(--cs-ink); }
+  html .cs-det__plus::after { transform: rotate(90deg); transition: transform .2s; }
+  html .cs-det__q[open] .cs-det__plus { background: var(--cs-accent); }
+  html .cs-det__q[open] .cs-det__plus::before, html .cs-det__q[open] .cs-det__plus::after { background: #fff; }
+  html .cs-det__q[open] .cs-det__plus::after { transform: rotate(0deg); }
+  html .cs-det__a { padding: 0 22px 22px; font-size: 15px; line-height: 1.65; }
+  html .cs-det__a p + p { margin-top: 8px; }
+  @media (min-width: 990px) {
+    html .cs-det__grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+    html .cs-det__card { padding: 40px; }
+    html .cs-det__faq { grid-template-columns: .75fr 1.25fr; gap: 64px; align-items: start; margin-top: 104px; }
+  }
 </style>
 
 {% schema %}
 {
-  "name": "CS Product details",
+  "name": "CS Details and FAQ",
   "tag": "div",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Product details" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Everything you want to know before you buy" },
-    { "type": "image_picker", "id": "image", "label": "Image", "info": "Good spot for the what's-in-the-box flat lay." },
-    { "type": "textarea", "id": "in_box", "label": "In the box (one item per line)", "default": "1 privacy tempered glass protector\nAuto-align installation frame\nWet and dry cleaning wipes\nDust removal stickers" },
-    { "type": "text", "id": "faq_1_q", "label": "Question 1", "default": "Can I still see my screen clearly?" },
-    { "type": "richtext", "id": "faq_1_a", "label": "Answer 1", "default": "<p>Yes. Straight on, it looks like a normal clear screen. You may want your brightness one notch higher in direct sun.</p>" },
-    { "type": "text", "id": "faq_2_q", "label": "Question 2", "default": "Does it work with Face ID and my case?" },
-    { "type": "richtext", "id": "faq_2_a", "label": "Answer 2", "default": "<p>Yes. The sensor area is left clear, and the edges are sized to fit under almost every case.</p>" },
-    { "type": "text", "id": "faq_3_q", "label": "Question 3", "default": "What if I mess up the install?" },
-    { "type": "richtext", "id": "faq_3_a", "label": "Answer 3", "default": "<p>The auto-align frame makes that hard to do. If it still goes wrong, message us and we will help you sort it out.</p>" }
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Everything you want to know before you order" },
+    { "type": "image_picker", "id": "image", "label": "In the box image" },
+    { "type": "textarea", "id": "in_box", "label": "In the box (one item per line)", "default": "1 privacy tempered glass for your model\nAuto-align installation kit\nWet and dry cleaning wipes\nDust removal stickers\nStep-by-step guide" },
+    { "type": "text", "id": "faq_heading", "label": "FAQ heading", "default": "Questions people ask" }
   ],
   "blocks": [
-    {
-      "type": "spec", "name": "Spec row",
-      "settings": [
-        { "type": "text", "id": "label", "label": "Label", "default": "Material" },
-        { "type": "text", "id": "value", "label": "Value", "default": "Tempered glass" }
-      ]
-    }
+    { "type": "spec", "name": "Spec row", "settings": [ { "type": "text", "id": "label", "label": "Label", "default": "Material" }, { "type": "text", "id": "value", "label": "Value", "default": "Tempered glass" } ] },
+    { "type": "faq", "name": "FAQ", "settings": [ { "type": "text", "id": "question", "label": "Question", "default": "Question" }, { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Answer</p>" } ] }
   ],
-  "presets": [
-    {
-      "name": "CS Product details",
-      "blocks": [
-        { "type": "spec", "settings": { "label": "Material", "value": "Tempered privacy glass" } },
-        { "type": "spec", "settings": { "label": "Hardness", "value": "9H surface hardness" } },
-        { "type": "spec", "settings": { "label": "Thickness", "value": "0.33 mm" } },
-        { "type": "spec", "settings": { "label": "Privacy angle", "value": "Dark beyond about 30 degrees to each side" } },
-        { "type": "spec", "settings": { "label": "Adhesive", "value": "Full glue, full coverage" } },
-        { "type": "spec", "settings": { "label": "Coating", "value": "Oil, fingerprint and glare resistant" } },
-        { "type": "spec", "settings": { "label": "Compatibility", "value": "Made for each iPhone model. Pick yours in the buy box." } }
-      ]
-    }
-  ]
+  "presets": [ { "name": "CS Details and FAQ" } ]
 }
 {% endschema %}

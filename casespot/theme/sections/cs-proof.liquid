@@ -1,0 +1,176 @@
+{{ 'cs-privacy.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign stats = section.blocks | where: 'type', 'stat'
+  assign rows = section.blocks | where: 'type', 'compare'
+  assign shots = section.blocks | where: 'type', 'shot'
+  assign reviews = section.blocks | where: 'type', 'review'
+  assign img_alt = section.settings.heading | escape
+-%}
+<section class="cs cs--dark cs-proof" aria-label="{{ img_alt }}">
+  <div class="cs-wrap">
+    <div class="cs-proof__top">
+      {%- if section.settings.image -%}
+        <div class="cs-media cs-proof__img">
+          {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 48vw, 100vw', widths: '500, 800, 1200', alt: img_alt }}
+        </div>
+      {%- endif -%}
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="cs-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+        <h2 class="cs-h2">{{ section.settings.heading }}</h2>
+        {%- if section.settings.text != blank -%}<p class="cs-lead cs-proof__lead">{{ section.settings.text }}</p>{%- endif -%}
+        {%- if stats.size > 0 -%}
+          <div class="cs-proof__stats">
+            {%- for block in stats -%}
+              <div class="cs-proof__stat" {{ block.shopify_attributes }}>
+                <strong>{{ block.settings.value }}</strong>
+                <span>{{ block.settings.label }}</span>
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if rows.size > 0 -%}
+      <div class="cs-proof__compare">
+        <h3 class="cs-h2 cs-proof__ch">{{ section.settings.compare_heading }}</h3>
+        <div class="cs-proof__table" role="table" aria-label="{{ section.settings.compare_heading | escape }}">
+          <div class="cs-proof__tr cs-proof__tr--head" role="row">
+            <span role="columnheader"></span>
+            <span role="columnheader" class="cs-proof__us">CaseSpot kit</span>
+            <span role="columnheader">Shop fitting</span>
+          </div>
+          {%- for block in rows -%}
+            <div class="cs-proof__tr" role="row" {{ block.shopify_attributes }}>
+              <span role="rowheader">{{ block.settings.label }}</span>
+              <span role="cell" class="cs-proof__us"><i class="cs-yes" aria-hidden="true"></i>{{ block.settings.us }}</span>
+              <span role="cell" class="cs-proof__them"><i class="cs-no" aria-hidden="true"></i>{{ block.settings.them }}</span>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if shots.size > 0 -%}
+      <div class="cs-proof__shots">
+        {%- if section.settings.shots_heading != blank -%}<h3 class="cs-h3 cs-proof__sh">{{ section.settings.shots_heading }}</h3>{%- endif -%}
+        <div class="cs-proof__rail">
+          {%- for block in shots -%}
+            <div class="cs-media cs-proof__shot" {{ block.shopify_attributes }}>
+              {%- if block.settings.image -%}
+                {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, 70vw', widths: '400, 600, 800', alt: 'CaseSpot privacy glass photo' }}
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.reviews_app_html != blank or reviews.size > 0 -%}
+      <div class="cs-proof__reviews">
+        {%- if section.settings.reviews_heading != blank -%}<h3 class="cs-h2 cs-proof__ch">{{ section.settings.reviews_heading }}</h3>{%- endif -%}
+        {%- if section.settings.reviews_app_html != blank -%}<div class="cs-proof__app">{{ section.settings.reviews_app_html }}</div>{%- endif -%}
+        {%- if reviews.size > 0 -%}
+          <div class="cs-proof__rgrid">
+            {%- for block in reviews -%}
+              <blockquote class="cs-proof__review" {{ block.shopify_attributes }}>
+                <span class="cs-stars" aria-label="{{ block.settings.stars }} out of 5 stars">{%- for i in (1..5) -%}{% if i <= block.settings.stars %}&#9733;{% else %}&#9734;{% endif %}{%- endfor -%}</span>
+                <p>{{ block.settings.body }}</p>
+                <footer><strong>{{ block.settings.name }}</strong>{% if block.settings.city != blank %}, {{ block.settings.city }}{% endif %}</footer>
+              </blockquote>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  html .cs-proof__top { display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; align-items: center; }
+  html .cs-proof__img { aspect-ratio: 1 / 1; }
+  html .cs-proof__lab { position: absolute; top: 16px; padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 700; line-height: 1; }
+  html .cs-proof__lab--l { left: 16px; background: #fff; color: var(--cs-ink); }
+  html .cs-proof__lab--r { right: 16px; background: var(--cs-ink); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+  html .cs-proof__lead { margin-top: 16px; }
+  html .cs-proof__stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 32px; }
+  html .cs-proof__stat { padding: 20px 16px; border-radius: var(--cs-radius-sm); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+  html .cs-proof__stat strong { display: block; color: #fff; font-size: clamp(24px, 2.6vw, 32px); font-weight: 800; line-height: 1.05; letter-spacing: -.02em; }
+  html .cs-proof__stat span { display: block; margin-top: 6px; font-size: 13px; line-height: 1.4; color: #a9a8a1; }
+  html .cs-proof__compare { margin-top: 96px; }
+  html .cs .cs-proof__ch { margin-bottom: 28px; font-size: clamp(26px, 3vw, 36px); text-align: center; }
+  html .cs-proof__table { max-width: 900px; margin: 0 auto; border-radius: var(--cs-radius); overflow: hidden; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); }
+  html .cs-proof__tr { display: grid; grid-template-columns: 1.1fr 1fr 1fr; align-items: stretch; border-top: 1px solid rgba(255,255,255,.08); }
+  html .cs-proof__tr:first-child { border-top: 0; }
+  html .cs-proof__tr > span { display: flex; align-items: center; gap: 10px; padding: 16px 18px; font-size: 15px; line-height: 1.35; }
+  html .cs-proof__tr > span:first-child { color: #fff; font-weight: 700; }
+  html .cs-proof__tr--head > span { padding-top: 18px; padding-bottom: 18px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: #a9a8a1; }
+  html .cs-proof__us { background: rgba(238,86,38,.10); color: #fff; }
+  html .cs-proof__tr--head .cs-proof__us { color: var(--cs-accent); }
+  html .cs-proof__them { color: #8f8e87; }
+  html .cs-yes, html .cs-no { display: inline-block; width: 20px; height: 20px; border-radius: 50%; flex: none; background-position: center; background-repeat: no-repeat; background-size: 11px; }
+  html .cs-yes { background-color: var(--cs-accent); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
+  html .cs-no { background-color: rgba(255,255,255,.1); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='4' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E"); }
+  html .cs-proof__shots { margin-top: 96px; }
+  html .cs .cs-proof__sh { margin-bottom: 20px; }
+  html .cs-proof__rail { display: grid; grid-auto-flow: column; grid-auto-columns: 72%; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; scrollbar-width: thin; }
+  html .cs-proof__shot { aspect-ratio: 1 / 1; scroll-snap-align: start; }
+  html .cs-proof__reviews { margin-top: 96px; }
+  html .cs-proof__app { background: #fff; border-radius: var(--cs-radius); padding: 24px; color: var(--cs-ink); }
+  html .cs-proof__rgrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 20px; }
+  html .cs .cs-proof__review { margin: 0; border-left: 1px solid rgba(255,255,255,.08); font-style: normal; padding: 26px; border-radius: var(--cs-radius); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+  html .cs-proof__review p { margin-top: 12px; color: #e3e2dc; font-size: 15px; }
+  html .cs-proof__review footer { margin-top: 16px; font-size: 14px; color: #a9a8a1; }
+  html .cs-proof__review strong { color: #fff; }
+  @media (min-width: 750px) {
+    html .cs-proof__rail { grid-auto-columns: calc((100% - 28px) / 3); }
+    html .cs-proof__rgrid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (min-width: 990px) {
+    html .cs-proof__top { grid-template-columns: 1fr 1fr; gap: 80px; }
+    html .cs-proof__rail { grid-auto-columns: calc((100% - 42px) / 4); }
+  }
+  @media (max-width: 749px) {
+    html .cs-proof__compare, html .cs-proof__shots, html .cs-proof__reviews { margin-top: 64px; }
+    html .cs-proof__stats { gap: 8px; }
+    html .cs-proof__stat { padding: 16px 12px; }
+    html .cs-proof__tr { grid-template-columns: 1fr 1fr 1fr; }
+    html .cs-proof__tr > span { padding: 14px 10px; font-size: 13px; gap: 6px; }
+    html .cs-proof__tr--head > span { font-size: 11px; }
+    html .cs-yes, html .cs-no { width: 16px; height: 16px; background-size: 9px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "CS Proof",
+  "tag": "div",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Front vs side image" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "See the difference" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Clear for you. Black for everyone else." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Same phone, same screen, two angles. Look straight at it and everything is sharp. Anyone looking from the side sees a dark screen." },
+    { "type": "text", "id": "compare_heading", "label": "Comparison heading", "default": "Why not just get it fitted at a shop?" },
+    { "type": "text", "id": "shots_heading", "label": "Photo strip heading", "default": "Up close" },
+    { "type": "text", "id": "reviews_heading", "label": "Reviews heading", "default": "What customers say" },
+    { "type": "html", "id": "reviews_app_html", "label": "Reviews app widget", "info": "Paste your Judge.me or Loox widget code to show real reviews." }
+  ],
+  "blocks": [
+    { "type": "stat", "name": "Stat", "limit": 3, "settings": [ { "type": "text", "id": "value", "label": "Value", "default": "9H" }, { "type": "text", "id": "label", "label": "Label", "default": "Surface hardness" } ] },
+    { "type": "compare", "name": "Comparison row", "settings": [ { "type": "text", "id": "label", "label": "Row", "default": "Dust under glass" }, { "type": "text", "id": "us", "label": "CaseSpot kit", "default": "Sealed, dust free" }, { "type": "text", "id": "them", "label": "Shop fitting", "default": "Often" } ] },
+    { "type": "shot", "name": "Photo", "settings": [ { "type": "image_picker", "id": "image", "label": "Image" } ] },
+    {
+      "type": "review", "name": "Customer review",
+      "settings": [
+        { "type": "paragraph", "content": "Only add real reviews from real customers." },
+        { "type": "range", "id": "stars", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "textarea", "id": "body", "label": "Review" },
+        { "type": "text", "id": "name", "label": "Name" },
+        { "type": "text", "id": "city", "label": "City" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "CS Proof" } ]
+}
+{% endschema %}

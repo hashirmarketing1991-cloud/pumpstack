@@ -1,69 +1,114 @@
 {{ 'cs-privacy.css' | asset_url | stylesheet_tag }}
 
-{%- assign p = section.settings.product -%}
-<section class="cs cs--dark cs-cta" aria-label="{{ section.settings.heading | escape }}">
-  <div class="cs-wrap cs-cta__grid">
-    <div>
-      <h2 class="cs-h2">{{ section.settings.heading }}</h2>
-      {%- if section.settings.text != blank -%}<p class="cs-lead">{{ section.settings.text }}</p>{%- endif -%}
-      <a class="cs-btn" href="{{ section.settings.cta_link | default: '#buy' }}">
-        {{ section.settings.cta_label }}{% if p != blank %} &middot; {{ p.price | money }}{% endif %}
-      </a>
-      {%- if section.settings.micro != blank -%}<p class="cs-cta__micro">{{ section.settings.micro }}</p>{%- endif -%}
-    </div>
-    {%- if section.settings.image -%}
-      <div class="cs-media cs-cta__img">
-        {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 40vw, 100vw', widths: '500, 800, 1200', alt: section.settings.heading }}
+{%- liquid
+  assign p = section.settings.product
+  assign img_alt = section.settings.heading | escape
+-%}
+<section class="cs cs-cta" aria-label="{{ img_alt }}">
+  <div class="cs-wrap">
+    <div class="cs-cta__box">
+      <div class="cs-cta__copy">
+        <h2 class="cs-h2">{{ section.settings.heading }}</h2>
+        {%- if section.settings.text != blank -%}<p class="cs-lead cs-cta__lead">{{ section.settings.text }}</p>{%- endif -%}
+        <div class="cs-cta__actions">
+          <a class="cs-btn" href="{{ section.settings.cta_link | default: '#buy' }}">
+            {{ section.settings.cta_label }}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          {%- if p != blank -%}<span class="cs-cta__price">From <strong>{{ p.price_min | money_without_trailing_zeros }}</strong></span>{%- endif -%}
+        </div>
       </div>
+      {%- if section.settings.image -%}
+        <div class="cs-media cs-cta__img">
+          {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 42vw, 100vw', widths: '500, 800, 1200', alt: img_alt }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_trust -%}
+      <ul class="cs-cta__trust">
+        {%- for i in (1..4) -%}
+          {%- capture tk %}t{{ i }}_title{% endcapture -%}
+          {%- capture xk %}t{{ i }}_text{% endcapture -%}
+          {%- if section.settings[tk] != blank -%}
+            <li>
+              <span class="cs-cta__ticon" aria-hidden="true">
+                {%- case i -%}
+                  {%- when 1 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>
+                  {%- when 2 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4h14v12H1zM15 9h4l4 4v3h-8z"/><circle cx="6" cy="18.5" r="2"/><circle cx="18" cy="18.5" r="2"/></svg>
+                  {%- when 3 -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>
+                  {%- else -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                {%- endcase -%}
+              </span>
+              <span><strong>{{ section.settings[tk] }}</strong>{{ section.settings[xk] }}</span>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
     {%- endif -%}
   </div>
 </section>
 
-{%- if section.settings.show_trust -%}
-  <section class="cs cs-tfoot" aria-label="Store promises">
-    <ul class="cs-wrap cs-tfoot__list">
-      {%- for i in (1..4) -%}
-        {%- capture tk %}t{{ i }}_title{% endcapture -%}
-        {%- capture xk %}t{{ i }}_text{% endcapture -%}
-        {%- if section.settings[tk] != blank -%}
-          <li><strong>{{ section.settings[tk] }}</strong><span>{{ section.settings[xk] }}</span></li>
-        {%- endif -%}
-      {%- endfor -%}
-    </ul>
-  </section>
-{%- endif -%}
-
-{%- if section.settings.sticky and p != blank -%}
-  <a class="cs-sticky" href="#buy" data-cs-sticky>
-    <span>{{ p.title | truncate: 34 }}</span>
-    <strong>{{ section.settings.cta_label }} &middot; {{ p.price | money }}</strong>
-  </a>
+{%- if section.settings.sticky -%}
+  <div class="cs cs-sticky" data-cs-sticky aria-hidden="true">
+    <div class="cs-sticky__in">
+      <span class="cs-sticky__txt">
+        <strong>{{ section.settings.sticky_title }}</strong>
+        {%- if p != blank -%}<span>From {{ p.price_min | money_without_trailing_zeros }} &middot; Cash on delivery</span>{%- endif -%}
+      </span>
+      <a class="cs-btn" href="#buy" tabindex="-1">{{ section.settings.sticky_label }}</a>
+    </div>
+  </div>
   <script>
     (function () {
-      var s = document.querySelector('[data-cs-sticky]'), buy = document.getElementById('buy');
-      if (!s || !buy || !('IntersectionObserver' in window)) return;
-      new IntersectionObserver(function (e) {
-        var past = e[0].boundingClientRect.top < 0 && !e[0].isIntersecting;
-        s.classList.toggle('is-on', past);
-      }).observe(buy);
+      var bar = document.querySelector('[data-cs-sticky]');
+      var buy = document.getElementById('buy');
+      if (!bar || !buy || !('IntersectionObserver' in window)) return;
+      var hero = document.querySelector('.cs-hero');
+      var seen = { hero: true, buy: false };
+      function update() {
+        var on = !seen.hero && !seen.buy;
+        bar.classList.toggle('is-on', on);
+        bar.setAttribute('aria-hidden', on ? 'false' : 'true');
+        bar.querySelector('a').tabIndex = on ? 0 : -1;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { seen[e.target === buy ? 'buy' : 'hero'] = e.isIntersecting; });
+        update();
+      });
+      io.observe(buy);
+      if (hero) io.observe(hero); else seen.hero = false;
     })();
   </script>
 {%- endif -%}
 
 <style>
-  .cs-cta { background: linear-gradient(135deg, #0b0d12 0%, #16213d 100%); }
-  .cs-cta__grid { display: grid; gap: 36px; align-items: center; }
-  .cs-cta__micro { margin: 14px 0 0; font-size: 13px; opacity: .8; }
-  .cs-cta__img { aspect-ratio: 1; }
-  .cs-tfoot { padding: 36px 0; border-top: 1px solid var(--cs-line); }
-  .cs-tfoot__list { list-style: none; display: grid; gap: 18px; grid-template-columns: repeat(2, 1fr); }
-  .cs-tfoot__list li { display: grid; gap: 2px; font-size: 14px; }
-  .cs-tfoot__list strong { color: var(--cs-ink); }
-  .cs-sticky { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 50; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 12px 12px 18px; border-radius: 999px; background: #0b0d12; color: #fff !important; text-decoration: none; font-size: 14px; box-shadow: 0 12px 30px rgba(0,0,0,.3); transform: translateY(140%); transition: transform .25s ease; }
-  .cs-sticky strong { padding: 12px 18px; border-radius: 999px; background: #2f6bff; white-space: nowrap; }
-  .cs-sticky.is-on { transform: none; }
-  @media (min-width: 750px) { .cs-tfoot__list { grid-template-columns: repeat(4, 1fr); } .cs-sticky { left: auto; width: 460px; right: 24px; } }
-  @media (min-width: 990px) { .cs-cta__grid { grid-template-columns: 1.2fr .8fr; gap: 64px; } }
+  html .cs-cta { padding-bottom: 72px; }
+  html .cs-cta__box { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: center; padding: 40px 28px; border-radius: 28px; background: radial-gradient(700px 400px at 100% 0%, rgba(238,86,38,.25), transparent 60%), var(--cs-dark); overflow: hidden; }
+  html .cs-cta__box .cs-h2 { color: #fff; }
+  html .cs-cta__lead { margin-top: 14px; color: #c9c8c1; }
+  html .cs-cta__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 22px; margin-top: 28px; }
+  html .cs-cta__price { color: #c9c8c1; font-size: 15px; }
+  html .cs-cta__price strong { color: #fff; font-size: 20px; }
+  html .cs-cta__img { aspect-ratio: 16 / 10; }
+  html .cs-cta__trust { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 16px; margin: 48px 0 0; padding: 0; list-style: none; }
+  html .cs-cta__trust li { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; line-height: 1.4; }
+  html .cs-cta__trust strong { display: block; color: var(--cs-ink); font-size: 15px; }
+  html .cs-cta__ticon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: #fdeee8; color: var(--cs-accent); flex: none; }
+  html .cs-cta__ticon svg { width: 20px; height: 20px; }
+  html .cs-sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; padding: 0; background: transparent; transform: translateY(110%); transition: transform .25s ease; pointer-events: none; }
+  html .cs-sticky.is-on { transform: none; pointer-events: auto; }
+  html .cs-sticky__in { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 auto; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--cs-line); box-shadow: 0 -10px 30px rgba(0,0,0,.08); }
+  html .cs-sticky__txt { display: flex; flex-direction: column; min-width: 0; font-size: 12px; line-height: 1.35; color: var(--cs-muted); }
+  html .cs-sticky__txt strong { color: var(--cs-ink); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  html .cs .cs-sticky__in .cs-btn { width: auto; min-height: 48px; padding: 0 22px; font-size: 15px; white-space: nowrap; box-shadow: none; }
+  @media (min-width: 750px) {
+    html .cs-cta__trust { grid-template-columns: repeat(4, 1fr); }
+    html .cs-sticky__in { max-width: 560px; margin-bottom: 20px; border: 1px solid var(--cs-line); border-radius: 999px; padding: 10px 10px 10px 26px; }
+  }
+  @media (min-width: 990px) {
+    html .cs-cta__box { grid-template-columns: 1.1fr .9fr; gap: 64px; padding: 64px; }
+  }
 </style>
 
 {% schema %}
@@ -72,23 +117,25 @@
   "tag": "div",
   "settings": [
     { "type": "product", "id": "product", "label": "Product (for price)" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Stop angling your phone away from people." },
-    { "type": "textarea", "id": "text", "label": "Text", "default": "Scroll, text and bank in public without checking who is looking. Two minutes to install. Years of privacy." },
-    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Get my privacy glass" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Stop tilting your phone away from people." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Chat, bank and scroll in public without checking who is looking. One minute to install. Pay when it arrives." },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Order now, pay on delivery" },
     { "type": "url", "id": "cta_link", "label": "Button link", "info": "Leave blank to scroll to the buy box." },
-    { "type": "text", "id": "micro", "label": "Small print", "default": "Free shipping. 30-day returns. Secure checkout." },
     { "type": "image_picker", "id": "image", "label": "Image" },
-    { "type": "checkbox", "id": "sticky", "label": "Show sticky buy bar after the buy box", "default": true },
-    { "type": "header", "content": "Trust strip (sits above your theme footer)" },
+    { "type": "header", "content": "Sticky buy bar" },
+    { "type": "checkbox", "id": "sticky", "label": "Show sticky buy bar", "default": true },
+    { "type": "text", "id": "sticky_title", "label": "Bar title", "default": "iPhone Privacy Glass" },
+    { "type": "text", "id": "sticky_label", "label": "Bar button", "default": "Order now" },
+    { "type": "header", "content": "Trust strip" },
     { "type": "checkbox", "id": "show_trust", "label": "Show trust strip", "default": true },
-    { "type": "text", "id": "t1_title", "label": "Point 1 title", "default": "Free shipping" },
-    { "type": "text", "id": "t1_text", "label": "Point 1 text", "default": "On every US order" },
-    { "type": "text", "id": "t2_title", "label": "Point 2 title", "default": "30-day returns" },
-    { "type": "text", "id": "t2_text", "label": "Point 2 text", "default": "Not happy? Send it back" },
-    { "type": "text", "id": "t3_title", "label": "Point 3 title", "default": "Secure checkout" },
-    { "type": "text", "id": "t3_text", "label": "Point 3 text", "default": "Shop Pay, Apple Pay, cards" },
-    { "type": "text", "id": "t4_title", "label": "Point 4 title", "default": "Real support" },
-    { "type": "text", "id": "t4_text", "label": "Point 4 text", "default": "A person replies within 24 hours" }
+    { "type": "text", "id": "t1_title", "label": "Point 1 title", "default": "Cash on delivery" },
+    { "type": "text", "id": "t1_text", "label": "Point 1 text", "default": "No advance payment" },
+    { "type": "text", "id": "t2_title", "label": "Point 2 title", "default": "2 to 4 day delivery" },
+    { "type": "text", "id": "t2_text", "label": "Point 2 text", "default": "All over Pakistan" },
+    { "type": "text", "id": "t3_title", "label": "Point 3 title", "default": "Right fit, every model" },
+    { "type": "text", "id": "t3_text", "label": "Point 3 text", "default": "iPhone X to iPhone 17" },
+    { "type": "text", "id": "t4_title", "label": "Point 4 title", "default": "WhatsApp support" },
+    { "type": "text", "id": "t4_text", "label": "Point 4 text", "default": "Real people, quick replies" }
   ],
   "presets": [ { "name": "CS Final CTA" } ]
 }

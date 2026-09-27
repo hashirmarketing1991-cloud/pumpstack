@@ -1,76 +1,98 @@
 {{ 'cs-privacy.css' | asset_url | stylesheet_tag }}
 
-{%- assign p = section.settings.product -%}
-<section class="cs cs--dark cs-hero" aria-label="{{ section.settings.heading | strip_html | escape }}">
+{%- liquid
+  assign p = section.settings.product
+  assign hero_img = section.settings.image | default: p.featured_image
+  assign hero_alt = section.settings.heading | strip_html | escape
+-%}
+<section class="cs cs--dark cs-hero" aria-label="{{ hero_alt }}">
   <div class="cs-wrap cs-hero__grid">
     <div class="cs-hero__copy">
-      {%- if section.settings.rating_text != blank -%}
-        <p class="cs-hero__rating"><span class="cs-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span> {{ section.settings.rating_text }}</p>
-      {%- endif -%}
       {%- if section.settings.eyebrow != blank -%}<p class="cs-eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
-      <h1 class="cs-h1">{{ section.settings.heading }}</h1>
-      {%- if section.settings.subheading != blank -%}<p class="cs-lead">{{ section.settings.subheading }}</p>{%- endif -%}
+      <h1 class="cs-h1">{{ section.settings.heading | remove: '<p>' | remove: '</p>' }}</h1>
+      {%- if section.settings.subheading != blank -%}<p class="cs-lead cs-hero__sub">{{ section.settings.subheading }}</p>{%- endif -%}
 
       {%- if section.blocks.size > 0 -%}
-        <ul class="cs-checks">
+        <ul class="cs-checks cs-hero__checks">
           {%- for block in section.blocks -%}<li {{ block.shopify_attributes }}>{{ block.settings.text }}</li>{%- endfor -%}
         </ul>
       {%- endif -%}
 
-      <div class="cs-hero__cta">
-        <a class="cs-btn" href="{{ section.settings.cta_link | default: '#buy' }}">
-          {{ section.settings.cta_label }}
-          {%- if p != blank %} &middot; {{ p.price | money }}{% endif %}
-        </a>
-        {%- if p != blank and p.compare_at_price > p.price -%}
-          <p class="cs-hero__save">
-            <s>{{ p.compare_at_price | money }}</s>
-            <strong>Save {{ p.compare_at_price | minus: p.price | money }}</strong>
+      <div class="cs-hero__buy">
+        {%- if p != blank -%}
+          <p class="cs-hero__price">
+            <span class="cs-hero__from">From</span>
+            <strong>{{ p.price_min | money_without_trailing_zeros }}</strong>
           </p>
         {%- endif -%}
+        <a class="cs-btn cs-hero__btn" href="{{ section.settings.cta_link | default: '#buy' }}">
+          {{ section.settings.cta_label }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
       </div>
 
-      <ul class="cs-trust">
-        {%- if section.settings.trust_1 != blank -%}<li>{{ section.settings.trust_1 }}</li>{%- endif -%}
-        {%- if section.settings.trust_2 != blank -%}<li>{{ section.settings.trust_2 }}</li>{%- endif -%}
-        {%- if section.settings.trust_3 != blank -%}<li>{{ section.settings.trust_3 }}</li>{%- endif -%}
+      <ul class="cs-trust cs-hero__trust">
+        {%- for i in (1..3) -%}
+          {%- capture tk %}trust_{{ i }}{% endcapture -%}
+          {%- if section.settings[tk] != blank -%}
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>{{ section.settings[tk] }}</li>
+          {%- endif -%}
+        {%- endfor -%}
       </ul>
     </div>
 
     <div class="cs-hero__visual">
-      {%- assign hero_img = section.settings.image | default: p.featured_image -%}
-      {%- assign hero_alt = section.settings.heading | strip_html -%}
-      {%- if hero_img != blank -%}
-        <div class="cs-media cs-hero__img">
-          {{ hero_img | image_url: width: 1600 | image_tag:
+      <div class="cs-media cs-hero__img">
+        {%- if hero_img != blank -%}
+          {{ hero_img | image_url: width: 1400 | image_tag:
             loading: 'eager', fetchpriority: 'high',
-            sizes: '(min-width: 990px) 50vw, 100vw',
-            widths: '600, 900, 1200, 1600',
+            sizes: '(min-width: 990px) 46vw, 100vw',
+            widths: '500, 750, 1000, 1400',
             alt: hero_alt }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'cs-ph' }}
+        {%- endif -%}
+      </div>
+      {%- if section.settings.badge_top != blank -%}
+        <div class="cs-hero__badge">
+          <span class="cs-hero__dot" aria-hidden="true"></span>
+          <span><strong>{{ section.settings.badge_top }}</strong>{{ section.settings.badge_bottom }}</span>
         </div>
-      {%- else -%}
-        <div class="cs-placeholder">{{ 'product-1' | placeholder_svg_tag }}</div>
-      {%- endif -%}
-      {%- if section.settings.badge != blank -%}
-        <div class="cs-hero__badge">{{ section.settings.badge }}</div>
       {%- endif -%}
     </div>
   </div>
 </section>
 
 <style>
-  .cs-hero { padding: 64px 0 80px; background: radial-gradient(1200px 600px at 85% 20%, rgba(47,107,255,.28), transparent 60%), var(--cs-ink); }
-  .cs-hero__grid { display: grid; gap: 40px; align-items: center; }
-  .cs-hero__rating { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; font-size: 14px; font-weight: 700; color: #fff; }
-  .cs-hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; }
-  .cs-hero__save { margin: 0; display: flex; gap: 10px; align-items: center; font-size: 15px; }
-  .cs-hero__save s { opacity: .6; }
-  .cs-hero__save strong { padding: 4px 10px; border-radius: 99px; background: var(--cs-accent-2); color: var(--cs-ink); font-size: 13px; }
-  .cs-hero__visual { position: relative; }
-  .cs-hero__img { aspect-ratio: 4 / 5; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
-  .cs-hero__badge { position: absolute; left: -12px; bottom: 28px; padding: 14px 18px; border-radius: 14px; background: #fff; color: var(--cs-ink); font-weight: 900; font-size: 14px; box-shadow: var(--cs-shadow); max-width: 220px; line-height: 1.3; }
-  @media (min-width: 990px) { .cs-hero__grid { grid-template-columns: 1.05fr .95fr; gap: 72px; } }
-  @media (max-width: 749px) { .cs-hero__visual { order: -1; } .cs-hero__badge { left: 12px; bottom: 12px; } }
+  html .cs-hero { padding: 72px 0 88px; background: radial-gradient(900px 520px at 88% 12%, rgba(238,86,38,.20), transparent 62%), var(--cs-dark); }
+  html .cs-hero__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; align-items: center; }
+  html .cs-hero__sub { max-width: 540px; margin-top: 20px; }
+  html .cs-hero__checks { margin-top: 28px; }
+  html .cs-hero__buy { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 24px; margin-top: 36px; }
+  html .cs-hero__price { display: flex; flex-direction: column; line-height: 1.1; }
+  html .cs-hero__from { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: #9d9c95; }
+  html .cs-hero__price strong { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -.02em; }
+  html .cs-hero__trust { margin-top: 28px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.1); color: #fff; }
+  html .cs-hero__visual { position: relative; }
+  html .cs-hero__img { aspect-ratio: 1 / 1; box-shadow: 0 40px 90px rgba(0,0,0,.5); }
+  html .cs-hero__img .cs-ph { width: 100%; height: 100%; background: #2a2922; fill: #555; }
+  html .cs-hero__badge { position: absolute; left: -18px; bottom: 32px; display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: 16px; background: #fff; color: var(--cs-ink); box-shadow: 0 18px 40px rgba(0,0,0,.25); font-size: 14px; line-height: 1.3; }
+  html .cs-hero__badge strong { display: block; font-size: 15px; font-weight: 800; }
+  html .cs-hero__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--cs-good); box-shadow: 0 0 0 5px rgba(18,161,80,.18); flex: none; }
+  @media (min-width: 990px) {
+    html .cs-hero { padding: 96px 0 112px; }
+    html .cs-hero__grid { grid-template-columns: 1.05fr .95fr; gap: 80px; }
+  }
+  @media (max-width: 749px) {
+    html .cs-hero { padding: 28px 0 56px; }
+    html .cs-hero__grid { gap: 28px; }
+    html .cs-hero__visual { order: -1; }
+    html .cs-hero__img { aspect-ratio: 5 / 4; }
+    html .cs-hero__badge { left: 12px; bottom: 12px; padding: 10px 14px; }
+    html .cs-hero__buy { flex-direction: column; align-items: stretch; margin-top: 28px; }
+    html .cs-hero__price { flex-direction: row; align-items: baseline; gap: 8px; }
+    html .cs-hero__trust { flex-direction: column; gap: 10px; }
+  }
 </style>
 
 {% schema %}
@@ -79,28 +101,28 @@
   "tag": "div",
   "settings": [
     { "type": "product", "id": "product", "label": "Product (for price)" },
-    { "type": "image_picker", "id": "image", "label": "Hero image", "info": "Best: phone at an angle, screen blacked out from the side. Falls back to the product photo." },
-    { "type": "text", "id": "rating_text", "label": "Rating line", "info": "Only use real numbers from your reviews app. Leave blank until you have them." },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Privacy screen protector for iPhone" },
-    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Your screen. Your eyes only.</p>" },
-    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Tempered privacy glass that goes dark from the side, so the person next to you on the train sees nothing. You still see everything, crystal clear." },
-    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Get my privacy glass" },
+    { "type": "image_picker", "id": "image", "label": "Hero image", "info": "Square works best. Falls back to the product photo." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "iPhone privacy glass" },
+    { "type": "richtext", "id": "heading", "label": "Heading", "default": "<p>Your screen is <em>nobody else's</em> business.</p>" },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "Anti-spy tempered glass that looks clear to you and black to anyone beside you. Apply it at home in under a minute with the auto-align kit." },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Choose my iPhone model" },
     { "type": "url", "id": "cta_link", "label": "Button link", "info": "Leave blank to scroll to the buy box." },
-    { "type": "text", "id": "badge", "label": "Image badge", "default": "Applies in 2 minutes. No bubbles." },
-    { "type": "text", "id": "trust_1", "label": "Trust point 1", "default": "Free shipping" },
-    { "type": "text", "id": "trust_2", "label": "Trust point 2", "default": "30-day returns" },
-    { "type": "text", "id": "trust_3", "label": "Trust point 3", "default": "Secure checkout" }
+    { "type": "text", "id": "badge_top", "label": "Image badge title", "default": "Clear for you. Black for them." },
+    { "type": "text", "id": "badge_bottom", "label": "Image badge text", "default": "Privacy from the side angle" },
+    { "type": "text", "id": "trust_1", "label": "Trust point 1", "default": "Cash on delivery" },
+    { "type": "text", "id": "trust_2", "label": "Trust point 2", "default": "Delivered in 2 to 4 days" },
+    { "type": "text", "id": "trust_3", "label": "Trust point 3", "default": "No shop visit needed" }
   ],
   "blocks": [
-    { "type": "point", "name": "Bullet", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Blocks side views from nosy onlookers" } ] }
+    { "type": "point", "name": "Bullet", "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Blocks side views on buses, in offices and in queues" } ] }
   ],
   "presets": [
     {
       "name": "CS Hero",
       "blocks": [
-        { "type": "point", "settings": { "text": "Blocks side views from nosy onlookers" } },
-        { "type": "point", "settings": { "text": "9H tempered glass that takes the hit, not your screen" } },
-        { "type": "point", "settings": { "text": "Auto-align kit, perfect fit on the first try" } }
+        { "type": "point", "settings": { "text": "Hides WhatsApp chats, bank apps and photos from side views" } },
+        { "type": "point", "settings": { "text": "9H tempered glass takes the scratches and drops" } },
+        { "type": "point", "settings": { "text": "Auto-align kit: straight, bubble free, first try" } }
       ]
     }
   ]

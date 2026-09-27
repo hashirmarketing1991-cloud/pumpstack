@@ -1,0 +1,478 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "hero": {
+      "type": "cs-hero",
+      "settings": {
+        "product": "iphone-privacy-anti-spy-glass-screen-protector-with-applying-kit",
+        "image": "shopify://shop_images/543d6010-e53f-4bcb-917d-3bed31e24b87.png",
+        "eyebrow": "iPhone privacy glass",
+        "heading": "<p>Your screen is <em>nobody else's</em> business.</p>",
+        "subheading": "Anti-spy tempered glass that looks clear to you and black to anyone beside you. Apply it at home in under a minute with the auto-align kit.",
+        "cta_label": "Choose my iPhone model",
+        "cta_link": "",
+        "badge_top": "Clear for you. Black for them.",
+        "badge_bottom": "Privacy from side angles",
+        "trust_1": "Cash on delivery",
+        "trust_2": "Delivered in 2 to 4 days",
+        "trust_3": "No shop visit needed"
+      },
+      "blocks": {
+        "point_1": {
+          "type": "point",
+          "settings": {
+            "text": "Hides WhatsApp chats, bank apps and photos from side views"
+          }
+        },
+        "point_2": {
+          "type": "point",
+          "settings": {
+            "text": "9H tempered glass takes the scratches and drops"
+          }
+        },
+        "point_3": {
+          "type": "point",
+          "settings": {
+            "text": "Auto-align kit: straight and bubble free on the first try"
+          }
+        }
+      },
+      "block_order": [
+        "point_1",
+        "point_2",
+        "point_3"
+      ]
+    },
+    "buy": {
+      "type": "cs-product",
+      "settings": {
+        "product": "iphone-privacy-anti-spy-glass-screen-protector-with-applying-kit",
+        "eyebrow": "Anti-spy privacy glass",
+        "heading": "iPhone Privacy Glass with Auto-Align Kit",
+        "image_badge": "Kit included",
+        "text": "<p>Looks like a normal clear screen when you face it. Tilt it away and it goes dark. Your chats, bank app and photos stay between you and your phone.</p>",
+        "variant_label": "Select your iPhone model",
+        "button_label": "Order now",
+        "cart_label": "Add to cart",
+        "microcopy": "Pay cash when it arrives. No advance payment."
+      },
+      "blocks": {
+        "perk_1": {
+          "type": "perk",
+          "settings": {
+            "icon": "cash",
+            "title": "Cash on delivery",
+            "text": "Check your parcel, then pay the rider."
+          }
+        },
+        "perk_2": {
+          "type": "perk",
+          "settings": {
+            "icon": "truck",
+            "title": "Delivered in 2 to 4 days",
+            "text": "To your door, anywhere in Pakistan."
+          }
+        },
+        "perk_3": {
+          "type": "perk",
+          "settings": {
+            "icon": "kit",
+            "title": "Auto-align kit in the box",
+            "text": "Wipes, dust stickers and the alignment frame. No shop fitting needed."
+          }
+        }
+      },
+      "block_order": [
+        "perk_1",
+        "perk_2",
+        "perk_3"
+      ]
+    },
+    "features": {
+      "type": "cs-features",
+      "settings": {
+        "eyebrow": "Why CaseSpot privacy glass",
+        "heading": "Privacy you notice. Protection you forget is there.",
+        "text": "Cheap privacy glass makes your screen dim and grainy. Ours stays bright and sharp for you, and dark for everyone else.",
+        "image": "shopify://shop_images/304342cc-570a-4aae-96e4-97e4219b7a3c.png",
+        "row_heading": "Works without an app or setting",
+        "row_text": "Tiny vertical louvers inside the glass let light go straight to your eyes and block it from the sides. Nothing to switch on. It just works.",
+        "chips": "Anti-spy, 9H hardness, Anti-fingerprint, Anti-glare, Shatter resistant, Shock absorbing, Full glue, Full coverage, Oil resistant, Dust resistant, Water resistant, Ultra-thin, Bubble free, HD clear"
+      },
+      "blocks": {
+        "card_1": {
+          "type": "card",
+          "settings": {
+            "icon": "eye",
+            "title": "Blocks side views",
+            "text": "Face it and it is clear. Anyone beside you sees a dark screen. Made for buses, offices and queues."
+          }
+        },
+        "card_2": {
+          "type": "card",
+          "settings": {
+            "icon": "diamond",
+            "title": "9H tempered glass",
+            "text": "Takes scratches, keys and drops, so your real screen stays like new."
+          }
+        },
+        "card_3": {
+          "type": "card",
+          "settings": {
+            "icon": "touch",
+            "title": "Full touch and Face ID",
+            "text": "Smooth, fast touch. Face ID and the front camera keep working normally."
+          }
+        },
+        "card_4": {
+          "type": "card",
+          "settings": {
+            "icon": "sun",
+            "title": "HD clear for you",
+            "text": "Sharp and bright straight on, with anti-glare and anti-fingerprint coating."
+          }
+        }
+      },
+      "block_order": [
+        "card_1",
+        "card_2",
+        "card_3",
+        "card_4"
+      ]
+    },
+    "how": {
+      "type": "cs-how-it-works",
+      "settings": {
+        "eyebrow": "Easy install at home",
+        "heading": "On your phone in 60 seconds. No shop visit.",
+        "text": "The auto-align kit does the hard part. No bubbles, no dust, no crooked edges.",
+        "video_url": "https://cdn.shopify.com/videos/c/o/v/7ae05c093c9c410c9e74406171d2f828.mp4",
+        "image": "shopify://shop_images/download.jpg",
+        "cta_label": "Order my kit"
+      },
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "title": "Clean the screen",
+            "text": "Use the wet wipe, then the dry cloth. Lift any last dust with a dust sticker."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "title": "Place your iPhone in the kit",
+            "text": "The frame holds your phone in exactly the right spot. Nothing to line up by eye."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "title": "Pull the tab and press",
+            "text": "The glass drops straight into place. Press from the centre out and you are done."
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3"
+      ]
+    },
+    "details": {
+      "type": "cs-details",
+      "settings": {
+        "eyebrow": "Product details",
+        "heading": "Everything you want to know before you order",
+        "image": "shopify://shop_images/download_2.jpg",
+        "in_box": "1 privacy tempered glass for your model\nAuto-align installation kit\nWet and dry cleaning wipes\nDust removal stickers\nStep-by-step guide",
+        "faq_heading": "Questions people ask"
+      },
+      "blocks": {
+        "b_1": {
+          "type": "spec",
+          "settings": {
+            "label": "Material",
+            "value": "Tempered privacy glass"
+          }
+        },
+        "b_2": {
+          "type": "spec",
+          "settings": {
+            "label": "Hardness",
+            "value": "9H surface hardness"
+          }
+        },
+        "b_3": {
+          "type": "spec",
+          "settings": {
+            "label": "Privacy",
+            "value": "Clear straight on, dark from the sides"
+          }
+        },
+        "b_4": {
+          "type": "spec",
+          "settings": {
+            "label": "Coverage",
+            "value": "Full glue, full screen coverage"
+          }
+        },
+        "b_5": {
+          "type": "spec",
+          "settings": {
+            "label": "Coating",
+            "value": "Anti-fingerprint, anti-oil, anti-glare"
+          }
+        },
+        "b_6": {
+          "type": "spec",
+          "settings": {
+            "label": "Touch and Face ID",
+            "value": "Work normally"
+          }
+        },
+        "b_7": {
+          "type": "spec",
+          "settings": {
+            "label": "Models",
+            "value": "iPhone X to iPhone 17 series"
+          }
+        },
+        "b_8": {
+          "type": "faq",
+          "settings": {
+            "question": "Can I really apply it myself without going to a shop?",
+            "answer": "<p>Yes. The kit does the alignment for you. Clean the screen with the wipes, place your iPhone in the frame, pull the tab and press. Most people finish in under a minute.</p>"
+          }
+        },
+        "b_9": {
+          "type": "faq",
+          "settings": {
+            "question": "How does the anti-spy glass work?",
+            "answer": "<p>Tiny louvers inside the glass narrow the viewing angle. Looking straight at the phone, the screen is clear. From the side, it looks dark.</p>"
+          }
+        },
+        "b_10": {
+          "type": "faq",
+          "settings": {
+            "question": "Which iPhone models do you have?",
+            "answer": "<p>iPhone X, XS, XS Max, and every model from iPhone 11 to iPhone 17 Pro Max. Pick yours in the dropdown above so you get the exact fit.</p>"
+          }
+        },
+        "b_11": {
+          "type": "faq",
+          "settings": {
+            "question": "Will Face ID and touch still work?",
+            "answer": "<p>Yes. Touch stays smooth and Face ID works normally once the glass is on.</p>"
+          }
+        },
+        "b_12": {
+          "type": "faq",
+          "settings": {
+            "question": "Will my screen look darker?",
+            "answer": "<p>Straight on, it stays clear. Some people turn brightness up one notch in direct sunlight. Most stop noticing within a day.</p>"
+          }
+        },
+        "b_13": {
+          "type": "faq",
+          "settings": {
+            "question": "How do I pay and how long is delivery?",
+            "answer": "<p>Pay cash when the parcel arrives. Orders are delivered to your door in 2 to 4 days across Pakistan.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "b_1",
+        "b_2",
+        "b_3",
+        "b_4",
+        "b_5",
+        "b_6",
+        "b_7",
+        "b_8",
+        "b_9",
+        "b_10",
+        "b_11",
+        "b_12",
+        "b_13"
+      ]
+    },
+    "proof": {
+      "type": "cs-proof",
+      "settings": {
+        "image": "shopify://shop_images/download_1.jpg",
+        "eyebrow": "See the difference",
+        "heading": "Clear for you. Black for everyone else.",
+        "text": "Same phone, same screen, two angles. Look straight at it and everything is sharp. Anyone looking from the side sees a dark screen.",
+        "compare_heading": "Why not just get it fitted at a shop?",
+        "shots_heading": "Up close",
+        "reviews_heading": "What customers say",
+        "reviews_app_html": ""
+      },
+      "blocks": {
+        "p_1": {
+          "type": "stat",
+          "settings": {
+            "value": "9H",
+            "label": "Surface hardness"
+          }
+        },
+        "p_2": {
+          "type": "stat",
+          "settings": {
+            "value": "110 cm",
+            "label": "Steel ball drop test"
+          }
+        },
+        "p_3": {
+          "type": "stat",
+          "settings": {
+            "value": "60 sec",
+            "label": "Typical install time"
+          }
+        },
+        "p_4": {
+          "type": "compare",
+          "settings": {
+            "label": "Where",
+            "us": "At home",
+            "them": "Visit a shop"
+          }
+        },
+        "p_5": {
+          "type": "compare",
+          "settings": {
+            "label": "Dust under glass",
+            "us": "Sealed kit, dust free",
+            "them": "Common"
+          }
+        },
+        "p_6": {
+          "type": "compare",
+          "settings": {
+            "label": "Alignment",
+            "us": "Frame lines it up",
+            "them": "Depends on the fitter"
+          }
+        },
+        "p_7": {
+          "type": "compare",
+          "settings": {
+            "label": "Bubbles",
+            "us": "None",
+            "them": "Often"
+          }
+        },
+        "p_8": {
+          "type": "compare",
+          "settings": {
+            "label": "Time",
+            "us": "Under 1 minute",
+            "them": "Travel and waiting"
+          }
+        },
+        "p_9": {
+          "type": "compare",
+          "settings": {
+            "label": "Delivery",
+            "us": "To your door",
+            "them": "You go to them"
+          }
+        },
+        "p_10": {
+          "type": "shot",
+          "settings": {
+            "image": "shopify://shop_images/4f7dced5-0971-4aba-87c4-6a827fee6961.png"
+          }
+        },
+        "p_11": {
+          "type": "shot",
+          "settings": {
+            "image": "shopify://shop_images/54471468-a3bc-4941-ad4d-fc3a8ede3d8f.png"
+          }
+        },
+        "p_12": {
+          "type": "shot",
+          "settings": {
+            "image": "shopify://shop_images/a853150c-5a3f-4ac6-ab95-c8bffb3c6690.png"
+          }
+        },
+        "p_13": {
+          "type": "shot",
+          "settings": {
+            "image": "shopify://shop_images/ade7763c-b014-4878-afc2-5544fcdb7808.png"
+          }
+        },
+        "p_14": {
+          "type": "shot",
+          "settings": {
+            "image": "shopify://shop_images/c03eec14-6863-430b-b2c0-558756b4ab33.png"
+          }
+        },
+        "p_15": {
+          "type": "shot",
+          "settings": {
+            "image": "shopify://shop_images/71LuQndsOuL._AC_SL1500.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "p_1",
+        "p_2",
+        "p_3",
+        "p_4",
+        "p_5",
+        "p_6",
+        "p_7",
+        "p_8",
+        "p_9",
+        "p_10",
+        "p_11",
+        "p_12",
+        "p_13",
+        "p_14",
+        "p_15"
+      ]
+    },
+    "cta": {
+      "type": "cs-cta",
+      "settings": {
+        "product": "iphone-privacy-anti-spy-glass-screen-protector-with-applying-kit",
+        "heading": "Stop tilting your phone away from people.",
+        "text": "Chat, bank and scroll in public without checking who is looking. One minute to install. Pay when it arrives.",
+        "cta_label": "Order now, pay on delivery",
+        "cta_link": "",
+        "image": "shopify://shop_images/b6b8de19-9782-4b22-996d-d96234a27b6a.png",
+        "sticky": true,
+        "sticky_title": "iPhone Privacy Glass",
+        "sticky_label": "Order now",
+        "show_trust": true,
+        "t1_title": "Cash on delivery",
+        "t1_text": "No advance payment",
+        "t2_title": "2 to 4 day delivery",
+        "t2_text": "All over Pakistan",
+        "t3_title": "Right fit, every model",
+        "t3_text": "iPhone X to iPhone 17",
+        "t4_title": "WhatsApp support",
+        "t4_text": "Real people, quick replies"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "hero",
+    "buy",
+    "features",
+    "how",
+    "details",
+    "proof",
+    "cta"
+  ]
+}
