@@ -175,7 +175,8 @@
         "eyebrow": "Reviews",
         "heading": "What lifters say.",
         "link_label": "Read all reviews"
-      }
+      },
+      "disabled": true
     },
     "psx_video": {
       "type": "psx-video",
@@ -189,7 +190,8 @@
         "button_link": "shopify://collections/shop-all",
         "shape": "portrait",
         "play_label": "Play video"
-      }
+      },
+      "disabled": true
     }
   },
   "order": [
