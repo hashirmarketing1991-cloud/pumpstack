@@ -128,9 +128,9 @@
 .psx-card {
   --i: 0; --d: 0; --card: #1f1d1b; --glow: rgba(255, 255, 255, .22);
   position: sticky; top: calc(var(--deck-top) + var(--i) * 12px);
-  height: min(540px, calc(100vh - var(--deck-top) - var(--n, 7) * 12px - 20px));
-  height: min(540px, calc(100svh - var(--deck-top) - var(--n, 7) * 12px - 20px));
-  min-height: 380px;
+  height: min(700px, calc(100vh - var(--deck-top) - var(--n, 7) * 12px - 20px));
+  height: min(700px, calc(100svh - var(--deck-top) - var(--n, 7) * 12px - 20px));
+  min-height: 400px;
   display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
   margin-bottom: 26px; border-radius: 30px; overflow: hidden;
   background: var(--card); color: #fff;
@@ -149,8 +149,9 @@
 .psx-card__price s { margin-left: 8px; font-weight: 500; font-size: .62em; opacity: .65; }
 .psx-card__media { position: relative; min-width: 0; }
 .psx-card__media::before { content: ""; position: absolute; left: 50%; top: 52%; width: 120%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(closest-side, var(--glow), transparent 72%); }
-.psx-card__media img { position: absolute; left: 50%; top: 56%; height: 108%; width: auto; transform: translate(-50%, -50%) rotate(7deg); filter: drop-shadow(0 24px 30px rgba(0, 0, 0, .28)); }
-.psx-card__media img.psx-wide { height: auto; width: 118%; transform: translate(-50%, -50%) rotate(-4deg); }
+/* The whole pouch stays inside the card: the image box is sized to the media column and the picture is contained in it. */
+.psx-card__media img { position: absolute; left: 50%; top: 50%; width: 94%; height: 90%; object-fit: contain; transform: translate(-50%, -50%) rotate(6deg); filter: drop-shadow(0 24px 30px rgba(0, 0, 0, .28)); }
+.psx-card__media img.psx-wide { left: 46%; width: 112%; height: 86%; transform: translate(-50%, -50%) rotate(-3deg); }
 .psx-card__link { position: absolute; inset: 0; z-index: 1; }
 .psx-card__link span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .psx-card .psx-btn { position: relative; z-index: 2; }
@@ -197,10 +198,10 @@
   .psx-hero__copy { flex-direction: column; gap: 8px; }
   .psx .psx-hero__copy p { text-align: left; }
   .psx-hero__img { width: 310%; bottom: 5%; }
-  .psx-card { grid-template-columns: 1fr; grid-template-rows: 42% 1fr; height: min(600px, calc(100vh - var(--deck-top) - var(--n, 7) * 8px - 14px)); height: min(600px, calc(100svh - var(--deck-top) - var(--n, 7) * 8px - 14px)); min-height: 440px; top: calc(var(--deck-top) + var(--i) * 8px); border-radius: 24px; margin-bottom: 18px; }
+  .psx-card { grid-template-columns: 1fr; grid-template-rows: 52% 1fr; height: min(680px, calc(100vh - var(--deck-top) - var(--n, 7) * 8px - 14px)); height: min(680px, calc(100svh - var(--deck-top) - var(--n, 7) * 8px - 14px)); min-height: 480px; top: calc(var(--deck-top) + var(--i) * 8px); border-radius: 24px; margin-bottom: 18px; }
   .psx-card__media { order: -1; }
-  .psx-card__media img { left: 60%; top: 66%; height: 150%; }
-  .psx-card__media img.psx-wide { width: 96%; height: auto; top: 58%; }
+  .psx-card__media img { left: 56%; top: 53%; width: 80%; height: 92%; }
+  .psx-card__media img.psx-wide { left: 50%; top: 58%; width: 96%; height: 76%; }
   .psx-card__copy { gap: 14px; padding: 20px; }
   .psx-card__top { top: 18px; left: 20px; }
   .psx .psx-card__desc { -webkit-line-clamp: 3; }
