@@ -357,7 +357,11 @@
 .psx .psx-atc:hover { transform: translateY(-2px); }
 .psx .psx-atc[disabled] { opacity: .55; cursor: not-allowed; transform: none; }
 .psx-atc__price { display: inline-flex; align-items: center; min-height: 42px; padding: 0 18px; border-radius: 999px; background: var(--psx-orange); color: #fff; font-weight: 700; font-size: 16px; }
-.psx-product .shopify-payment-button__button { border-radius: 999px !important; min-height: 56px; overflow: hidden; }
+.psx-product .shopify-payment-button { width: 100%; }
+.psx-product .shopify-payment-button__button { width: 100% !important; border-radius: 999px !important; min-height: 56px !important; overflow: hidden; }
+.psx-product .shopify-payment-button__button--unbranded { background: transparent !important; color: var(--psx-ink) !important; border: 2px solid var(--psx-ink) !important; box-shadow: none !important; font-family: var(--psx-font) !important; font-weight: 600 !important; font-size: 16px !important; text-transform: none !important; letter-spacing: 0 !important; }
+.psx-product .shopify-payment-button__button--unbranded:hover { background: var(--psx-ink) !important; color: var(--psx-cream) !important; }
+.psx-product .shopify-payment-button__more-options { font-family: var(--psx-font); font-size: 13px; color: var(--psx-muted); }
 .psx-perks { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 18px 0 0; padding: 0; list-style: none; font-size: 13.5px; color: var(--psx-muted); }
 .psx-perks li, .psx-benefits li { display: flex; align-items: flex-start; gap: 9px; }
 .psx-perks li::before, .psx-benefits li::before {

@@ -1,0 +1,21 @@
+{%- comment -%}
+  Loads the font the psx sections use. Accepts: font (a font_picker value).
+  Rendered by the first psx section on a page (home hero, product).
+{%- endcomment -%}
+{%- if font != blank -%}
+  {%- liquid
+    assign font_400 = font | font_modify: 'weight', '400'
+    assign font_500 = font | font_modify: 'weight', '500'
+    assign font_600 = font | font_modify: 'weight', '600'
+    assign font_700 = font | font_modify: 'weight', '700'
+    assign font_800 = font | font_modify: 'weight', '800'
+  -%}
+  {%- style -%}
+    {{ font_400 | font_face: font_display: 'swap' }}
+    {{ font_500 | font_face: font_display: 'swap' }}
+    {{ font_600 | font_face: font_display: 'swap' }}
+    {{ font_700 | font_face: font_display: 'swap' }}
+    {{ font_800 | font_face: font_display: 'swap' }}
+    :root { --psx-font-picked: {{ font.family }}; }
+  {%- endstyle -%}
+{%- endif -%}

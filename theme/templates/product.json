@@ -31,7 +31,8 @@
         "ingredients_label": "Ingredients",
         "warnings_label": "Warnings",
         "thumbs_label": "Product image",
-        "note": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease."
+        "note": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
+        "font": "poppins_n8"
       }
     },
     "story": {
