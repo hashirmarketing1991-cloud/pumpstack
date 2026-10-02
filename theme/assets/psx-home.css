@@ -404,7 +404,7 @@
 .psx-inside__label { padding: clamp(8px, 1.2vw, 16px); border-radius: 22px; background: #fff; transform: rotate(-2deg); box-shadow: 0 40px 70px -30px rgba(0, 0, 0, .7); }
 .psx-inside__label img { width: 100%; height: auto; border-radius: 10px; }
 .psx-inside .psx-eyebrow { color: rgba(255, 255, 255, .7) !important; }
-.psx.psx-inside h2 { margin: 0; font-weight: 700; font-size: clamp(30px, 4.4vw, 64px); line-height: 1; letter-spacing: -.045em; color: #fff; }
+.psx.psx-inside h2 { margin: 0; font-weight: 700; font-size: clamp(30px, 4.4vw, 64px); line-height: 1.06; letter-spacing: -.045em; color: #fff; }
 .psx.psx-inside h3 { margin: 26px 0 8px; font-weight: 600; font-size: 11px; letter-spacing: .16em; text-transform: uppercase !important; color: rgba(255, 255, 255, .6); }
 .psx.psx-inside p:not(.psx-eyebrow) { margin: 0; max-width: 44em; font-size: 15px; line-height: 1.6; color: rgba(255, 255, 255, .84); }
 
@@ -435,6 +435,7 @@
 }
 @media (max-width: 749px) {
   .psx-product__inner { grid-template-columns: 1fr; gap: 22px; }
+  .psx-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .psx-product__gallery { position: static; }
   .psx-gallery__stage { border-radius: 24px; max-height: none; }
   .psx-gallery__thumb { flex-basis: 64px; height: 64px; border-radius: 14px; }
