@@ -1,355 +1,143 @@
 {
   "sections": {
-    "hero": {
-      "type": "ps-hero",
+    "psx_hero": {
+      "type": "psx-hero",
       "blocks": {
-        "b1": {
-          "type": "bullet",
+        "stat1": {
+          "type": "stat",
           "settings": {
-            "text": "Full pump feel from the first set"
+            "label": "Protein per scoop",
+            "value": "27g"
           }
         },
-        "b2": {
-          "type": "bullet",
+        "stat2": {
+          "type": "stat",
           "settings": {
-            "text": "Steady energy and sharp focus"
-          }
-        },
-        "b3": {
-          "type": "bullet",
-          "settings": {
-            "text": "Every ingredient and dose on the label"
+            "label": "Creatine per serving",
+            "value": "5g"
           }
         }
       },
       "block_order": [
-        "b1",
-        "b2",
-        "b3"
+        "stat1",
+        "stat2"
       ],
       "settings": {
-        "eyebrow": "Third-party tested. Fully disclosed.",
-        "heading": "Bigger pumps. Harder sets.",
-        "subheading": "Clean supplements built for people who lift. No proprietary blends, no hidden doses, no filler. Just the stack that gets you more out of every session.",
-        "cta_label": "Shop now",
+        "heading": "From regimen\nto supplement",
+        "show_mark": true,
+        "subheading": "Clean formulas that fit the way you already train. Every dose is printed on the pouch.",
+        "cta_label": "Shop the lineup",
         "cta_link": "shopify://collections/shop-all",
-        "cta2_label": "Shop protein",
-        "cta2_link": "shopify://collections/shop-all",
-        "microcopy": "Free US shipping over $75. 30-day money-back guarantee.",
-        "badge": "Save up to 17%",
-        "product": "pump-stack-pre-workout",
-        "image": "shopify://shop_images/pump-stack-hero-lifestyle.png"
+        "cta2_label": "See the full stack",
+        "cta2_link": "shopify://products/the-full-pump-stack",
+        "card_heading": "Everything you train with.",
+        "card_text": "Protein, creatine, pre-workout and hydration. One brand, one routine.",
+        "font": "poppins_n8"
       }
     },
-    "trust": {
-      "type": "ps-trust-bar",
+    "psx_marquee": {
+      "type": "psx-marquee",
       "blocks": {
-        "t1": {
+        "m1": {
           "type": "item",
           "settings": {
-            "icon": "lab",
-            "title": "Third-party tested",
-            "text": "Every batch, independent lab"
+            "text": "Free US shipping over $75"
           }
         },
-        "t2": {
+        "m2": {
           "type": "item",
           "settings": {
-            "icon": "label",
-            "title": "Fully disclosed label",
-            "text": "No proprietary blends"
+            "text": "30-day money-back guarantee"
           }
         },
-        "t3": {
+        "m3": {
           "type": "item",
           "settings": {
-            "icon": "truck",
-            "title": "Free US shipping",
-            "text": "On orders over $75"
+            "text": "Every dose on the label"
           }
         },
-        "t4": {
+        "m4": {
           "type": "item",
           "settings": {
-            "icon": "shield",
-            "title": "30-day guarantee",
-            "text": "Love it or your money back"
+            "text": "Built to stack"
           }
         }
       },
       "block_order": [
-        "t1",
-        "t2",
-        "t3",
-        "t4"
+        "m1",
+        "m2",
+        "m3",
+        "m4"
       ],
       "settings": {
-        "tone": "bone"
+        "label": "Store promises",
+        "speed": 36
       }
     },
-    "offer": {
-      "type": "ps-offer",
+    "psx_deck": {
+      "type": "psx-deck",
       "settings": {
-        "product": "pump-stack-whey-protein",
-        "eyebrow": "Our bestseller",
-        "heading": "Whey Protein Concentrate",
-        "text": "27g of protein per scoop and a milk chocolate taste you will look forward to. 100% cross-flow whey, third-party tested. Stock up and save 10%.",
-        "preselect_last": false,
-        "button_label": "Add to cart",
-        "show_dynamic_checkout": true,
-        "reassurance": "30-day money-back guarantee. Free US shipping over $75.",
-        "tone": "white"
-      }
-    },
-    "grid": {
-      "type": "ps-product-grid",
-      "settings": {
-        "eyebrow": "Shop the lineup",
-        "heading": "Built for the pump",
+        "heading_dim": "What we stack.",
+        "heading": "One pouch at a time.",
         "collection": "shop-all",
         "limit": 8,
-        "columns": 4,
-        "tone": "bone"
+        "prefer_mockups": true,
+        "show_price": true,
+        "button_label": "Shop now",
+        "all_label": "Shop all products"
       }
     },
-    "features": {
-      "type": "ps-features",
+    "psx_values": {
+      "type": "psx-values",
       "blocks": {
-        "f1": {
-          "type": "feature",
+        "v1": {
+          "type": "card",
           "settings": {
-            "title": "Fully disclosed labels",
-            "text": "Every ingredient and every dose, printed on the tub. No proprietary blends hiding cheap filler."
+            "title": "Every dose on the label",
+            "text": "Every ingredient and every dose is printed on the pouch. No proprietary blends."
           }
         },
-        "f2": {
-          "type": "feature",
-          "settings": {
-            "title": "Third-party tested",
-            "text": "Each batch goes to an independent lab before it ships, so what is on the label is what is in the scoop."
-          }
-        },
-        "f3": {
-          "type": "feature",
+        "v2": {
+          "type": "card",
           "settings": {
             "title": "Built to stack",
-            "text": "Pre-workout, creatine and electrolytes designed to work together. One routine, better sessions."
+            "text": "Protein, creatine, pre-workout and electrolytes made to work as one routine."
           }
         },
-        "f4": {
-          "type": "feature",
+        "v3": {
+          "type": "card",
           "settings": {
-            "title": "Taste you look forward to",
-            "text": "Mixes clean in seconds. No gritty sludge at the bottom of your shaker."
+            "title": "30 days to decide",
+            "text": "Try it for 30 days. If it is not for you, email us and we will refund you."
           }
         }
       },
       "block_order": [
-        "f1",
-        "f2",
-        "f3",
-        "f4"
+        "v1",
+        "v2",
+        "v3"
       ],
       "settings": {
         "eyebrow": "Why Pump Stack",
         "heading": "No guesswork. No filler.",
-        "text": "Most supplement labels hide the doses that matter. Ours shows every one.",
-        "footnote": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
-        "tone": "dark"
+        "note": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease."
       }
     },
-    "stack": {
-      "type": "ps-stack",
-      "blocks": {
-        "s1": {
-          "type": "step",
-          "settings": {
-            "when": "Before",
-            "title": "Pre-Workout",
-            "text": "Energy, focus and pump for the session ahead"
-          }
-        },
-        "s2": {
-          "type": "step",
-          "settings": {
-            "when": "During",
-            "title": "Electrolyte Hydration",
-            "text": "Replace what you sweat out, set after set"
-          }
-        },
-        "s3": {
-          "type": "step",
-          "settings": {
-            "when": "Every day",
-            "title": "Creatine Monohydrate",
-            "text": "Strength and power that builds over time"
-          }
-        }
-      },
-      "block_order": [
-        "s1",
-        "s2",
-        "s3"
-      ],
+    "psx_cta": {
+      "type": "psx-cta",
       "settings": {
-        "product": "the-full-pump-stack",
-        "eyebrow": "Best value",
-        "heading": "The Full Pump Stack",
-        "text": "The three products our customers stack most, in one box, for less.",
-        "button_label": "Get the full stack"
-      }
-    },
-    "compare": {
-      "type": "ps-comparison",
-      "blocks": {
-        "r1": {
-          "type": "row",
-          "settings": {
-            "feature": "Every dose on the label",
-            "us": true,
-            "them": false
-          }
-        },
-        "r2": {
-          "type": "row",
-          "settings": {
-            "feature": "No proprietary blends",
-            "us": true,
-            "them": false
-          }
-        },
-        "r3": {
-          "type": "row",
-          "settings": {
-            "feature": "Third-party tested every batch",
-            "us": true,
-            "them": false
-          }
-        },
-        "r4": {
-          "type": "row",
-          "settings": {
-            "feature": "Designed to stack together",
-            "us": true,
-            "them": false
-          }
-        },
-        "r5": {
-          "type": "row",
-          "settings": {
-            "feature": "30-day money-back guarantee",
-            "us": true,
-            "them": false
-          }
-        },
-        "r6": {
-          "type": "row",
-          "settings": {
-            "feature": "Tastes good",
-            "us": true,
-            "them": true
-          }
-        }
-      },
-      "block_order": [
-        "r1",
-        "r2",
-        "r3",
-        "r4",
-        "r5",
-        "r6"
-      ],
-      "settings": {
-        "eyebrow": "The difference",
-        "heading": "Pump Stack vs. the rest",
-        "us_label": "Pump Stack",
-        "them_label": "Typical brand",
-        "cta_label": "Shop the stack",
-        "cta_link": "shopify://collections/shop-all",
-        "tone": "bone"
-      }
-    },
-    "guarantee": {
-      "type": "ps-guarantee",
-      "settings": {
-        "days": "30",
-        "heading": "Try it. Feel it. Or get your money back.",
-        "text": "Give Pump Stack 30 days. If you do not feel the difference in your training, email us and we will refund you. No forms, no runaround.",
-        "tone": "sand"
-      }
-    },
-    "faq": {
-      "type": "ps-faq",
-      "blocks": {
-        "q1": {
-          "type": "qa",
-          "settings": {
-            "question": "How fast will I feel the pre-workout?",
-            "answer": "<p>Most people feel it 20 to 30 minutes after one scoop. If you are sensitive to caffeine, start with half a scoop.</p>"
-          }
-        },
-        "q2": {
-          "type": "qa",
-          "settings": {
-            "question": "Can I take the pre-workout and creatine together?",
-            "answer": "<p>Yes. They are designed to stack. Mix creatine into your pre-workout, or take it any time of day. Consistency matters more than timing.</p>"
-          }
-        },
-        "q3": {
-          "type": "qa",
-          "settings": {
-            "question": "Is it third-party tested?",
-            "answer": "<p>Yes. Every batch is tested by an independent lab before it ships.</p>"
-          }
-        },
-        "q4": {
-          "type": "qa",
-          "settings": {
-            "question": "What if it does not work for me?",
-            "answer": "<p>You are covered by our 30-day money-back guarantee. Email us and we will sort out a refund.</p>"
-          }
-        },
-        "q5": {
-          "type": "qa",
-          "settings": {
-            "question": "How long does shipping take?",
-            "answer": "<p>Orders ship within 1 to 2 business days. Most US orders arrive in 3 to 5 business days. Shipping is free on orders over $75.</p>"
-          }
-        },
-        "q6": {
-          "type": "qa",
-          "settings": {
-            "question": "Is Pump Stack safe for me?",
-            "answer": "<p>Our products are for healthy adults 18 and over. If you are pregnant, nursing, have a medical condition or take medication, talk to your doctor first.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "q1",
-        "q2",
-        "q3",
-        "q4",
-        "q5",
-        "q6"
-      ],
-      "settings": {
-        "eyebrow": "Questions",
-        "heading": "Before you buy",
-        "text": "Still not sure? Email us and a real person will reply within one business day.",
-        "open_first": true,
-        "tone": "bone"
+        "heading": "Everyone gets <em>to be</em> strong.",
+        "text": "Start with one pouch or take the full stack.",
+        "button_label": "Shop the lineup",
+        "button_link": "shopify://collections/shop-all"
       }
     }
   },
   "order": [
-    "hero",
-    "trust",
-    "offer",
-    "grid",
-    "features",
-    "stack",
-    "compare",
-    "guarantee",
-    "faq"
+    "psx_hero",
+    "psx_marquee",
+    "psx_deck",
+    "psx_values",
+    "psx_cta"
   ]
 }

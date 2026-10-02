@@ -1,0 +1,3 @@
+{%- comment -%} Shared stylesheet and script for the psx sections. Safe to render more than once. {%- endcomment -%}
+{{ 'psx-home.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'psx-home.js' | asset_url }}" defer></script>

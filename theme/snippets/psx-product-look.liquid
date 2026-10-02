@@ -1,0 +1,65 @@
+{%- comment -%}
+  Works out the card colour, glow and pouch image for a product, from its handle and type.
+  Nothing here needs a metafield. A product that matches no rule takes a colour from the
+  fallback palette by its position, and its own featured image.
+
+  Accepts: product, index (0-based position), prefer_mockups (boolean)
+  Captures to the caller through these variables (render with `include`-free pattern):
+  outputs a single line "card|glow|asset|wide" that the caller splits.
+{%- endcomment -%}
+{%- liquid
+  assign h = product.handle
+  assign t = product.type | downcase
+  assign card = ''
+  assign glow = 'rgba(255, 255, 255, .24)'
+  assign asset = ''
+  assign wide = ''
+
+  if t == 'bundle' or h contains 'full-pump-stack' or product.tags contains 'bundle'
+    assign card = '#c9410d'
+    assign glow = 'rgba(255, 214, 170, .5)'
+    assign asset = 'ps-pouch-full-stack.webp'
+    assign wide = 'psx-wide'
+  elsif h contains 'isolate'
+    assign card = '#0f5f6b'
+    assign glow = 'rgba(120, 225, 228, .38)'
+    assign asset = 'ps-pouch-whey-isolate.webp'
+  elsif h contains 'whey' or t == 'protein'
+    assign card = '#2c6b2f'
+    assign glow = 'rgba(170, 235, 120, .36)'
+    assign asset = 'ps-pouch-whey-concentrate.webp'
+  elsif h contains 'pre-workout' or t == 'pre-workout'
+    assign card = '#b8234f'
+    assign glow = 'rgba(255, 170, 200, .4)'
+    assign asset = 'ps-pouch-pre-workout.webp'
+  elsif h contains 'gumm' or t == 'gummies'
+    assign card = '#53308c'
+    assign glow = 'rgba(200, 170, 255, .4)'
+    assign asset = 'ps-pouch-gummies-blue-raspberry.webp'
+    if h contains 'strawberry'
+      assign asset = 'ps-pouch-gummies-strawberry.webp'
+    endif
+  elsif h contains 'creatine' or t == 'creatine'
+    assign card = '#1d1b18'
+    assign glow = 'rgba(226, 180, 60, .36)'
+    assign asset = 'ps-pouch-creatine.webp'
+  elsif h contains 'electrolyte' or t == 'hydration'
+    assign card = '#16658f'
+    assign glow = 'rgba(140, 220, 245, .4)'
+    assign asset = 'ps-pouch-electrolytes.webp'
+  endif
+
+  if card == ''
+    assign palette = '#0f5f6b,#2c6b2f,#b8234f,#1d1b18,#16658f,#53308c,#c9410d' | split: ','
+    assign pick = index | modulo: palette.size
+    assign card = palette[pick]
+  endif
+
+  unless prefer_mockups
+    if product.featured_media
+      assign asset = ''
+      assign wide = ''
+    endif
+  endunless
+-%}
+{{- card }}|{{ glow }}|{{ asset }}|{{ wide -}}

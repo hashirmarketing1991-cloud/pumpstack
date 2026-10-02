@@ -1,0 +1,57 @@
+{% render 'psx-assets' %}
+<section class="psx psx-values" data-psx-values>
+  {%- if section.settings.eyebrow != blank -%}<p class="psx-eyebrow" data-psx-reveal>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+  {%- if section.settings.heading != blank -%}<h2 data-psx-reveal>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+
+  {%- if section.blocks.size > 0 -%}
+    <div class="psx-values__row">
+      {%- for block in section.blocks -%}
+        <article class="psx-vcard" {{ block.shopify_attributes }}>
+          <div class="psx-vcard__top">
+            <span>{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            {% render 'psx-spark' %}
+          </div>
+          <div>
+            <h3>{{ block.settings.title | escape }}</h3>
+            {%- if block.settings.text != blank -%}<p>{{ block.settings.text | escape }}</p>{%- endif -%}
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.note != blank -%}<p class="psx-values__note">{{ section.settings.note | escape }}</p>{%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "PSX Value cards",
+  "tag": "div",
+  "max_blocks": 3,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why Pump Stack" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "No guesswork. No filler." },
+    { "type": "textarea", "id": "note", "label": "Small print", "default": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease." }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Every dose on the label" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Every ingredient and every dose is printed on the pouch. No proprietary blends." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PSX Value cards",
+      "blocks": [
+        { "type": "card", "settings": { "title": "Every dose on the label", "text": "Every ingredient and every dose is printed on the pouch. No proprietary blends." } },
+        { "type": "card", "settings": { "title": "Built to stack", "text": "Protein, creatine, pre-workout and electrolytes made to work as one routine." } },
+        { "type": "card", "settings": { "title": "30 days to decide", "text": "Try it for 30 days. If it is not for you, email us and we will refund you." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

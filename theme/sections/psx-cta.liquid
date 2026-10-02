@@ -1,0 +1,24 @@
+{% render 'psx-assets' %}
+<section class="psx psx-cta">
+  {%- if section.settings.heading != blank -%}<h2 data-psx-reveal>{{ section.settings.heading }}</h2>{%- endif -%}
+  {%- if section.settings.text != blank -%}<p data-psx-reveal style="--d: 1">{{ section.settings.text | escape }}</p>{%- endif -%}
+  {%- if section.settings.button_label != blank -%}
+    <div class="psx-cta__actions" data-psx-reveal style="--d: 2">
+      <a class="psx-btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label | escape }}</a>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "PSX Closing line",
+  "tag": "div",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "info": "Words set in italic take the orange gradient.", "default": "Everyone gets <em>to be</em> strong." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Start with one pouch or take the full stack." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the lineup" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "PSX Closing line" }]
+}
+{% endschema %}
