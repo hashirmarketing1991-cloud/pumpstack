@@ -119,6 +119,50 @@
     btn.hidden = true;
   }
 
+  /* Product gallery: thumbnails switch the big image. */
+  function onThumb(event) {
+    var thumb = event.target.closest ? event.target.closest('[data-psx-thumb]') : null;
+    if (!thumb) return;
+    var gallery = thumb.closest('[data-psx-gallery]');
+    if (!gallery) return;
+    var index = thumb.getAttribute('data-psx-thumb');
+    [].forEach.call(gallery.querySelectorAll('[data-psx-slide]'), function (slide) {
+      slide.classList.toggle('is-active', slide.getAttribute('data-psx-slide') === index);
+    });
+    [].forEach.call(gallery.querySelectorAll('[data-psx-thumb]'), function (el) {
+      el.classList.toggle('is-active', el === thumb);
+    });
+  }
+
+  /* Product packs: picking a pack updates the price, the button and the variant that gets added. */
+  function onPack(event) {
+    var input = event.target;
+    if (!input || !input.matches || !input.matches('[data-psx-pack]')) return;
+    var root = input.closest('[data-psx-product]');
+    if (!root) return;
+    var price = input.getAttribute('data-price');
+    var compare = input.getAttribute('data-compare');
+    var pct = input.getAttribute('data-pct');
+    var available = input.getAttribute('data-available') === 'true';
+    var set = function (sel, fn) { var el = root.querySelector(sel); if (el) fn(el); };
+    set('[data-psx-variant-id]', function (el) { el.value = input.value; });
+    set('[data-psx-now]', function (el) { el.textContent = price; });
+    set('[data-psx-atc-price]', function (el) { el.textContent = price; });
+    set('[data-psx-was]', function (el) { el.textContent = compare; el.hidden = !compare; });
+    set('[data-psx-save]', function (el) { el.hidden = !compare || pct === '0'; });
+    set('[data-psx-pct]', function (el) { el.textContent = pct; });
+    set('[data-psx-atc]', function (btn) {
+      btn.disabled = !available;
+      var label = btn.querySelector('[data-psx-atc-label]');
+      if (label) label.textContent = btn.getAttribute(available ? 'data-label-add' : 'data-label-sold');
+    });
+    try {
+      var url = new URL(window.location.href);
+      url.searchParams.set('variant', input.value);
+      window.history.replaceState(null, '', url.toString());
+    } catch (e) {}
+  }
+
   function init() {
     collect();
     /* Capture phase, so this also hears themes that scroll an inner wrapper instead of the window. */
@@ -127,6 +171,8 @@
     window.addEventListener('load', measure);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
     document.addEventListener('click', onPlay);
+    document.addEventListener('click', onThumb);
+    document.addEventListener('change', onPack);
     document.addEventListener('shopify:section:load', collect);
     document.addEventListener('shopify:section:reorder', collect);
   }

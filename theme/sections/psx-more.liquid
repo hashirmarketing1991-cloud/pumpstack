@@ -1,0 +1,60 @@
+{% render 'psx-assets' %}
+{%- liquid
+  assign collection = section.settings.collection
+  assign shown = 0
+-%}
+{%- if collection != blank and collection.products_count > 1 -%}
+  <section class="psx psx-more">
+    <div class="psx-more__inner">
+      <div class="psx-more__head">
+        {%- if section.settings.heading != blank -%}<h2 data-psx-reveal>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+        {%- if section.settings.link_label != blank -%}<a class="psx-link" href="{{ collection.url }}">{{ section.settings.link_label | escape }}</a>{%- endif -%}
+      </div>
+      <div class="psx-more__grid">
+        {%- for item in collection.products limit: 12 -%}
+          {%- if item.id == product.id -%}{%- continue -%}{%- endif -%}
+          {%- if shown >= section.settings.limit -%}{%- break -%}{%- endif -%}
+          {%- liquid
+            assign shown = shown | plus: 1
+            capture look
+              render 'psx-product-look', product: item, index: forloop.index0, prefer_mockups: true
+            endcapture
+            assign look = look | strip | split: '|'
+            assign name = item.title
+            assign prefix = item.vendor | append: ' '
+            assign lead = item.title | slice: 0, prefix.size
+            if item.vendor != blank and lead == prefix
+              assign name = item.title | remove_first: prefix
+            endif
+          -%}
+          <a class="psx-mcard" href="{{ item.url }}" style="--card: {{ look[0] }}; --glow: {{ look[1] }}; --d: {{ shown | minus: 1 }}" data-psx-reveal>
+            <span class="psx-mcard__media">
+              {%- if look[2] != blank -%}
+                <img class="{{ look[3] }}" src="{{ look[2] | asset_url }}" alt="" loading="lazy">
+              {%- elsif item.featured_media -%}
+                {{ item.featured_media | image_url: width: 800 | image_tag: loading: 'lazy', alt: '' }}
+              {%- endif -%}
+            </span>
+            <span class="psx-mcard__type">{{ item.type | escape }}</span>
+            <span class="psx-mcard__title">{{ name | escape }}</span>
+            <span class="psx-mcard__price">{{ item.price | money }}</span>
+          </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PSX More products",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Stack it with." },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "The product being viewed is left out." },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 6, "step": 1, "default": 3 },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Shop all" }
+  ],
+  "presets": [{ "name": "PSX More products" }]
+}
+{% endschema %}

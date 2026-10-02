@@ -1,0 +1,16 @@
+{%- comment -%}
+  Label numbers from the product metafield custom.key_facts.
+  Each entry is written as "27g | Protein". Accepts: product, class (optional).
+{%- endcomment -%}
+{%- assign facts = product.metafields.custom.key_facts.value -%}
+{%- if facts != blank -%}
+  <div class="psx-facts {{ class }}">
+    {%- for fact in facts limit: 4 -%}
+      {%- assign parts = fact | split: '|' -%}
+      <div class="psx-fact">
+        <b>{{ parts[0] | strip | escape }}</b>
+        {%- if parts.size > 1 -%}<small>{{ parts[1] | strip | escape }}</small>{%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+{%- endif -%}

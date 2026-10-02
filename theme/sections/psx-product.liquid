@@ -1,0 +1,234 @@
+{% render 'psx-assets' %}
+{%- liquid
+  capture look
+    render 'psx-product-look', product: product, index: 0, prefer_mockups: section.settings.prefer_mockups
+  endcapture
+  assign look = look | strip | split: '|'
+  assign card = look[0]
+  assign glow = look[1]
+  assign asset = look[2]
+  assign wide = look[3]
+
+  assign v = product.selected_or_first_available_variant
+  assign mf = product.metafields.custom
+
+  assign title = product.title
+  assign prefix = product.vendor | append: ' '
+  assign lead = product.title | slice: 0, prefix.size
+  if product.vendor != blank and lead == prefix
+    assign title = product.title | remove_first: prefix
+  endif
+
+  assign tagline = mf.tagline.value
+  if tagline == blank
+    assign tagline = product.description | split: '</p>' | first | strip_html | strip
+  endif
+
+  assign rating = product.metafields.reviews.rating.value
+  assign rating_count = product.metafields.reviews.rating_count.value
+  assign facts_image = mf.facts_image.value
+  assign slide = 0
+-%}
+<section class="psx psx-product" data-psx-product style="--card: {{ card }}; --glow: {{ glow }};">
+  <div class="psx-product__inner">
+    <div class="psx-product__gallery">
+      <div class="psx-gallery" data-psx-gallery>
+        <div class="psx-gallery__stage">
+          {%- if asset != blank -%}
+            <div class="psx-gallery__slide psx-gallery__slide--pouch is-active" data-psx-slide="{{ slide }}">
+              <img class="{{ wide }}" src="{{ asset | asset_url }}" alt="{{ title | escape }}" loading="eager" fetchpriority="high">
+            </div>
+            {%- assign slide = slide | plus: 1 -%}
+          {%- endif -%}
+          {%- for media in product.media -%}
+            {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
+            <div class="psx-gallery__slide psx-gallery__slide--photo{% if slide == 0 %} is-active{% endif %}" data-psx-slide="{{ slide }}">
+              {{ media | image_url: width: 1600 | image_tag:
+                widths: '600, 900, 1200, 1600',
+                sizes: '(min-width: 750px) 50vw, 100vw',
+                loading: 'lazy',
+                alt: media.alt | default: title
+              }}
+            </div>
+            {%- assign slide = slide | plus: 1 -%}
+          {%- endfor -%}
+          {%- if facts_image != blank -%}
+            <div class="psx-gallery__slide psx-gallery__slide--facts{% if slide == 0 %} is-active{% endif %}" data-psx-slide="{{ slide }}">
+              {{ facts_image | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 50vw, 100vw', widths: '600, 900, 1400', alt: 'Supplement Facts' }}
+            </div>
+            {%- assign slide = slide | plus: 1 -%}
+          {%- endif -%}
+        </div>
+
+        {%- if slide > 1 -%}
+          {%- assign thumb = 0 -%}
+          <div class="psx-gallery__thumbs" role="group" aria-label="{{ section.settings.thumbs_label | escape }}">
+            {%- if asset != blank -%}
+              <button class="psx-gallery__thumb psx-gallery__thumb--pouch is-active" type="button" data-psx-thumb="{{ thumb }}" aria-label="{{ section.settings.thumbs_label | escape }} {{ thumb | plus: 1 }}">
+                <img src="{{ asset | asset_url }}" alt="" loading="lazy">
+              </button>
+              {%- assign thumb = thumb | plus: 1 -%}
+            {%- endif -%}
+            {%- for media in product.media -%}
+              {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
+              <button class="psx-gallery__thumb{% if thumb == 0 %} is-active{% endif %}" type="button" data-psx-thumb="{{ thumb }}" aria-label="{{ section.settings.thumbs_label | escape }} {{ thumb | plus: 1 }}">
+                {{ media | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}
+              </button>
+              {%- assign thumb = thumb | plus: 1 -%}
+            {%- endfor -%}
+            {%- if facts_image != blank -%}
+              <button class="psx-gallery__thumb psx-gallery__thumb--facts" type="button" data-psx-thumb="{{ thumb }}" aria-label="Supplement Facts">
+                {{ facts_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}
+              </button>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="psx-product__info">
+      <nav class="psx-crumbs" aria-label="Breadcrumb">
+        <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">/</span>
+        <a href="{{ routes.all_products_collection_url }}">Shop</a><span aria-hidden="true">/</span>
+        <span>{{ title | escape }}</span>
+      </nav>
+
+      <div class="psx-product__meta">
+        {%- if product.type != blank -%}<span class="psx-pill">{{ product.type | escape }}</span>{%- endif -%}
+        {%- if rating != blank and rating_count > 0 -%}
+          {%- assign stars = rating.rating | round -%}
+          <a class="psx-product__rating" href="#psx-reviews">
+            {% render 'psx-stars', rating: stars %}
+            <span>{{ rating.rating | round: 1 }} ({{ rating_count }})</span>
+          </a>
+        {%- endif -%}
+      </div>
+
+      <h1 class="psx-product__title">{{ title | escape }}</h1>
+      {%- if tagline != blank -%}<p class="psx-product__tagline">{{ tagline | escape }}</p>{%- endif -%}
+
+      <div class="psx-product__price">
+        <span class="psx-product__now" data-psx-now>{{ v.price | money }}</span>
+        <s data-psx-was{% unless v.compare_at_price > v.price %} hidden{% endunless %}>{{ v.compare_at_price | money }}</s>
+        {%- liquid
+          assign pct = 0
+          if v.compare_at_price > v.price
+            assign pct = v.compare_at_price | minus: v.price | times: 100.0 | divided_by: v.compare_at_price | round
+          endif
+        -%}
+        <span class="psx-product__save" data-psx-save{% if pct == 0 %} hidden{% endif %}>{{ section.settings.save_label | escape }} <span data-psx-pct>{{ pct }}</span>%</span>
+      </div>
+
+      {% render 'psx-key-facts', product: product %}
+
+      {%- unless product.has_only_default_variant -%}
+        <fieldset class="psx-packs">
+          <legend>{{ product.options.first | escape }}</legend>
+          {%- for variant in product.variants -%}
+            {%- liquid
+              assign vpct = 0
+              if variant.compare_at_price > variant.price
+                assign vpct = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round
+              endif
+            -%}
+            <label class="psx-pack">
+              <input type="radio" name="psx-pack-{{ section.id }}" value="{{ variant.id }}" data-psx-pack
+                data-price="{{ variant.price | money | escape }}"
+                data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
+                data-pct="{{ vpct }}"
+                data-available="{{ variant.available }}"
+                {% if variant.id == v.id %}checked{% endif %}>
+              <span class="psx-pack__body">
+                <span class="psx-pack__title">{{ variant.title | escape }}</span>
+                <span class="psx-pack__price">{{ variant.price | money }}{% if variant.compare_at_price > variant.price %}<s>{{ variant.compare_at_price | money }}</s>{% endif %}</span>
+              </span>
+            </label>
+          {%- endfor -%}
+        </fieldset>
+      {%- endunless -%}
+
+      {%- form 'product', product, class: 'psx-product__form' -%}
+        <input type="hidden" name="id" value="{{ v.id }}" data-psx-variant-id>
+        <button type="submit" name="add" class="psx-atc" data-psx-atc
+          data-label-add="{{ section.settings.button_label | escape }}"
+          data-label-sold="{{ section.settings.sold_out_label | escape }}"
+          {% unless v.available %}disabled{% endunless %}>
+          <span data-psx-atc-label>{% if v.available %}{{ section.settings.button_label | escape }}{% else %}{{ section.settings.sold_out_label | escape }}{% endif %}</span>
+          <span class="psx-atc__price" data-psx-atc-price>{{ v.price | money }}</span>
+        </button>
+        {%- if section.settings.show_dynamic_checkout -%}{{ form | payment_button }}{%- endif -%}
+      {%- endform -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="psx-perks">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- assign benefits = mf.benefits.value -%}
+      {%- if benefits != blank -%}
+        <ul class="psx-benefits">
+          {%- for benefit in benefits -%}<li>{{ benefit | escape }}</li>{%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <div class="psx-acc">
+        {%- if product.description != blank -%}
+          <details open>
+            <summary>{{ section.settings.description_label | escape }}</summary>
+            <div class="psx-acc__body psx-rte">{{ product.description }}</div>
+          </details>
+        {%- endif -%}
+        {%- if mf.directions.value != blank -%}
+          <details>
+            <summary>{{ section.settings.directions_label | escape }}</summary>
+            <div class="psx-acc__body">{{ mf.directions.value | escape | newline_to_br }}</div>
+          </details>
+        {%- endif -%}
+        {%- if mf.ingredients.value != blank -%}
+          <details>
+            <summary>{{ section.settings.ingredients_label | escape }}</summary>
+            <div class="psx-acc__body">{{ mf.ingredients.value | escape | newline_to_br }}</div>
+          </details>
+        {%- endif -%}
+        {%- if mf.warnings.value != blank -%}
+          <details>
+            <summary>{{ section.settings.warnings_label | escape }}</summary>
+            <div class="psx-acc__body">{{ mf.warnings.value | escape | newline_to_br }}</div>
+          </details>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.note != blank -%}<p class="psx-product__note">{{ section.settings.note | escape }}</p>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PSX Product",
+  "tag": "div",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "paragraph", "content": "Title, price, packs, images and description come from the product. Tagline, key facts, benefits, directions, ingredients, warnings and the Supplement Facts image come from the product's metafields." },
+    { "type": "checkbox", "id": "prefer_mockups", "label": "Lead the gallery with the built-in pouch image", "default": true },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Add to cart" },
+    { "type": "text", "id": "sold_out_label", "label": "Sold out label", "default": "Sold out" },
+    { "type": "text", "id": "save_label", "label": "Saving label", "default": "Save" },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show the fast checkout button", "default": true },
+    { "type": "header", "content": "Accordion titles" },
+    { "type": "text", "id": "description_label", "label": "Description", "default": "Description" },
+    { "type": "text", "id": "directions_label", "label": "Directions", "default": "How to use" },
+    { "type": "text", "id": "ingredients_label", "label": "Ingredients", "default": "Ingredients" },
+    { "type": "text", "id": "warnings_label", "label": "Warnings", "default": "Warnings" },
+    { "type": "text", "id": "thumbs_label", "label": "Gallery label for screen readers", "default": "Product image" },
+    { "type": "textarea", "id": "note", "label": "Small print", "default": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease." }
+  ],
+  "blocks": [
+    { "type": "perk", "name": "Perk", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Free US shipping over $75" }] }
+  ],
+  "presets": [{ "name": "PSX Product", "blocks": [{ "type": "perk", "settings": { "text": "Free US shipping over $75" } }, { "type": "perk", "settings": { "text": "30-day money-back guarantee" } }] }]
+}
+{% endschema %}

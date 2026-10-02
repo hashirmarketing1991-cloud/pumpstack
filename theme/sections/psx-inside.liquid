@@ -1,0 +1,44 @@
+{% render 'psx-assets' %}
+{%- liquid
+  assign mf = product.metafields.custom
+  assign label = mf.facts_image.value
+-%}
+{%- if label != blank or mf.ingredients.value != blank -%}
+  <section class="psx psx-inside">
+    <div class="psx-inside__panel{% if label == blank %} psx-inside__panel--plain{% endif %}">
+      {%- if label != blank -%}
+        <div class="psx-inside__label" data-psx-reveal>
+          {{ label | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 750px) 40vw, 90vw', alt: 'Supplement Facts' }}
+        </div>
+      {%- endif -%}
+      <div class="psx-inside__copy">
+        {%- if section.settings.eyebrow != blank -%}<p class="psx-eyebrow" data-psx-reveal>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 data-psx-reveal>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+        {% render 'psx-key-facts', product: product, class: 'psx-facts--dark' %}
+        {%- if mf.ingredients.value != blank -%}
+          <h3>{{ section.settings.ingredients_label | escape }}</h3>
+          <p>{{ mf.ingredients.value | escape | newline_to_br }}</p>
+        {%- endif -%}
+        {%- if mf.directions.value != blank -%}
+          <h3>{{ section.settings.directions_label | escape }}</h3>
+          <p>{{ mf.directions.value | escape | newline_to_br }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PSX What's inside",
+  "tag": "div",
+  "settings": [
+    { "type": "paragraph", "content": "Reads the Supplement Facts image, key facts, ingredients and directions from the product's metafields." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "What's inside" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Every dose on the label." },
+    { "type": "text", "id": "ingredients_label", "label": "Ingredients title", "default": "Ingredients" },
+    { "type": "text", "id": "directions_label", "label": "Directions title", "default": "How to use" }
+  ],
+  "presets": [{ "name": "PSX What's inside" }]
+}
+{% endschema %}

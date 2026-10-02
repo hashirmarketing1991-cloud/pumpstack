@@ -1,9 +1,44 @@
 {% render 'psx-assets' %}
 {%- liquid
   assign video = section.settings.video
-  assign link = section.settings.video_url
   assign cover = section.settings.cover
+  assign ext_type = section.settings.video_url.type
+  assign ext_id = section.settings.video_url.id
+
+  comment
+    On a product page the product's own metafields win: custom.video (file) or custom.video_url (link).
+  endcomment
+  if product
+    assign own_video = product.metafields.custom.video.value
+    assign own_link = product.metafields.custom.video_url.value
+    if own_video != blank
+      assign video = own_video
+    elsif own_link != blank
+      assign video = blank
+      assign ext_type = blank
+      assign ext_id = blank
+      if own_link contains 'youtu.be/'
+        assign ext_type = 'youtube'
+        assign ext_id = own_link | split: 'youtu.be/' | last | split: '?' | first
+      elsif own_link contains 'youtube.com/shorts/'
+        assign ext_type = 'youtube'
+        assign ext_id = own_link | split: 'shorts/' | last | split: '?' | first
+      elsif own_link contains 'v='
+        assign ext_type = 'youtube'
+        assign ext_id = own_link | split: 'v=' | last | split: '&' | first
+      elsif own_link contains 'vimeo.com/'
+        assign ext_type = 'vimeo'
+        assign ext_id = own_link | split: 'vimeo.com/' | last | split: '?' | first | split: '/' | last
+      endif
+    endif
+  endif
+
+  assign show = true
+  if section.settings.hide_empty and video == blank and ext_id == blank
+    assign show = false
+  endif
 -%}
+{%- if show -%}
 <section class="psx psx-video psx-video--{{ section.settings.shape }}">
   <div class="psx-video__panel">
     <div class="psx-video__copy">
@@ -34,18 +69,18 @@
           {%- if cover != blank -%}{{ cover | image_url: width: 1080 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
           {{ play }}
         </button>
-      {%- elsif link != blank -%}
+      {%- elsif ext_id != blank -%}
         {%- if cover != blank -%}
           {{ cover | image_url: width: 1080 | image_tag: class: 'psx-video__media', loading: 'lazy', alt: '' }}
-        {%- elsif link.type == 'youtube' -%}
-          <img class="psx-video__media" src="https://i.ytimg.com/vi/{{ link.id }}/hqdefault.jpg" alt="" loading="lazy">
+        {%- elsif ext_type == 'youtube' -%}
+          <img class="psx-video__media" src="https://i.ytimg.com/vi/{{ ext_id }}/hqdefault.jpg" alt="" loading="lazy">
         {%- endif -%}
         <button class="psx-video__play" type="button" data-psx-play aria-label="{{ section.settings.play_label | escape }}">{{ play }}</button>
         <template>
-          {%- if link.type == 'youtube' -%}
-            <iframe class="psx-video__media" src="https://www.youtube-nocookie.com/embed/{{ link.id }}?autoplay=1&playsinline=1&rel=0" title="{{ section.settings.heading | escape }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+          {%- if ext_type == 'youtube' -%}
+            <iframe class="psx-video__media" src="https://www.youtube-nocookie.com/embed/{{ ext_id }}?autoplay=1&playsinline=1&rel=0" title="{{ section.settings.heading | escape }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
           {%- else -%}
-            <iframe class="psx-video__media" src="https://player.vimeo.com/video/{{ link.id }}?autoplay=1&playsinline=1" title="{{ section.settings.heading | escape }}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            <iframe class="psx-video__media" src="https://player.vimeo.com/video/{{ ext_id }}?autoplay=1&playsinline=1" title="{{ section.settings.heading | escape }}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
           {%- endif -%}
         </template>
       {%- else -%}
@@ -57,6 +92,7 @@
     </div>
   </div>
 </section>
+{%- endif -%}
 
 {% schema %}
 {
@@ -75,6 +111,7 @@
     { "type": "video", "id": "video", "label": "Video", "info": "Upload the file to Shopify. This is used first." },
     { "type": "video_url", "id": "video_url", "label": "Or a YouTube or Vimeo link", "accept": ["youtube", "vimeo"] },
     { "type": "image_picker", "id": "cover", "label": "Cover image", "info": "Shown before the video plays." },
+    { "type": "checkbox", "id": "hide_empty", "label": "Hide this section when there is no video", "info": "On product pages the video comes from the product metafields Product video or Product video link.", "default": false },
     { "type": "select", "id": "shape", "label": "Video shape", "default": "portrait",
       "options": [{ "value": "portrait", "label": "Tall (phone video)" }, { "value": "square", "label": "Square" }, { "value": "landscape", "label": "Wide" }] },
     { "type": "text", "id": "play_label", "label": "Play button label for screen readers", "default": "Play video" }

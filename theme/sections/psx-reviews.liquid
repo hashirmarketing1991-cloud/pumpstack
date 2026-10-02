@@ -1,6 +1,25 @@
 {% render 'psx-assets' %}
-{%- if section.blocks.size > 0 -%}
-<section class="psx psx-reviews">
+{%- liquid
+  assign own = nil
+  if product
+    assign own = product.metafields.custom.reviews.value
+  endif
+  assign manual_count = 0
+  assign app_count = 0
+  for block in section.blocks
+    if block.type == '@app'
+      assign app_count = app_count | plus: 1
+    else
+      assign manual_count = manual_count | plus: 1
+    endif
+  endfor
+  assign show = false
+  if own != blank or manual_count > 0 or app_count > 0
+    assign show = true
+  endif
+-%}
+{%- if show -%}
+<section class="psx psx-reviews" id="psx-reviews">
   <div class="psx-reviews__inner">
     <div class="psx-reviews__head">
       <div>
@@ -12,8 +31,40 @@
       {%- endif -%}
     </div>
 
+    {%- if own != blank or manual_count > 0 -%}
     <div class="psx-reviews__grid">
+      {%- if own != blank -%}
+        {%- for item in own -%}
+          {%- liquid
+            assign name = item.name.value | strip
+            assign initial = name | slice: 0, 1 | upcase
+            assign stars = item.rating.value | default: 5
+            assign mod = forloop.index0 | modulo: 3
+            assign style = 'light'
+            if mod == 1
+              assign style = 'dark'
+            endif
+          -%}
+          <figure class="psx-review psx-review--{{ style }}" data-psx-reveal style="--d: {{ mod }}">
+            <div>
+              <div class="psx-review__top">
+                {% render 'psx-stars', rating: stars %}
+                <span class="psx-review__mark" aria-hidden="true">&ldquo;</span>
+              </div>
+              <blockquote class="psx-review__quote">{{ item.quote.value | escape | newline_to_br }}</blockquote>
+            </div>
+            <figcaption class="psx-review__who">
+              <span class="psx-review__avatar" aria-hidden="true">{{ initial }}</span>
+              <span>
+                <span class="psx-review__name">{{ name | escape }}</span>
+                {%- if item.detail.value != blank -%}<span class="psx-review__detail">{{ item.detail.value | escape }}</span>{%- endif -%}
+              </span>
+            </figcaption>
+          </figure>
+        {%- endfor -%}
+      {%- endif -%}
       {%- for block in section.blocks -%}
+        {%- if block.type == '@app' -%}{%- continue -%}{%- endif -%}
         {%- liquid
           assign name = block.settings.name | strip
           assign initial = name | slice: 0, 1 | upcase
@@ -40,6 +91,14 @@
         </figure>
       {%- endfor -%}
     </div>
+    {%- endif -%}
+    {%- if app_count > 0 -%}
+      <div class="psx-reviews__apps">
+        {%- for block in section.blocks -%}
+          {%- if block.type == '@app' -%}{% render block %}{%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
   </div>
 </section>
 {%- endif -%}
@@ -50,13 +109,14 @@
   "tag": "div",
   "max_blocks": 9,
   "settings": [
-    { "type": "paragraph", "content": "Use real customer reviews only, in the customer's own words." },
+    { "type": "paragraph", "content": "Use real customer reviews only, in the customer's own words. On a product page, reviews saved in the product metafield Customer reviews show first. A reviews app can be added as an app block." },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reviews" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "What lifters say." },
     { "type": "text", "id": "link_label", "label": "Link label", "default": "Read all reviews" },
     { "type": "url", "id": "link", "label": "Link", "info": "The link shows once you add a destination." }
   ],
   "blocks": [
+    { "type": "@app" },
     {
       "type": "review",
       "name": "Review",
