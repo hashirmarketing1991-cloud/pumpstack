@@ -1,0 +1,6 @@
+{%- comment -%} Star row. Accepts: rating (1 to 5). {%- endcomment -%}
+<span class="psx-review__stars" role="img" aria-label="{{ rating }} out of 5 stars">
+  {%- for i in (1..5) -%}
+    <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"{% if i > rating %} class="is-off"{% endif %}><path fill="currentColor" d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L10 14.9l-5.2 2.8 1-5.9L1.5 7.7l5.9-.8z"/></svg>
+  {%- endfor -%}
+</span>

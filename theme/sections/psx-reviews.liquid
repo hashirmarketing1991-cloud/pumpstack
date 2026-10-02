@@ -1,0 +1,85 @@
+{% render 'psx-assets' %}
+{%- if section.blocks.size > 0 -%}
+<section class="psx psx-reviews">
+  <div class="psx-reviews__inner">
+    <div class="psx-reviews__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="psx-eyebrow" data-psx-reveal>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 data-psx-reveal>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+      </div>
+      {%- if section.settings.link_label != blank and section.settings.link != blank -%}
+        <a class="psx-link" href="{{ section.settings.link }}" data-psx-reveal>{{ section.settings.link_label | escape }}</a>
+      {%- endif -%}
+    </div>
+
+    <div class="psx-reviews__grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign name = block.settings.name | strip
+          assign initial = name | slice: 0, 1 | upcase
+        -%}
+        <figure class="psx-review psx-review--{{ block.settings.style }}" data-psx-reveal style="--d: {{ forloop.index0 | modulo: 3 }}" {{ block.shopify_attributes }}>
+          <div>
+            <div class="psx-review__top">
+              {% render 'psx-stars', rating: block.settings.rating %}
+              <span class="psx-review__mark" aria-hidden="true">&ldquo;</span>
+            </div>
+            <blockquote class="psx-review__quote">{{ block.settings.quote | escape | newline_to_br }}</blockquote>
+          </div>
+          <figcaption class="psx-review__who">
+            {%- if block.settings.photo != blank -%}
+              {{ block.settings.photo | image_url: width: 120 | image_tag: class: 'psx-review__avatar', loading: 'lazy', alt: '' }}
+            {%- else -%}
+              <span class="psx-review__avatar" aria-hidden="true">{{ initial }}</span>
+            {%- endif -%}
+            <span>
+              <span class="psx-review__name">{{ name | escape }}</span>
+              {%- if block.settings.detail != blank -%}<span class="psx-review__detail">{{ block.settings.detail | escape }}</span>{%- endif -%}
+            </span>
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PSX Reviews",
+  "tag": "div",
+  "max_blocks": 9,
+  "settings": [
+    { "type": "paragraph", "content": "Use real customer reviews only, in the customer's own words." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Reviews" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What lifters say." },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Read all reviews" },
+    { "type": "url", "id": "link", "label": "Link", "info": "The link shows once you add a destination." }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Review", "default": "Paste a real customer review here. Keep it in their own words." },
+        { "type": "text", "id": "name", "label": "Customer name", "default": "Customer name" },
+        { "type": "text", "id": "detail", "label": "Detail", "info": "For example the product they bought.", "default": "Product they bought" },
+        { "type": "range", "id": "rating", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "image_picker", "id": "photo", "label": "Customer photo" },
+        { "type": "select", "id": "style", "label": "Card style", "default": "light",
+          "options": [{ "value": "light", "label": "White" }, { "value": "dark", "label": "Black" }, { "value": "accent", "label": "Orange" }] }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PSX Reviews",
+      "blocks": [
+        { "type": "review", "settings": { "style": "light" } },
+        { "type": "review", "settings": { "style": "dark" } },
+        { "type": "review", "settings": { "style": "light" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

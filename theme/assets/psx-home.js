@@ -100,6 +100,25 @@
     if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
   }
 
+  /* Video testimonial: start the hosted file, or swap in the YouTube or Vimeo player. */
+  function onPlay(event) {
+    var btn = event.target.closest ? event.target.closest('[data-psx-play]') : null;
+    if (!btn) return;
+    var frame = btn.closest('[data-psx-video]');
+    if (!frame) return;
+    var tpl = frame.querySelector('template');
+    var video = frame.querySelector('video');
+    if (tpl) {
+      frame.appendChild(tpl.content.cloneNode(true));
+    } else if (video) {
+      video.setAttribute('controls', '');
+      var started = video.play();
+      if (started && started.catch) started.catch(function () {});
+    }
+    frame.classList.add('is-playing');
+    btn.hidden = true;
+  }
+
   function init() {
     collect();
     /* Capture phase, so this also hears themes that scroll an inner wrapper instead of the window. */
@@ -107,6 +126,7 @@
     window.addEventListener('resize', measure);
     window.addEventListener('load', measure);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    document.addEventListener('click', onPlay);
     document.addEventListener('shopify:section:load', collect);
     document.addEventListener('shopify:section:reorder', collect);
   }

@@ -131,6 +131,65 @@
         "button_label": "Shop the lineup",
         "button_link": "shopify://collections/shop-all"
       }
+    },
+    "psx_reviews": {
+      "type": "psx-reviews",
+      "blocks": {
+        "r1": {
+          "type": "review",
+          "settings": {
+            "quote": "Paste a real customer review here. Keep it in their own words.",
+            "name": "Customer name",
+            "detail": "Product they bought",
+            "rating": 5,
+            "style": "light"
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "quote": "Paste a real customer review here. Keep it in their own words.",
+            "name": "Customer name",
+            "detail": "Product they bought",
+            "rating": 5,
+            "style": "dark"
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "quote": "Paste a real customer review here. Keep it in their own words.",
+            "name": "Customer name",
+            "detail": "Product they bought",
+            "rating": 5,
+            "style": "light"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2",
+        "r3"
+      ],
+      "settings": {
+        "eyebrow": "Reviews",
+        "heading": "What lifters say.",
+        "link_label": "Read all reviews"
+      }
+    },
+    "psx_video": {
+      "type": "psx-video",
+      "settings": {
+        "eyebrow": "Video testimonial",
+        "heading": "Hear it from them.",
+        "quote": "Add a line the customer says in this video.",
+        "name": "Customer name",
+        "detail": "Product they use",
+        "button_label": "Shop the lineup",
+        "button_link": "shopify://collections/shop-all",
+        "shape": "portrait",
+        "play_label": "Play video"
+      }
     }
   },
   "order": [
@@ -138,6 +197,8 @@
     "psx_marquee",
     "psx_deck",
     "psx_values",
+    "psx_reviews",
+    "psx_video",
     "psx_cta"
   ]
 }

@@ -1,0 +1,84 @@
+{% render 'psx-assets' %}
+{%- liquid
+  assign video = section.settings.video
+  assign link = section.settings.video_url
+  assign cover = section.settings.cover
+-%}
+<section class="psx psx-video psx-video--{{ section.settings.shape }}">
+  <div class="psx-video__panel">
+    <div class="psx-video__copy">
+      {%- if section.settings.eyebrow != blank -%}<p class="psx-eyebrow" data-psx-reveal>{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 data-psx-reveal>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+      {%- if section.settings.quote != blank -%}<blockquote class="psx-video__quote" data-psx-reveal style="--d: 1">{{ section.settings.quote | escape | newline_to_br }}</blockquote>{%- endif -%}
+      {%- if section.settings.name != blank -%}
+        <p class="psx-video__who" data-psx-reveal style="--d: 1">
+          <span class="psx-review__name">{{ section.settings.name | escape }}</span>
+          {%- if section.settings.detail != blank -%}<span class="psx-review__detail">{{ section.settings.detail | escape }}</span>{%- endif -%}
+        </p>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank -%}
+        <div class="psx-video__actions" data-psx-reveal style="--d: 2">
+          <a class="psx-btn psx-btn--light" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label | escape }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="psx-video__frame" data-psx-video>
+      {%- capture play -%}
+        <span class="psx-video__icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 5.2v13.6a1 1 0 0 0 1.5.9l11-6.8a1 1 0 0 0 0-1.8l-11-6.8A1 1 0 0 0 8 5.200z"/></svg></span>
+      {%- endcapture -%}
+
+      {%- if video != blank -%}
+        {{ video | video_tag: controls: false, preload: 'none', playsinline: true, image_size: '1080x', class: 'psx-video__media' }}
+        <button class="psx-video__play" type="button" data-psx-play aria-label="{{ section.settings.play_label | escape }}">
+          {%- if cover != blank -%}{{ cover | image_url: width: 1080 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
+          {{ play }}
+        </button>
+      {%- elsif link != blank -%}
+        {%- if cover != blank -%}
+          {{ cover | image_url: width: 1080 | image_tag: class: 'psx-video__media', loading: 'lazy', alt: '' }}
+        {%- elsif link.type == 'youtube' -%}
+          <img class="psx-video__media" src="https://i.ytimg.com/vi/{{ link.id }}/hqdefault.jpg" alt="" loading="lazy">
+        {%- endif -%}
+        <button class="psx-video__play" type="button" data-psx-play aria-label="{{ section.settings.play_label | escape }}">{{ play }}</button>
+        <template>
+          {%- if link.type == 'youtube' -%}
+            <iframe class="psx-video__media" src="https://www.youtube-nocookie.com/embed/{{ link.id }}?autoplay=1&playsinline=1&rel=0" title="{{ section.settings.heading | escape }}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+          {%- else -%}
+            <iframe class="psx-video__media" src="https://player.vimeo.com/video/{{ link.id }}?autoplay=1&playsinline=1" title="{{ section.settings.heading | escape }}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          {%- endif -%}
+        </template>
+      {%- else -%}
+        <div class="psx-video__empty">
+          {{ play }}
+          <p>Add your customer video in the theme editor.</p>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PSX Video testimonial",
+  "tag": "div",
+  "settings": [
+    { "type": "paragraph", "content": "Use a real customer video and their own words." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Video testimonial" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Hear it from them." },
+    { "type": "textarea", "id": "quote", "label": "Quote", "default": "Add a line the customer says in this video." },
+    { "type": "text", "id": "name", "label": "Customer name", "default": "Customer name" },
+    { "type": "text", "id": "detail", "label": "Detail", "default": "Product they use" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the lineup" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "header", "content": "Video" },
+    { "type": "video", "id": "video", "label": "Video", "info": "Upload the file to Shopify. This is used first." },
+    { "type": "video_url", "id": "video_url", "label": "Or a YouTube or Vimeo link", "accept": ["youtube", "vimeo"] },
+    { "type": "image_picker", "id": "cover", "label": "Cover image", "info": "Shown before the video plays." },
+    { "type": "select", "id": "shape", "label": "Video shape", "default": "portrait",
+      "options": [{ "value": "portrait", "label": "Tall (phone video)" }, { "value": "square", "label": "Square" }, { "value": "landscape", "label": "Wide" }] },
+    { "type": "text", "id": "play_label", "label": "Play button label for screen readers", "default": "Play video" }
+  ],
+  "presets": [{ "name": "PSX Video testimonial" }]
+}
+{% endschema %}
