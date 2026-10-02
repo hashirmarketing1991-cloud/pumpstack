@@ -102,7 +102,8 @@
 
   function init() {
     collect();
-    window.addEventListener('scroll', onScroll, { passive: true });
+    /* Capture phase, so this also hears themes that scroll an inner wrapper instead of the window. */
+    document.addEventListener('scroll', onScroll, { passive: true, capture: true });
     window.addEventListener('resize', measure);
     window.addEventListener('load', measure);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);

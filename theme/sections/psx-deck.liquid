@@ -30,10 +30,19 @@
               assign asset = look[2]
               assign wide = look[3]
 
-              assign title = product.title | remove_first: product.vendor | strip
-              if title == blank
-                assign title = product.title
+              assign title = product.title
+              assign prefix = product.vendor | append: ' '
+              assign lead = product.title | slice: 0, prefix.size
+              if product.vendor != blank and lead == prefix
+                assign title = product.title | remove_first: prefix
               endif
+              assign compare = 0
+              for variant in product.variants
+                if variant.price == product.price
+                  assign compare = variant.compare_at_price
+                  break
+                endif
+              endfor
               assign blurb = product.description | split: '</p>' | first | strip_html | strip
               if blurb == blank
                 assign blurb = product.description | strip_html | truncatewords: 26
@@ -55,7 +64,7 @@
                   {%- if section.settings.show_price -%}
                     <span class="psx-card__price">
                       {{- product.price | money -}}
-                      {%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money }}</s>{%- endif -%}
+                      {%- if compare > product.price -%}<s>{{ compare | money }}</s>{%- endif -%}
                     </span>
                   {%- endif -%}
                   <a class="psx-btn psx-btn--light" href="{{ product.url }}" aria-label="{{ section.settings.button_label | escape }}: {{ title | escape }}">{{ section.settings.button_label | escape }}</a>
@@ -63,7 +72,7 @@
               </div>
               <div class="psx-card__media">
                 {%- if asset != blank -%}
-                  <img class="{{ wide }}" src="{{ asset | asset_url }}" alt="{{ title | escape }}" loading="lazy" decoding="async">
+                  <img class="{{ wide }}" src="{{ asset | asset_url }}" alt="{{ title | escape }}" loading="{% if forloop.index0 < 2 %}eager{% else %}lazy{% endif %}" decoding="async">
                 {%- elsif product.featured_media -%}
                   {{ product.featured_media | image_url: width: 1200 | image_tag:
                     widths: '480, 720, 960, 1200',
