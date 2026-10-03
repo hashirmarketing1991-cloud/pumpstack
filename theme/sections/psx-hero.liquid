@@ -46,13 +46,17 @@
           {{ section.settings.image | image_url: width: 2400 | image_tag:
             class: 'psx-hero__img',
             widths: '900, 1400, 1900, 2400',
-            sizes: '(min-width: 750px) 92vw, 310vw',
+            sizes: '(min-width: 750px) 92vw, 100vw',
             loading: 'eager',
             fetchpriority: 'high',
             alt: section.settings.image.alt | default: section.settings.card_heading
           }}
         {%- else -%}
-          <img class="psx-hero__img" src="{{ 'ps-pouch-lineup.webp' | asset_url }}" width="2400" height="648" alt="{{ section.settings.card_heading | escape }}" loading="eager" fetchpriority="high">
+          {%- comment -%} Phones get a taller group shot so every product stays in view. {%- endcomment -%}
+          <picture>
+            <source media="(max-width: 749px)" srcset="{{ 'ps-pouch-stack-mobile.webp' | asset_url }}" width="1148" height="1550">
+            <img class="psx-hero__img" src="{{ 'ps-pouch-lineup.webp' | asset_url }}" width="2400" height="582" alt="{{ section.settings.card_heading | escape }}" loading="eager" fetchpriority="high">
+          </picture>
         {%- endif -%}
       </div>
     </div>
