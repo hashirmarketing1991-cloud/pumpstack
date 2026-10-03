@@ -21,7 +21,7 @@
         "p2"
       ],
       "settings": {
-        "prefer_mockups": true,
+        "prefer_mockups": false,
         "button_label": "Add to cart",
         "sold_out_label": "Sold out",
         "save_label": "Save",
