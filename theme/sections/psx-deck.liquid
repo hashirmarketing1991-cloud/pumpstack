@@ -7,6 +7,16 @@
     assign count = collection.products_count | at_most: limit
   endif
 -%}
+{%- capture badges -%}
+  {%- for i in (1..3) -%}
+    {%- assign key = 'badge_' | append: i -%}
+    {%- assign text = section.settings[key] -%}
+    {%- if text != blank -%}
+      <li><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="10" fill="#fff"/><path d="M5.8 10.4l2.7 2.7 5.7-6" fill="none" stroke="var(--card)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>{{ text | escape }}</li>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign badges = badges | strip -%}
 <section class="psx psx-deck" data-psx-deck>
   <div class="psx-deck__inner">
     <div class="psx-deck__zone">
@@ -57,6 +67,7 @@
               </div>
               <div class="psx-card__copy">
                 <div>
+                  {%- if badges != blank -%}<ul class="psx-card__badges">{{ badges }}</ul>{%- endif -%}
                   <h3>{{ title | escape }}</h3>
                   {%- if blurb != blank -%}<p class="psx-card__desc">{{ blurb | escape }}</p>{%- endif -%}
                 </div>
@@ -112,6 +123,10 @@
     { "type": "collection", "id": "collection", "label": "Collection", "info": "Every card reads its title, type, first line of the description, price and link from the product." },
     { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 10, "step": 1, "default": 8 },
     { "type": "checkbox", "id": "prefer_mockups", "label": "Use the built-in pouch images", "info": "Turn off to use each product's own first image when it has one.", "default": true },
+    { "type": "header", "content": "Badges above the product name" },
+    { "type": "text", "id": "badge_1", "label": "Badge 1", "info": "Shown on every card. Leave empty to hide.", "default": "Third-party lab tested" },
+    { "type": "text", "id": "badge_2", "label": "Badge 2", "default": "Free US shipping over $75" },
+    { "type": "text", "id": "badge_3", "label": "Badge 3" },
     { "type": "checkbox", "id": "show_price", "label": "Show price", "default": true },
     { "type": "text", "id": "button_label", "label": "Card button label", "default": "Shop now" },
     { "type": "text", "id": "all_label", "label": "Button under the deck", "default": "Shop all products" }
