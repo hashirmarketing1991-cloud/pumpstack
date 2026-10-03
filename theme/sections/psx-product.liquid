@@ -43,9 +43,9 @@
           {%- endif -%}
           {%- for media in product.media -%}
             {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
-            {%- comment -%} A PNG is a cut-out pack shot: show it whole on the product colour. Photos fill the frame. {%- endcomment -%}
+            {%- comment -%} A file named ...-pack.png is a cut-out pack shot: show it whole on the product colour. Photos fill the frame. {%- endcomment -%}
             {%- assign kind = 'photo' -%}
-            {%- if media.preview_image.src contains '.png' -%}{%- assign kind = 'pack' -%}{%- endif -%}
+            {%- if media.preview_image.src contains '-pack.' -%}{%- assign kind = 'pack' -%}{%- endif -%}
             <div class="psx-gallery__slide psx-gallery__slide--{{ kind }}{% if slide == 0 %} is-active{% endif %}" data-psx-slide="{{ slide }}">
               {%- if slide == 0 -%}
                 {{ media | image_url: width: 1600 | image_tag:
@@ -85,7 +85,7 @@
             {%- endif -%}
             {%- for media in product.media -%}
               {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
-              <button class="psx-gallery__thumb{% if media.preview_image.src contains '.png' %} psx-gallery__thumb--pouch{% endif %}{% if thumb == 0 %} is-active{% endif %}" type="button" data-psx-thumb="{{ thumb }}" aria-label="{{ section.settings.thumbs_label | escape }} {{ thumb | plus: 1 }}">
+              <button class="psx-gallery__thumb{% if media.preview_image.src contains '-pack.' %} psx-gallery__thumb--pouch{% endif %}{% if thumb == 0 %} is-active{% endif %}" type="button" data-psx-thumb="{{ thumb }}" aria-label="{{ section.settings.thumbs_label | escape }} {{ thumb | plus: 1 }}">
                 {{ media | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}
               </button>
               {%- assign thumb = thumb | plus: 1 -%}
