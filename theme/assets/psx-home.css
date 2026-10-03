@@ -151,7 +151,7 @@
 .psx-card__media::before { content: ""; position: absolute; left: 50%; top: 52%; width: 120%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(closest-side, var(--glow), transparent 72%); }
 /* The whole pouch stays inside the card: the image box is sized to the media column and the picture is contained in it. */
 .psx-card__media img { position: absolute; left: 50%; top: 50%; width: 94%; height: 90%; object-fit: contain; transform: translate(-50%, -50%) rotate(6deg); filter: drop-shadow(0 24px 30px rgba(0, 0, 0, .28)); }
-.psx-card__media img.psx-wide { left: 46%; width: 112%; height: 86%; transform: translate(-50%, -50%) rotate(-3deg); }
+.psx-card__media img.psx-wide { left: 47%; width: 96%; height: 86%; transform: translate(-50%, -50%) rotate(-3deg); }
 .psx-card__link { position: absolute; inset: 0; z-index: 1; }
 .psx-card__link span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .psx-card .psx-btn { position: relative; z-index: 2; }
