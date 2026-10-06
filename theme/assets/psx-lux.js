@@ -33,6 +33,43 @@
     } catch (e) {}
   }
 
+  /* Width of one picture plus the gap after it. */
+  function stepOf(rail) {
+    var first = rail.firstElementChild;
+    if (!first) return rail.clientWidth * 0.8;
+    var gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
+    return first.getBoundingClientRect().width + gap;
+  }
+
+  /* Keep the arrows and the "2 / 5" counter in step with the picture row. */
+  function syncRail(rail) {
+    var look = rail.closest('[data-lux-look]');
+    if (!look) return;
+    var total = rail.children.length;
+    var max = rail.scrollWidth - rail.clientWidth;
+    var at = rail.scrollLeft;
+    var index = Math.min(total, Math.max(1, Math.round(at / stepOf(rail)) + 1));
+    if (max > 0 && at >= max - 4) index = total;
+    each(look, '[data-lux-prev]', function (btn) { btn.disabled = at <= 4; });
+    each(look, '[data-lux-next]', function (btn) { btn.disabled = max <= 0 || at >= max - 4; });
+    each(look, '[data-lux-count]', function (el) { el.textContent = total > 1 ? index + ' / ' + total : ''; });
+  }
+
+  function watchRails() {
+    each(document, '[data-psx-lux] [data-lux-rail]', function (rail) {
+      if (!rail.__lux) {
+        rail.__lux = true;
+        var queued = false;
+        rail.addEventListener('scroll', function () {
+          if (queued) return;
+          queued = true;
+          window.requestAnimationFrame(function () { queued = false; syncRail(rail); });
+        }, { passive: true });
+      }
+      syncRail(rail);
+    });
+  }
+
   /* Arrows move the picture row by one picture. */
   function onClick(event) {
     var btn = event.target.closest ? event.target.closest('[data-lux-prev], [data-lux-next]') : null;
@@ -40,8 +77,7 @@
     var look = btn.closest('[data-lux-look]');
     var rail = look ? look.querySelector('[data-lux-rail]') : null;
     if (!rail) return;
-    var first = rail.firstElementChild;
-    var step = first ? first.getBoundingClientRect().width + 18 : rail.clientWidth * 0.8;
+    var step = stepOf(rail);
     var dir = btn.hasAttribute('data-lux-prev') ? -1 : 1;
     var smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     rail.scrollBy({ left: dir * step, behavior: smooth ? 'smooth' : 'auto' });
@@ -73,6 +109,7 @@
   function setup() {
     watch();
     centerTabs();
+    watchRails();
   }
 
   function init() {
@@ -81,6 +118,8 @@
     document.addEventListener('click', onClick);
     document.addEventListener('shopify:section:load', setup);
     window.addEventListener('load', centerTabs);
+    window.addEventListener('load', watchRails);
+    window.addEventListener('resize', watchRails);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

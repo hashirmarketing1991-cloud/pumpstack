@@ -5,7 +5,7 @@
   --lux-ghost: #f7f6f2;
   --lux-night: #131110;
   --lux-max: 1240px;
-  --lux-stage: clamp(300px, 48vh, 560px);
+  --lux-stage: clamp(360px, 64vh, 720px);
   --lux-radius: 24px;
   background: var(--lux-paper);
   overflow: clip;
@@ -16,21 +16,21 @@
 .psx-lux .psx-lux__h2--left { margin-bottom: 0; text-align: left; }
 
 /* ---------- Hero ---------- */
-.psx-lux__hero { position: relative; background: var(--lux-stone); padding: clamp(10px, 2vw, 28px) var(--psx-gutter) clamp(40px, 6vw, 80px); text-align: center; }
+.psx-lux__hero { position: relative; background: var(--lux-stone); padding: clamp(6px, 1vw, 14px) var(--psx-gutter) clamp(40px, 6vw, 80px); text-align: center; }
 .psx-lux__stage { position: relative; height: var(--lux-stage); max-width: 1500px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: center; }
 .psx-lux__ghost {
   position: absolute; left: 50%; top: 1%; transform: translateX(-50%);
   font-weight: 800; line-height: .8; letter-spacing: -.045em; white-space: nowrap; color: var(--lux-ghost);
-  font-size: min(calc(118vw / var(--n, 4)), calc(var(--lux-stage) * .82), calc(1540px / var(--n, 4)));
+  font-size: min(calc(118vw / var(--n, 4)), calc(var(--lux-stage) * .7), calc(1540px / var(--n, 4)));
   user-select: none; pointer-events: none;
   animation: psx-lux-in 1.4s ease both;
 }
 @keyframes psx-lux-in { from { opacity: 0; } to { opacity: 1; } }
-.psx-lux .psx-lux__pack { position: relative; height: 100%; width: auto; max-width: 94vw; object-fit: contain; animation: psx-fade 1.1s var(--psx-ease) .15s both; }
+.psx-lux .psx-lux__pack { position: relative; height: 100%; width: auto; max-width: 100vw; object-fit: contain; animation: psx-fade 1.1s var(--psx-ease) .15s both; }
 .psx-lux .psx-lux__pack--wide { height: 84%; margin-bottom: 3%; filter: drop-shadow(0 30px 34px rgba(23, 20, 18, .22)); }
 .psx-lux .psx-lux__pack--photo { height: 92%; margin-bottom: 2%; border-radius: var(--lux-radius); }
 
-.psx-lux__buy { position: relative; max-width: 1280px; margin: clamp(14px, 2vw, 26px) auto 0; }
+.psx-lux__buy { position: relative; max-width: 1280px; margin: clamp(10px, 1.4vw, 20px) auto 0; }
 .psx-lux__tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: clamp(20px, 2.6vw, 34px); }
 .psx-lux__tabs a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; background: rgba(255, 255, 255, .62); font-size: 13.5px; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background .2s ease; }
 .psx-lux__tabs a:hover { background: #fff; }
@@ -146,6 +146,9 @@
 .psx-lux__arrows svg { width: 22px; height: 22px; }
 .psx-lux__rail { display: flex; gap: clamp(12px, 1.6vw, 22px); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 4px max(var(--psx-gutter), calc((100% - var(--lux-max)) / 2 + var(--psx-gutter))); scroll-padding-inline: max(var(--psx-gutter), calc((100% - var(--lux-max)) / 2 + var(--psx-gutter))); }
 .psx-lux__rail::-webkit-scrollbar { display: none; }
+.psx-lux__rail-wrap { position: relative; }
+.psx-lux .psx-lux__nudge { display: none; }
+.psx-lux__count { display: none; }
 .psx-lux__frame { position: relative; flex: 0 0 min(78vw, 440px); aspect-ratio: 1; scroll-snap-align: start; border-radius: var(--lux-radius); overflow: hidden; background: #eceae4; }
 .psx-lux__frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(23, 20, 18, .08); pointer-events: none; }
 .psx-lux__frame--tall { aspect-ratio: 4 / 5; flex-basis: min(72vw, 380px); }
@@ -221,7 +224,7 @@
   .psx-lux__hcard--photo { min-height: 300px; }
 }
 @media (max-width: 749px) {
-  .psx-lux { --lux-stage: clamp(260px, 84vw, 420px); --lux-radius: 20px; }
+  .psx-lux { --lux-stage: clamp(320px, 108vw, 500px); --lux-radius: 20px; }
   .psx-lux__tabs { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; margin-inline: calc(var(--psx-gutter) * -1); padding-inline: var(--psx-gutter); }
   .psx-lux__tabs::-webkit-scrollbar { display: none; }
   .psx-lux__packs { grid-template-columns: minmax(0, 1fr); gap: 14px; }
@@ -242,6 +245,15 @@
   .psx-lux__rline { display: none; }
   .psx-lux__rfoot { flex-direction: column; align-items: flex-start; gap: 8px; padding-top: 12px; }
   .psx-lux__arrows { display: none; }
+  .psx-lux__rail { gap: 12px; }
+  .psx-lux__frame, .psx-lux__frame--tall { flex-basis: 84vw; scroll-snap-align: center; }
+  .psx-lux .psx-lux__nudge { position: absolute; top: 50%; z-index: 2; display: grid; place-items: center; width: 46px; height: 46px; margin-top: -23px; padding: 0; border: 0; border-radius: 50%; background: #fff; color: var(--psx-ink); box-shadow: 0 6px 18px rgba(23, 20, 18, .22); cursor: pointer; transition: opacity .2s ease; }
+  .psx-lux .psx-lux__nudge--prev { left: 10px; }
+  .psx-lux .psx-lux__nudge--next { right: 10px; }
+  .psx-lux .psx-lux__nudge svg { width: 22px; height: 22px; }
+  .psx-lux .psx-lux__nudge[disabled] { opacity: 0; pointer-events: none; }
+  .psx-lux .psx-lux__count { display: block; margin: 14px 0 0; text-align: center; font-size: 13px; font-weight: 600; letter-spacing: .12em; color: var(--psx-muted); }
+  .psx-lux .psx-lux__count:empty { display: none; }
   .psx-lux .psx-lux__bar-btn { padding: 0 20px; }
 }
 @media (prefers-reduced-motion: reduce) {

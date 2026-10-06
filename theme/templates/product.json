@@ -23,6 +23,7 @@
       "settings": {
         "hero_layout": "center",
         "collection": "shop-all",
+        "show_tabs": false,
         "font": "poppins_n8",
         "button_label": "Add to cart",
         "sold_out_label": "Sold out",

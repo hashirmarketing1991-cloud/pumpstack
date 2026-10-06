@@ -105,7 +105,7 @@
     </div>
 
     <div class="psx-lux__buy">
-      {%- if range != blank and range.products_count > 1 -%}
+      {%- if section.settings.show_tabs and range != blank and range.products_count > 1 -%}
         <nav class="psx-lux__tabs" aria-label="{{ section.settings.tabs_label | escape }}">
           {%- for item in range.products limit: 12 -%}
             {%- liquid
@@ -286,6 +286,9 @@
           <button type="button" data-lux-next aria-label="{{ section.settings.next_label | escape }}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
       </div>
+      <div class="psx-lux__rail-wrap">
+      <button type="button" class="psx-lux__nudge psx-lux__nudge--prev" data-lux-prev aria-label="{{ section.settings.prev_label | escape }}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button type="button" class="psx-lux__nudge psx-lux__nudge--next" data-lux-next aria-label="{{ section.settings.next_label | escape }}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="psx-lux__rail" data-lux-rail tabindex="0" role="group" aria-label="{{ section.settings.look_heading | escape }}">
         {%- if shots.size > 0 -%}
           {%- for shot in shots -%}
@@ -309,6 +312,8 @@
           {%- endfor -%}
         {%- endif -%}
       </div>
+      </div>
+      <p class="psx-lux__count" data-lux-count aria-hidden="true"></p>
     </section>
   {%- endif -%}
 
@@ -448,7 +453,8 @@
   "settings": [
     { "type": "paragraph", "content": "Title, price, packs and description come from the product. Tagline, label numbers, story blocks, ingredients, directions, warnings and the Supplement Facts image come from the product's metafields. Pack pictures come from the theme files named ps-lux-*." },
     { "type": "select", "id": "hero_layout", "label": "Top of page layout", "options": [{ "value": "center", "label": "Pack on top, buy box under it" }, { "value": "split", "label": "Pack on the left, buy box on the right" }], "default": "center" },
-    { "type": "collection", "id": "collection", "label": "Range", "info": "Fills the product tabs at the top and the range at the bottom." },
+    { "type": "collection", "id": "collection", "label": "Range", "info": "Fills the range at the bottom, and the product tabs at the top when they are turned on." },
+    { "type": "checkbox", "id": "show_tabs", "label": "Show the other products as tabs under the pack", "default": false },
     { "type": "font_picker", "id": "font", "label": "Font", "default": "poppins_n8" },
     { "type": "header", "content": "Buy box" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Add to cart" },
