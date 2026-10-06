@@ -1,0 +1,489 @@
+{% render 'psx-assets' %}
+{% render 'psx-font', font: section.settings.font %}
+{{ 'psx-lux.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'psx-lux.js' | asset_url }}" defer></script>
+{%- liquid
+  assign light = section.settings.font | font_modify: 'weight', '300'
+
+  capture look
+    render 'psx-product-look', product: product, index: 0, prefer_mockups: true
+  endcapture
+  assign look = look | strip | split: '|'
+  assign card = look[0]
+  assign glow = look[1]
+
+  capture lux
+    render 'psx-lux-look', product: product
+  endcapture
+  assign lux = lux | strip | split: '|'
+  assign ghost = lux[0]
+  assign ghost2 = lux[1]
+  assign front = lux[2]
+  assign back = lux[3]
+  assign band = lux[4]
+  assign shots = lux[5] | split: ','
+  assign wide = lux[6]
+
+  assign v = product.selected_or_first_available_variant
+  assign mf = product.metafields.custom
+  assign form_id = 'lux-form-' | append: section.id
+  assign inside_id = 'lux-inside-' | append: section.id
+  assign use_id = 'lux-use-' | append: section.id
+
+  assign title = product.title
+  assign prefix = product.vendor | append: ' '
+  assign lead = product.title | slice: 0, prefix.size
+  if product.vendor != blank and lead == prefix
+    assign title = product.title | remove_first: prefix
+  endif
+
+  assign paras = product.description | split: '</p>'
+  assign tagline = mf.tagline.value
+  if tagline == blank
+    assign tagline = paras[0] | strip_html | strip
+  endif
+  assign intro = ''
+  if paras.size > 1
+    assign intro = paras[1] | strip_html | strip
+  endif
+
+  assign rating = product.metafields.reviews.rating.value
+  assign rating_count = product.metafields.reviews.rating_count.value
+  assign facts = mf.key_facts.value
+  assign facts_image = mf.facts_image.value
+  assign rows = mf.story.value
+  assign range = section.settings.collection
+
+  assign studio = nil
+  assign photo_count = 0
+  for media in product.media
+    if media.media_type != 'image'
+      continue
+    endif
+    assign photo_count = photo_count | plus: 1
+    if studio == nil
+      unless media.preview_image.src contains '-pack.'
+        assign studio = media
+      endunless
+    endif
+  endfor
+
+  assign studio_alt = title
+  if studio != nil and studio.alt != blank
+    assign studio_alt = studio.alt
+  endif
+
+  assign show_look = false
+  if shots.size > 0 or photo_count >= 3
+    assign show_look = true
+  endif
+-%}
+{%- if light != blank -%}
+  {%- style -%}
+    {{ light | font_face: font_display: 'swap' }}
+  {%- endstyle -%}
+{%- endif -%}
+
+<div class="psx psx-lux{% if section.settings.hero_layout == 'split' %} psx-lux--split{% endif %}" data-psx-lux style="--card: {{ card }}; --glow: {{ glow }};">
+
+  {%- comment -%} ---------- Hero: big word, the pack, and everything needed to buy ---------- {%- endcomment -%}
+  <section class="psx-lux__hero">
+    <div class="psx-lux__stage" style="--n: {{ ghost.size | at_least: 3 }};">
+      <span class="psx-lux__ghost" aria-hidden="true">{{ ghost | escape }}</span>
+      {%- if front != blank -%}
+        <img class="psx-lux__pack{% if wide == 'wide' %} psx-lux__pack--wide{% endif %}" src="{{ front | asset_url }}" alt="{{ title | escape }}" loading="eager" fetchpriority="high">
+      {%- elsif product.featured_media -%}
+        {{ product.featured_media | image_url: width: 1400 | image_tag:
+          class: 'psx-lux__pack psx-lux__pack--photo',
+          widths: '500, 800, 1100, 1400',
+          sizes: '(min-width: 750px) 40vw, 80vw',
+          loading: 'eager',
+          fetchpriority: 'high',
+          alt: title
+        }}
+      {%- endif -%}
+    </div>
+
+    <div class="psx-lux__buy">
+      {%- if range != blank and range.products_count > 1 -%}
+        <nav class="psx-lux__tabs" aria-label="{{ section.settings.tabs_label | escape }}">
+          {%- for item in range.products limit: 12 -%}
+            {%- liquid
+              assign name = item.title
+              assign item_prefix = item.vendor | append: ' '
+              assign item_lead = item.title | slice: 0, item_prefix.size
+              if item.vendor != blank and item_lead == item_prefix
+                assign name = item.title | remove_first: item_prefix
+              endif
+            -%}
+            <a href="{{ item.url }}"{% if item.id == product.id %} class="is-current" aria-current="page"{% endif %}>{{ name | escape }}</a>
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
+
+      <h1 class="psx-lux__title">{{ title | escape }}</h1>
+      {%- if tagline != blank -%}<p class="psx-lux__tagline">{{ tagline | escape }}</p>{%- endif -%}
+
+      {%- if section.blocks.size > 0 or rating != blank -%}
+        <ul class="psx-lux__trust">
+          {%- if rating != blank and rating_count > 0 -%}
+            {%- assign stars = rating.rating | round -%}
+            <li class="psx-lux__rating">
+              <a href="#psx-reviews">
+                {% render 'psx-stars', rating: stars %}
+                <span>{{ rating.rating | round: 1 }} ({{ rating_count }})</span>
+              </a>
+            </li>
+          {%- endif -%}
+          {%- for block in section.blocks -%}
+            <li class="psx-lux__perk" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <div class="psx-lux__price">
+        <b data-lux-price>{{ v.price | money }}</b>
+        <s data-lux-compare{% unless v.compare_at_price > v.price %} hidden{% endunless %}>{{ v.compare_at_price | money }}</s>
+      </div>
+
+      {%- unless product.has_only_default_variant -%}
+        <fieldset class="psx-lux__packs">
+          <legend>{{ product.options.first | escape }}</legend>
+          {%- for variant in product.variants -%}
+            {%- assign bits = variant.title | split: ' - ' -%}
+            <label class="psx-lux__opt">
+              <input type="radio" name="lux-pack-{{ section.id }}" value="{{ variant.id }}" data-lux-pack
+                data-price="{{ variant.price | money | escape }}"
+                data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
+                data-available="{{ variant.available }}"
+                {% if variant.id == v.id %}checked{% endif %}>
+              <span class="psx-lux__opt-body">
+                {%- if bits.size > 1 -%}<span class="psx-lux__opt-tag">{{ bits[1] | escape }}</span>{%- endif -%}
+                <span class="psx-lux__opt-name">{{ bits[0] | escape }}</span>
+                <span class="psx-lux__opt-price">{{ variant.price | money }}</span>
+              </span>
+            </label>
+          {%- endfor -%}
+        </fieldset>
+      {%- endunless -%}
+
+      <div class="psx-lux__buybox" data-lux-buybox>
+        {%- form 'product', product, id: form_id, class: 'psx-lux__form' -%}
+          <input type="hidden" name="id" value="{{ v.id }}" data-lux-variant>
+          <button type="submit" name="add" class="psx-lux__atc" data-lux-atc
+            data-label-add="{{ section.settings.button_label | escape }}"
+            data-label-sold="{{ section.settings.sold_out_label | escape }}"
+            {% unless v.available %}disabled{% endunless %}>
+            <span data-lux-atc-label>{% if v.available %}{{ section.settings.button_label | escape }}{% else %}{{ section.settings.sold_out_label | escape }}{% endif %}</span>
+            <span class="psx-lux__atc-price" data-lux-price>{{ v.price | money }}</span>
+          </button>
+          {%- if section.settings.show_dynamic_checkout -%}{{ form | payment_button }}{%- endif -%}
+        {%- endform -%}
+      </div>
+
+      <div class="psx-lux__links">
+        {%- if facts_image != blank or mf.ingredients.value != blank or back != blank -%}
+          <a href="#{{ inside_id }}">{{ section.settings.facts_label | escape }}</a>
+        {%- endif -%}
+        {%- if mf.directions.value != blank -%}
+          <a href="#{{ use_id }}">{{ section.settings.use_heading | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+
+  {%- comment -%} ---------- The numbers on the label, next to the other side of the pack ---------- {%- endcomment -%}
+  {%- if facts != blank -%}
+    <section class="psx-lux__spec">
+      <div class="psx-lux__wrap psx-lux__spec-grid">
+        <div class="psx-lux__nums">
+          {%- for fact in facts limit: 4 -%}
+            {%- assign parts = fact | split: '|' -%}
+            <div class="psx-lux__num" data-psx-reveal style="--d: {{ forloop.index0 }}">
+              <b>{{ parts[0] | strip | escape }}</b>
+              {%- if parts.size > 1 -%}<span>{{ parts[1] | strip | escape }}</span>{%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+        <div class="psx-lux__spec-media" data-psx-reveal>
+          {%- if back != blank -%}
+            <img class="psx-lux__back" src="{{ back | asset_url }}" alt="{{ section.settings.back_alt | escape }}: {{ title | escape }}" loading="lazy">
+          {%- elsif shots.size > 0 -%}
+            <img class="psx-lux__tile" src="{{ shots[0] | asset_url }}" alt="{{ title | escape }}" loading="lazy">
+          {%- elsif facts_image != blank -%}
+            {{ facts_image | image_url: width: 1200 | image_tag: class: 'psx-lux__tile psx-lux__tile--paper', loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 40vw, 90vw', alt: 'Supplement Facts' }}
+          {%- elsif studio != nil -%}
+            {{ studio | image_url: width: 1200 | image_tag: class: 'psx-lux__tile', loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 40vw, 90vw', alt: studio_alt }}
+          {%- endif -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ---------- Story: a wide picture with the short version of the product over it ---------- {%- endcomment -%}
+  <section class="psx-lux__story">
+    {%- if ghost2 != blank -%}
+      <div class="psx-lux__ghost2" aria-hidden="true" style="--n: {{ ghost2.size | at_least: 4 }};">{{ ghost2 | escape }}</div>
+    {%- endif -%}
+    <div class="psx-lux__band{% if band == blank %} psx-lux__band--packs{% endif %}">
+      {%- if band != blank -%}
+        <img class="psx-lux__cover" src="{{ band | asset_url }}" alt="" loading="lazy">
+      {%- else -%}
+        {%- if back != blank -%}<img class="psx-lux__band-back" src="{{ back | asset_url }}" alt="" loading="lazy">{%- endif -%}
+        {%- if front != blank -%}
+          <img class="psx-lux__band-front{% if wide == 'wide' %} psx-lux__band-front--wide{% endif %}" src="{{ front | asset_url }}" alt="" loading="lazy">
+        {%- elsif product.featured_media -%}
+          {{ product.featured_media | image_url: width: 1600 | image_tag: class: 'psx-lux__cover', loading: 'lazy', widths: '800, 1200, 1600', sizes: '100vw', alt: '' }}
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+    <div class="psx-lux__wrap psx-lux__story-row">
+      <div class="psx-lux__card" data-psx-reveal>
+        {%- if section.settings.story_eyebrow != blank -%}<p class="psx-eyebrow">{{ section.settings.story_eyebrow | escape }}</p>{%- endif -%}
+        <h2>{{ tagline | default: title | escape }}</h2>
+        {%- if intro != blank -%}<p>{{ intro | escape }}</p>{%- endif -%}
+      </div>
+      {%- if shots.size > 2 -%}
+        <div class="psx-lux__shot psx-lux__shot--square" data-psx-reveal style="--d: 1"><img src="{{ shots[2] | asset_url }}" alt="{{ title | escape }}" loading="lazy"></div>
+      {%- elsif studio != nil -%}
+        <div class="psx-lux__shot" data-psx-reveal style="--d: 1">
+          {{ studio | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 36vw, 90vw', alt: studio_alt }}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+
+  {%- comment -%} ---------- Highlights: the product's story blocks, one card each ---------- {%- endcomment -%}
+  {%- if rows != blank -%}
+    <section class="psx-lux__high">
+      <div class="psx-lux__wrap">
+        {%- if section.settings.highlights_heading != blank -%}<h2 class="psx-lux__h2" data-psx-reveal>{{ section.settings.highlights_heading | escape }}</h2>{%- endif -%}
+        <div class="psx-lux__cards">
+          {%- for row in rows limit: 3 -%}
+            <article class="psx-lux__hcard psx-lux__hcard--{% cycle 'card', 'ink', 'light' %}{% if row.image.value != blank %} psx-lux__hcard--photo{% endif %}" data-psx-reveal style="--d: {{ forloop.index0 }}">
+              {%- if row.image.value != blank -%}
+                {{ row.image.value | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '500, 800, 1000', sizes: '(min-width: 750px) 33vw, 90vw', alt: '' }}
+              {%- endif -%}
+              <span class="psx-lux__hnum" aria-hidden="true">{{ forloop.index | prepend: '0' }}</span>
+              <div>
+                <h3>{{ row.heading.value | escape }}</h3>
+                {%- if row.text.value != blank -%}<p>{{ row.text.value | escape | newline_to_br }}</p>{%- endif -%}
+              </div>
+            </article>
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ---------- A closer look: the product's pictures in a row you can swipe ---------- {%- endcomment -%}
+  {%- if show_look -%}
+    <section class="psx-lux__look" data-lux-look>
+      <div class="psx-lux__wrap psx-lux__look-head">
+        <h2 class="psx-lux__h2 psx-lux__h2--left" data-psx-reveal>{{ section.settings.look_heading | escape }}</h2>
+        <div class="psx-lux__arrows">
+          <button type="button" data-lux-prev aria-label="{{ section.settings.prev_label | escape }}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" data-lux-next aria-label="{{ section.settings.next_label | escape }}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+      </div>
+      <div class="psx-lux__rail" data-lux-rail tabindex="0" role="group" aria-label="{{ section.settings.look_heading | escape }}">
+        {%- if shots.size > 0 -%}
+          {%- for shot in shots -%}
+            <div class="psx-lux__frame"><img src="{{ shot | asset_url }}" alt="{{ title | escape }} {{ forloop.index }}" loading="lazy"></div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for media in product.media -%}
+            {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
+            {%- liquid
+              assign kind = 'photo'
+              if media.preview_image.src contains '-pack.'
+                assign kind = 'pack'
+              elsif media.preview_image.aspect_ratio > 1.05
+                assign kind = 'fit'
+              endif
+              assign media_alt = media.alt | default: title
+            -%}
+            <div class="psx-lux__frame psx-lux__frame--tall psx-lux__frame--{{ kind }}">
+              {{ media | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 30vw, 78vw', alt: media_alt }}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ---------- What is inside: the facts panel and the ingredient list ---------- {%- endcomment -%}
+  {%- if facts_image != blank or mf.ingredients.value != blank -%}
+    <section class="psx-lux__inside" id="{{ inside_id }}">
+      <div class="psx-lux__wrap psx-lux__inside-grid{% if facts_image == blank %} psx-lux__inside-grid--plain{% endif %}">
+        {%- if facts_image != blank -%}
+          <div class="psx-lux__label" data-psx-reveal>
+            {{ facts_image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 750px) 40vw, 90vw', alt: 'Supplement Facts' }}
+          </div>
+        {%- endif -%}
+        <div class="psx-lux__inside-copy">
+          {%- if section.settings.inside_eyebrow != blank -%}<p class="psx-eyebrow" data-psx-reveal>{{ section.settings.inside_eyebrow | escape }}</p>{%- endif -%}
+          {%- if section.settings.inside_heading != blank -%}<h2 data-psx-reveal>{{ section.settings.inside_heading | escape }}</h2>{%- endif -%}
+          {% render 'psx-key-facts', product: product, class: 'psx-facts--dark' %}
+          {%- if mf.ingredients.value != blank -%}
+            <h3>{{ section.settings.ingredients_label | escape }}</h3>
+            <p>{{ mf.ingredients.value | escape | newline_to_br }}</p>
+          {%- endif -%}
+          {%- assign benefits = mf.benefits.value -%}
+          {%- if benefits != blank -%}
+            <ul class="psx-lux__ticks">
+              {%- for benefit in benefits -%}<li>{{ benefit | escape }}</li>{%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ---------- How to use it, then the full details ---------- {%- endcomment -%}
+  <section class="psx-lux__use" id="{{ use_id }}">
+    <div class="psx-lux__use-in">
+      {%- if mf.directions.value != blank -%}
+        <p class="psx-eyebrow" data-psx-reveal>{{ section.settings.use_heading | escape }}</p>
+        <p class="psx-lux__big" data-psx-reveal>{{ mf.directions.value | escape | newline_to_br }}</p>
+      {%- endif -%}
+      <div class="psx-acc psx-acc--large">
+        {%- if product.description != blank -%}
+          <details>
+            <summary>{{ section.settings.description_label | escape }}</summary>
+            <div class="psx-acc__body psx-rte">{{ product.description }}</div>
+          </details>
+        {%- endif -%}
+        {%- if mf.warnings.value != blank -%}
+          <details>
+            <summary>{{ section.settings.warnings_label | escape }}</summary>
+            <div class="psx-acc__body">{{ mf.warnings.value | escape | newline_to_br }}</div>
+          </details>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.note != blank -%}<p class="psx-lux__note">{{ section.settings.note | escape }}</p>{%- endif -%}
+    </div>
+  </section>
+
+  {%- comment -%} ---------- Lab report: only shows once a link is added ---------- {%- endcomment -%}
+  {%- if section.settings.lab_link != blank -%}
+    <section class="psx-lux__lab">
+      <div class="psx-lux__wrap">
+        <div class="psx-lux__lab-card" data-psx-reveal>
+          <div>
+            {%- if section.settings.lab_eyebrow != blank -%}<p class="psx-eyebrow">{{ section.settings.lab_eyebrow | escape }}</p>{%- endif -%}
+            <h2>{{ section.settings.lab_heading | escape }}</h2>
+            {%- if section.settings.lab_text != blank -%}<p>{{ section.settings.lab_text | escape }}</p>{%- endif -%}
+          </div>
+          <a class="psx-btn psx-btn--light" href="{{ section.settings.lab_link }}">{{ section.settings.lab_label | escape }}</a>
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ---------- The whole range, with this product marked ---------- {%- endcomment -%}
+  {%- if range != blank and range.products_count > 1 -%}
+    <section class="psx-lux__range">
+      <div class="psx-lux__wrap">
+        {%- if section.settings.range_heading != blank -%}<h2 class="psx-lux__h2" data-psx-reveal>{{ section.settings.range_heading | escape }}</h2>{%- endif -%}
+        <div class="psx-lux__rgrid">
+          {%- for item in range.products limit: 12 -%}
+            {%- liquid
+              capture item_look
+                render 'psx-product-look', product: item, index: forloop.index0, prefer_mockups: true
+              endcapture
+              assign item_look = item_look | strip | split: '|'
+              assign name = item.title
+              assign item_prefix = item.vendor | append: ' '
+              assign item_lead = item.title | slice: 0, item_prefix.size
+              if item.vendor != blank and item_lead == item_prefix
+                assign name = item.title | remove_first: item_prefix
+              endif
+              assign line = item.metafields.custom.tagline.value
+            -%}
+            <a class="psx-lux__rcard{% if item.id == product.id %} is-current{% endif %}" href="{{ item.url }}"{% if item.id == product.id %} aria-current="page"{% endif %} data-psx-reveal style="--d: {{ forloop.index0 | modulo: 4 }}">
+              <span class="psx-lux__rmedia">
+                {%- if item_look[2] != blank -%}
+                  <img class="{{ item_look[3] }}" src="{{ item_look[2] | asset_url }}" alt="" loading="lazy">
+                {%- elsif item.featured_media -%}
+                  {{ item.featured_media | image_url: width: 600 | image_tag: loading: 'lazy', alt: '' }}
+                {%- endif -%}
+              </span>
+              <span class="psx-lux__rtype">{{ item.type | escape }}</span>
+              <span class="psx-lux__rname">{{ name | escape }}</span>
+              {%- if line != blank -%}<span class="psx-lux__rline">{{ line | truncate: 78 | escape }}</span>{%- endif -%}
+              <span class="psx-lux__rfoot">
+                <b>{{ item.price | money }}</b>
+                <i>{% if item.id == product.id %}{{ section.settings.range_current | escape }}{% else %}{{ section.settings.range_view | escape }}{% endif %}</i>
+              </span>
+            </a>
+          {%- endfor -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} ---------- Bar that stays at the bottom while the main button is off screen ---------- {%- endcomment -%}
+  <div class="psx-lux__bar" data-lux-bar>
+    <div class="psx-lux__bar-in">
+      <div class="psx-lux__bar-name">
+        <b>{{ title | escape }}</b>
+        <span data-lux-price>{{ v.price | money }}</span>
+      </div>
+      <button type="submit" form="{{ form_id }}" name="add" class="psx-lux__bar-btn" data-lux-atc
+        data-label-add="{{ section.settings.button_label | escape }}"
+        data-label-sold="{{ section.settings.sold_out_label | escape }}"
+        {% unless v.available %}disabled{% endunless %}>
+        <span data-lux-atc-label>{% if v.available %}{{ section.settings.button_label | escape }}{% else %}{{ section.settings.sold_out_label | escape }}{% endif %}</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "PSX Luxury product",
+  "tag": "div",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "paragraph", "content": "Title, price, packs and description come from the product. Tagline, label numbers, story blocks, ingredients, directions, warnings and the Supplement Facts image come from the product's metafields. Pack pictures come from the theme files named ps-lux-*." },
+    { "type": "select", "id": "hero_layout", "label": "Top of page layout", "options": [{ "value": "center", "label": "Pack on top, buy box under it" }, { "value": "split", "label": "Pack on the left, buy box on the right" }], "default": "center" },
+    { "type": "collection", "id": "collection", "label": "Range", "info": "Fills the product tabs at the top and the range at the bottom." },
+    { "type": "font_picker", "id": "font", "label": "Font", "default": "poppins_n8" },
+    { "type": "header", "content": "Buy box" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Add to cart" },
+    { "type": "text", "id": "sold_out_label", "label": "Sold out label", "default": "Sold out" },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show the fast checkout button", "default": true },
+    { "type": "text", "id": "facts_label", "label": "Link to the facts", "default": "Nutrition facts" },
+    { "type": "text", "id": "tabs_label", "label": "Product tabs label for screen readers", "default": "Products" },
+    { "type": "header", "content": "Headings" },
+    { "type": "text", "id": "story_eyebrow", "label": "Story label", "default": "The short version" },
+    { "type": "text", "id": "highlights_heading", "label": "Highlights heading", "default": "Highlights." },
+    { "type": "text", "id": "look_heading", "label": "Pictures heading", "default": "A closer look." },
+    { "type": "text", "id": "inside_eyebrow", "label": "Facts label", "default": "What is inside" },
+    { "type": "text", "id": "inside_heading", "label": "Facts heading", "default": "Every dose is on the label." },
+    { "type": "text", "id": "ingredients_label", "label": "Ingredients title", "default": "Ingredients" },
+    { "type": "text", "id": "use_heading", "label": "Directions title", "default": "How to use it" },
+    { "type": "text", "id": "description_label", "label": "Description title", "default": "Full description" },
+    { "type": "text", "id": "warnings_label", "label": "Warnings title", "default": "Warnings" },
+    { "type": "text", "id": "range_heading", "label": "Range heading", "default": "Which Pump Stack is right for you?" },
+    { "type": "text", "id": "range_view", "label": "Range link label", "default": "View" },
+    { "type": "text", "id": "range_current", "label": "Label on the product being viewed", "default": "You are here" },
+    { "type": "header", "content": "Lab report", "info": "This block stays hidden until you add a link." },
+    { "type": "text", "id": "lab_eyebrow", "label": "Label", "default": "Lab report" },
+    { "type": "text", "id": "lab_heading", "label": "Heading", "default": "See the test for your batch." },
+    { "type": "textarea", "id": "lab_text", "label": "Text", "default": "Every batch is checked by an outside lab. Open the report and read it yourself." },
+    { "type": "text", "id": "lab_label", "label": "Button label", "default": "View lab report" },
+    { "type": "url", "id": "lab_link", "label": "Link to the report" },
+    { "type": "header", "content": "Small print" },
+    { "type": "text", "id": "back_alt", "label": "Back of pack picture description", "default": "Back of pack" },
+    { "type": "text", "id": "prev_label", "label": "Previous picture label", "default": "Previous picture" },
+    { "type": "text", "id": "next_label", "label": "Next picture label", "default": "Next picture" },
+    { "type": "textarea", "id": "note", "label": "Small print", "default": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease." }
+  ],
+  "blocks": [
+    { "type": "perk", "name": "Perk", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Free US shipping over $75" }] }
+  ],
+  "presets": [{ "name": "PSX Luxury product", "blocks": [{ "type": "perk", "settings": { "text": "Free US shipping over $75" } }, { "type": "perk", "settings": { "text": "30-day money-back guarantee" } }] }]
+}
+{% endschema %}

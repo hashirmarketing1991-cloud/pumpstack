@@ -1,0 +1,82 @@
+{%- comment -%}
+  Picks the words and pictures the luxury product page uses for a product, from its handle and type.
+  Nothing here needs a metafield. A product that matches no rule falls back to its own images
+  and to the first word of its title.
+
+  Accepts: product
+  Outputs one line the caller splits on "|":
+    ghost | ghost2 | front | back | band | gallery (comma list) | wide
+
+    ghost    big word behind the pack in the hero
+    ghost2   big word above the story band
+    front    theme asset: cut-out pack with its floor shadow
+    back     theme asset: back of the pack
+    band     theme asset: wide lifestyle photo for the story band
+    gallery  theme assets for the "closer look" row
+    wide     "wide" when the front image is a group shot
+{%- endcomment -%}
+{%- liquid
+  assign h = product.handle
+  assign t = product.type | downcase
+  assign ghost = ''
+  assign ghost2 = ''
+  assign front = ''
+  assign back = ''
+  assign band = ''
+  assign gallery = ''
+  assign wide = ''
+
+  if t == 'bundle' or h contains 'full-pump-stack' or product.tags contains 'bundle'
+    assign ghost = 'STACK'
+    assign ghost2 = 'TOGETHER'
+    assign front = 'ps-pouch-full-stack.webp'
+    assign wide = 'wide'
+  elsif h contains 'isolate'
+    assign ghost = 'WHEY'
+    assign ghost2 = 'ISOLATE'
+    assign front = 'ps-lux-whey-isolate.webp'
+    assign back = 'ps-lux-whey-isolate-back.webp'
+  elsif h contains 'whey' or t == 'protein'
+    assign ghost = 'WHEY'
+    assign ghost2 = 'PROTEIN'
+    assign front = 'ps-lux-whey-concentrate.webp'
+    assign back = 'ps-lux-whey-concentrate-back.webp'
+  elsif h contains 'pre-workout' or t == 'pre-workout'
+    assign ghost = 'PUMP'
+    assign ghost2 = 'FOCUS'
+    assign front = 'ps-lux-pre-workout.webp'
+    assign back = 'ps-lux-pre-workout-back.webp'
+  elsif h contains 'gumm' or t == 'gummies'
+    assign ghost = 'GUMMIES'
+    assign ghost2 = 'CREATINE'
+    assign front = 'ps-lux-gummies-blue-raspberry.webp'
+    assign band = 'ps-lux-gummies-life.webp'
+    assign gallery = 'ps-lux-gummies-1.webp,ps-lux-gummies-2.webp,ps-lux-gummies-5.webp,ps-lux-gummies-4.webp,ps-lux-gummies-3.webp'
+    if h contains 'strawberry'
+      assign front = 'ps-lux-gummies-strawberry.webp'
+      assign band = ''
+      assign gallery = ''
+    endif
+  elsif h contains 'creatine' or t == 'creatine'
+    assign ghost = 'CREATINE'
+    assign ghost2 = 'STRENGTH'
+    assign front = 'ps-lux-creatine.webp'
+    assign back = 'ps-lux-creatine-back.webp'
+  elsif h contains 'electrolyte' or t == 'hydration'
+    assign ghost = 'HYDRATE'
+    assign ghost2 = 'ELECTROLYTES'
+    assign front = 'ps-lux-electrolytes.webp'
+    assign back = 'ps-lux-electrolytes-back.webp'
+  endif
+
+  if ghost == ''
+    assign name = product.title
+    assign prefix = product.vendor | append: ' '
+    assign lead = product.title | slice: 0, prefix.size
+    if product.vendor != blank and lead == prefix
+      assign name = product.title | remove_first: prefix
+    endif
+    assign ghost = name | split: ' ' | first | upcase
+  endif
+-%}
+{{- ghost }}|{{ ghost2 }}|{{ front }}|{{ back }}|{{ band }}|{{ gallery }}|{{ wide -}}

@@ -1,7 +1,7 @@
 {
   "sections": {
     "main": {
-      "type": "psx-lux",
+      "type": "psx-product",
       "blocks": {
         "p1": {
           "type": "perk",
@@ -21,34 +21,34 @@
         "p2"
       ],
       "settings": {
-        "hero_layout": "center",
-        "collection": "shop-all",
-        "font": "poppins_n8",
+        "prefer_mockups": false,
         "button_label": "Add to cart",
         "sold_out_label": "Sold out",
+        "save_label": "Save",
         "show_dynamic_checkout": true,
-        "facts_label": "Nutrition facts",
-        "tabs_label": "Products",
-        "story_eyebrow": "The short version",
-        "highlights_heading": "Highlights.",
-        "look_heading": "A closer look.",
-        "inside_eyebrow": "What is inside",
-        "inside_heading": "Every dose is on the label.",
+        "description_label": "Description",
+        "directions_label": "How to use",
         "ingredients_label": "Ingredients",
-        "use_heading": "How to use it",
-        "description_label": "Full description",
         "warnings_label": "Warnings",
-        "range_heading": "Which Pump Stack is right for you?",
-        "range_view": "View",
-        "range_current": "You are here",
-        "lab_eyebrow": "Lab report",
-        "lab_heading": "See the test for your batch.",
-        "lab_text": "Every batch is checked by an outside lab. Open the report and read it yourself.",
-        "lab_label": "View lab report",
-        "back_alt": "Back of pack",
-        "prev_label": "Previous picture",
-        "next_label": "Next picture",
-        "note": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease."
+        "thumbs_label": "Product image",
+        "note": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
+        "font": "poppins_n8"
+      }
+    },
+    "story": {
+      "type": "psx-story",
+      "settings": {
+        "eyebrow": "The details",
+        "heading": "What you get in every scoop."
+      }
+    },
+    "inside": {
+      "type": "psx-inside",
+      "settings": {
+        "eyebrow": "What's inside",
+        "heading": "Every dose on the label.",
+        "ingredients_label": "Ingredients",
+        "directions_label": "How to use"
       }
     },
     "video": {
@@ -108,6 +108,15 @@
         "heading": "Good to know."
       }
     },
+    "more": {
+      "type": "psx-more",
+      "settings": {
+        "heading": "Stack it with.",
+        "collection": "shop-all",
+        "limit": 3,
+        "link_label": "Shop all"
+      }
+    },
     "cta": {
       "type": "psx-cta",
       "settings": {
@@ -120,9 +129,12 @@
   },
   "order": [
     "main",
+    "story",
+    "inside",
     "video",
     "reviews",
     "faq",
+    "more",
     "cta"
   ]
 }
