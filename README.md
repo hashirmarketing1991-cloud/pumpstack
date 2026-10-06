@@ -15,9 +15,10 @@ Premium, conversion-focused storefront for Pump Stack supplements, built on Shop
 ## Luxury product page
 
 - `theme/sections/psx-lux.liquid` is the product page: big word and pack on top, label numbers, story band, highlights, pictures, facts, directions and the full range. `theme/templates/product.json` uses it. The earlier page is kept as `theme/templates/product.classic.json`.
-- `theme/snippets/psx-lux-look.liquid` picks the big word and the pack pictures for each product from its handle.
+- Pictures come from the product, not the theme. Each product has these metafields: Pack picture (front), Pack picture (back), Story picture, Closer look pictures and Big word behind the pack. A product with none of them shows its own product photos.
+- `theme/snippets/psx-lux-look.liquid` picks the big words for each product from its handle when the metafield is empty.
 - `theme/assets/psx-lux.css` and `theme/assets/psx-lux.js` style it and run the pack picker, the bottom bar and the picture row.
-- `theme/assets/ps-lux-*.webp` are the pack pictures (front with floor shadow, back of pack, and the Blue Raspberry gummies set). `theme/assets/ps-pouch-*.webp` are the same packs cut out with no shadow, used on cards.
+- `mockups/lux/` holds the full-size pictures that were uploaded to Shopify Files for those metafields. `theme/assets/ps-pouch-*.webp` are the packs cut out with no shadow, used on the home page cards.
 
 ## Where it lives in Shopify
 

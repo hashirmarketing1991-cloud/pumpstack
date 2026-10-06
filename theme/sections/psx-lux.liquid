@@ -18,14 +18,29 @@
   assign lux = lux | strip | split: '|'
   assign ghost = lux[0]
   assign ghost2 = lux[1]
-  assign front = lux[2]
-  assign back = lux[3]
-  assign band = lux[4]
-  assign shots = lux[5] | split: ','
-  assign wide = lux[6]
 
   assign v = product.selected_or_first_available_variant
   assign mf = product.metafields.custom
+
+  assign front = mf.pack_front.value
+  assign back = mf.pack_back.value
+  assign band = mf.story_image.value
+  assign shots = mf.gallery.value
+  assign shot_count = 0
+  if shots != blank
+    for shot in shots
+      assign shot_count = shot_count | plus: 1
+    endfor
+  endif
+  assign pack_class = 'psx-lux__pack'
+  assign band_class = 'psx-lux__band-front'
+  if front != blank and front.aspect_ratio > 1.15
+    assign pack_class = 'psx-lux__pack psx-lux__pack--wide'
+    assign band_class = 'psx-lux__band-front psx-lux__band-front--wide'
+  endif
+  if mf.big_word.value != blank
+    assign ghost = mf.big_word.value | upcase
+  endif
   assign form_id = 'lux-form-' | append: section.id
   assign inside_id = 'lux-inside-' | append: section.id
   assign use_id = 'lux-use-' | append: section.id
@@ -74,7 +89,7 @@
   endif
 
   assign show_look = false
-  if shots.size > 0 or photo_count >= 3
+  if shot_count > 0 or photo_count >= 3
     assign show_look = true
   endif
 -%}
@@ -91,7 +106,14 @@
     <div class="psx-lux__stage" style="--n: {{ ghost.size | at_least: 3 }};">
       <span class="psx-lux__ghost" aria-hidden="true">{{ ghost | escape }}</span>
       {%- if front != blank -%}
-        <img class="psx-lux__pack{% if wide == 'wide' %} psx-lux__pack--wide{% endif %}" src="{{ front | asset_url }}" alt="{{ title | escape }}" loading="eager" fetchpriority="high">
+        {{ front | image_url: width: 1800 | image_tag:
+          class: pack_class,
+          widths: '500, 800, 1100, 1400, 1800',
+          sizes: '(min-width: 750px) 60vw, 100vw',
+          loading: 'eager',
+          fetchpriority: 'high',
+          alt: title
+        }}
       {%- elsif product.featured_media -%}
         {{ product.featured_media | image_url: width: 1400 | image_tag:
           class: 'psx-lux__pack psx-lux__pack--photo',
@@ -207,9 +229,10 @@
         </div>
         <div class="psx-lux__spec-media" data-psx-reveal>
           {%- if back != blank -%}
-            <img class="psx-lux__back" src="{{ back | asset_url }}" alt="{{ section.settings.back_alt | escape }}: {{ title | escape }}" loading="lazy">
-          {%- elsif shots.size > 0 -%}
-            <img class="psx-lux__tile" src="{{ shots[0] | asset_url }}" alt="{{ title | escape }}" loading="lazy">
+            {%- assign back_alt = section.settings.back_alt | append: ': ' | append: title -%}
+            {{ back | image_url: width: 1400 | image_tag: class: 'psx-lux__back', loading: 'lazy', widths: '400, 600, 900, 1400', sizes: '(min-width: 750px) 430px, 78vw', alt: back_alt }}
+          {%- elsif shot_count > 0 -%}
+            {{ shots.first | image_url: width: 1400 | image_tag: class: 'psx-lux__tile', loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 750px) 560px, 90vw', alt: title }}
           {%- elsif facts_image != blank -%}
             {{ facts_image | image_url: width: 1200 | image_tag: class: 'psx-lux__tile psx-lux__tile--paper', loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 40vw, 90vw', alt: 'Supplement Facts' }}
           {%- elsif studio != nil -%}
@@ -227,11 +250,13 @@
     {%- endif -%}
     <div class="psx-lux__band{% if band == blank %} psx-lux__band--packs{% endif %}">
       {%- if band != blank -%}
-        <img class="psx-lux__cover" src="{{ band | asset_url }}" alt="" loading="lazy">
+        {{ band | image_url: width: 2400 | image_tag: class: 'psx-lux__cover', loading: 'lazy', widths: '800, 1200, 1600, 2000, 2400', sizes: '(min-width: 1400px) 1400px, 100vw', alt: '' }}
       {%- else -%}
-        {%- if back != blank -%}<img class="psx-lux__band-back" src="{{ back | asset_url }}" alt="" loading="lazy">{%- endif -%}
+        {%- if back != blank -%}
+          {{ back | image_url: width: 1200 | image_tag: class: 'psx-lux__band-back', loading: 'lazy', widths: '400, 700, 1000, 1200', sizes: '(min-width: 750px) 30vw, 50vw', alt: '' }}
+        {%- endif -%}
         {%- if front != blank -%}
-          <img class="psx-lux__band-front{% if wide == 'wide' %} psx-lux__band-front--wide{% endif %}" src="{{ front | asset_url }}" alt="" loading="lazy">
+          {{ front | image_url: width: 1400 | image_tag: class: band_class, loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 750px) 45vw, 70vw', alt: '' }}
         {%- elsif product.featured_media -%}
           {{ product.featured_media | image_url: width: 1600 | image_tag: class: 'psx-lux__cover', loading: 'lazy', widths: '800, 1200, 1600', sizes: '100vw', alt: '' }}
         {%- endif -%}
@@ -243,8 +268,10 @@
         <h2>{{ tagline | default: title | escape }}</h2>
         {%- if intro != blank -%}<p>{{ intro | escape }}</p>{%- endif -%}
       </div>
-      {%- if shots.size > 2 -%}
-        <div class="psx-lux__shot psx-lux__shot--square" data-psx-reveal style="--d: 1"><img src="{{ shots[2] | asset_url }}" alt="{{ title | escape }}" loading="lazy"></div>
+      {%- if shot_count > 2 -%}
+        <div class="psx-lux__shot psx-lux__shot--square" data-psx-reveal style="--d: 1">
+          {{ shots[2] | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 36vw, 90vw', alt: title }}
+        </div>
       {%- elsif studio != nil -%}
         <div class="psx-lux__shot" data-psx-reveal style="--d: 1">
           {{ studio | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 36vw, 90vw', alt: studio_alt }}
@@ -290,9 +317,17 @@
       <button type="button" class="psx-lux__nudge psx-lux__nudge--prev" data-lux-prev aria-label="{{ section.settings.prev_label | escape }}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button type="button" class="psx-lux__nudge psx-lux__nudge--next" data-lux-next aria-label="{{ section.settings.next_label | escape }}"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <div class="psx-lux__rail" data-lux-rail tabindex="0" role="group" aria-label="{{ section.settings.look_heading | escape }}">
-        {%- if shots.size > 0 -%}
+        {%- if shot_count > 0 -%}
           {%- for shot in shots -%}
-            <div class="psx-lux__frame"><img src="{{ shot | asset_url }}" alt="{{ title | escape }} {{ forloop.index }}" loading="lazy"></div>
+            {%- liquid
+              assign shot_alt = shot.alt
+              if shot_alt == blank
+                assign shot_alt = title | append: ' ' | append: forloop.index
+              endif
+            -%}
+            <div class="psx-lux__frame">
+              {{ shot | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 750px) 440px, 84vw', alt: shot_alt }}
+            </div>
           {%- endfor -%}
         {%- else -%}
           {%- for media in product.media -%}
@@ -405,10 +440,17 @@
                 assign name = item.title | remove_first: item_prefix
               endif
               assign line = item.metafields.custom.tagline.value
+              assign item_front = item.metafields.custom.pack_front.value
+              assign item_class = ''
+              if item_front != blank and item_front.aspect_ratio > 1.15
+                assign item_class = 'psx-wide'
+              endif
             -%}
             <a class="psx-lux__rcard{% if item.id == product.id %} is-current{% endif %}" href="{{ item.url }}"{% if item.id == product.id %} aria-current="page"{% endif %} data-psx-reveal style="--d: {{ forloop.index0 | modulo: 4 }}">
               <span class="psx-lux__rmedia">
-                {%- if item_look[2] != blank -%}
+                {%- if item_front != blank -%}
+                  {{ item_front | image_url: width: 700 | image_tag: class: item_class, loading: 'lazy', widths: '300, 500, 700', sizes: '(min-width: 750px) 230px, 40vw', alt: '' }}
+                {%- elsif item_look[2] != blank -%}
                   <img class="{{ item_look[3] }}" src="{{ item_look[2] | asset_url }}" alt="" loading="lazy">
                 {%- elsif item.featured_media -%}
                   {{ item.featured_media | image_url: width: 600 | image_tag: loading: 'lazy', alt: '' }}
@@ -451,7 +493,7 @@
   "tag": "div",
   "max_blocks": 4,
   "settings": [
-    { "type": "paragraph", "content": "Title, price, packs and description come from the product. Tagline, label numbers, story blocks, ingredients, directions, warnings and the Supplement Facts image come from the product's metafields. Pack pictures come from the theme files named ps-lux-*." },
+    { "type": "paragraph", "content": "Title, price, packs and description come from the product. Tagline, label numbers, story blocks, ingredients, directions, warnings and the Supplement Facts image come from the product's metafields. Pictures come from the product's metafields too: Pack picture (front), Pack picture (back), Story picture and Closer look pictures. A product with none of these shows its own product photos." },
     { "type": "select", "id": "hero_layout", "label": "Top of page layout", "options": [{ "value": "center", "label": "Pack on top, buy box under it" }, { "value": "split", "label": "Pack on the left, buy box on the right" }], "default": "center" },
     { "type": "collection", "id": "collection", "label": "Range", "info": "Fills the range at the bottom, and the product tabs at the top when they are turned on." },
     { "type": "checkbox", "id": "show_tabs", "label": "Show the other products as tabs under the pack", "default": false },
