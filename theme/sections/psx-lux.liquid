@@ -27,9 +27,16 @@
   assign band = mf.story_image.value
   assign shots = mf.gallery.value
   assign shot_count = 0
+  assign shot_first = nil
+  assign shot_third = nil
   if shots != blank
     for shot in shots
       assign shot_count = shot_count | plus: 1
+      if forloop.index == 1
+        assign shot_first = shot
+      elsif forloop.index == 3
+        assign shot_third = shot
+      endif
     endfor
   endif
   assign pack_class = 'psx-lux__pack'
@@ -232,7 +239,7 @@
             {%- assign back_alt = section.settings.back_alt | append: ': ' | append: title -%}
             {{ back | image_url: width: 1400 | image_tag: class: 'psx-lux__back', loading: 'lazy', widths: '400, 600, 900, 1400', sizes: '(min-width: 750px) 430px, 78vw', alt: back_alt }}
           {%- elsif shot_count > 0 -%}
-            {{ shots.first | image_url: width: 1400 | image_tag: class: 'psx-lux__tile', loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 750px) 560px, 90vw', alt: title }}
+            {{ shot_first | image_url: width: 1400 | image_tag: class: 'psx-lux__tile', loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 750px) 560px, 90vw', alt: title }}
           {%- elsif facts_image != blank -%}
             {{ facts_image | image_url: width: 1200 | image_tag: class: 'psx-lux__tile psx-lux__tile--paper', loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 40vw, 90vw', alt: 'Supplement Facts' }}
           {%- elsif studio != nil -%}
@@ -270,7 +277,7 @@
       </div>
       {%- if shot_count > 2 -%}
         <div class="psx-lux__shot psx-lux__shot--square" data-psx-reveal style="--d: 1">
-          {{ shots[2] | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 36vw, 90vw', alt: title }}
+          {{ shot_third | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 36vw, 90vw', alt: title }}
         </div>
       {%- elsif studio != nil -%}
         <div class="psx-lux__shot" data-psx-reveal style="--d: 1">
