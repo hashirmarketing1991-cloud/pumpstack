@@ -89,10 +89,12 @@
 
 /* ---------- Label numbers ---------- */
 .psx-lux__spec { background: #fff; padding: clamp(56px, 8vw, 124px) 0 clamp(40px, 6vw, 90px); }
-.psx-lux__spec-grid { display: grid; grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); gap: clamp(24px, 5vw, 80px); align-items: center; }
-.psx-lux__nums { display: grid; gap: clamp(22px, 2.8vw, 40px); }
-.psx-lux__num b { display: block; font-weight: 300; font-size: clamp(56px, 7.4vw, 108px); line-height: .95; letter-spacing: -.055em; }
-.psx-lux__num span { display: block; margin-top: 10px; font-size: 12.5px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--psx-muted); }
+.psx-lux__spec-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: center; max-width: 1080px; }
+.psx-lux__nums { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.psx-lux__num { display: flex; flex-direction: column; justify-content: center; min-height: clamp(116px, 11vw, 150px); padding: clamp(18px, 2vw, 26px) clamp(18px, 2vw, 28px); border-radius: 22px; background: var(--lux-stone); transition: transform .35s var(--psx-ease), background .2s ease; }
+.psx-lux__num:hover { transform: translateY(-3px); background: #e1dfd8; }
+.psx-lux__num b { display: block; font-weight: 400; font-size: clamp(36px, 4vw, 58px); line-height: 1; letter-spacing: -.045em; }
+.psx-lux__num span { display: block; margin-top: 8px; font-size: 11.5px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--psx-muted); }
 .psx-lux__spec-media { display: flex; justify-content: center; }
 .psx-lux .psx-lux__back { width: min(100%, 430px); height: auto; filter: drop-shadow(0 34px 44px rgba(23, 20, 18, .24)); }
 .psx-lux .psx-lux__tile { width: min(100%, 560px); height: auto; border-radius: var(--lux-radius); }
@@ -231,7 +233,8 @@
   .psx-lux__opt-body { flex-direction: row; justify-content: space-between; padding: 14px 18px; min-height: 56px; }
   .psx-lux__opt-tag { left: 18px; transform: none; }
   .psx-lux__spec-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; }
-  .psx-lux__nums { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 16px; }
+  .psx-lux__nums { gap: 10px; }
+  .psx-lux__num { min-height: 104px; padding: 16px 18px; border-radius: 18px; }
   .psx-lux .psx-lux__back { width: min(78%, 340px); }
   .psx-lux__band { height: clamp(260px, 78vw, 420px); }
   .psx-lux .psx-lux__band-front { right: 2%; height: 96%; }
