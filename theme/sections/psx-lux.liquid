@@ -77,18 +77,27 @@
   assign range = section.settings.collection
 
   assign studio = nil
+  assign media_third = nil
   assign photo_count = 0
+  assign shot_media = 0
   for media in product.media
     if media.media_type != 'image'
       continue
     endif
     assign photo_count = photo_count | plus: 1
-    if studio == nil
-      unless media.preview_image.src contains '-pack.'
+    unless media.preview_image.src contains '-pack.'
+      assign shot_media = shot_media | plus: 1
+      if shot_media == 1
         assign studio = media
-      endunless
-    endif
+      elsif shot_media == 3
+        assign media_third = media
+      endif
+    endunless
   endfor
+  assign third_square = false
+  if media_third != nil and media_third.preview_image.aspect_ratio > 0.95 and media_third.preview_image.aspect_ratio < 1.05
+    assign third_square = true
+  endif
 
   assign studio_alt = title
   if studio != nil and studio.alt != blank
@@ -240,10 +249,10 @@
             {{ back | image_url: width: 1400 | image_tag: class: 'psx-lux__back', loading: 'lazy', widths: '400, 600, 900, 1400', sizes: '(min-width: 750px) 430px, 78vw', alt: back_alt }}
           {%- elsif shot_count > 0 -%}
             {{ shot_first | image_url: width: 1400 | image_tag: class: 'psx-lux__tile', loading: 'lazy', widths: '500, 800, 1100, 1400', sizes: '(min-width: 750px) 560px, 90vw', alt: title }}
-          {%- elsif facts_image != blank -%}
-            {{ facts_image | image_url: width: 1200 | image_tag: class: 'psx-lux__tile psx-lux__tile--paper', loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 40vw, 90vw', alt: 'Supplement Facts' }}
           {%- elsif studio != nil -%}
             {{ studio | image_url: width: 1200 | image_tag: class: 'psx-lux__tile', loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 40vw, 90vw', alt: studio_alt }}
+          {%- elsif facts_image != blank -%}
+            {{ facts_image | image_url: width: 1200 | image_tag: class: 'psx-lux__tile psx-lux__tile--paper', loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 40vw, 90vw', alt: 'Supplement Facts' }}
           {%- endif -%}
         </div>
       </div>
@@ -278,6 +287,11 @@
       {%- if shot_count > 2 -%}
         <div class="psx-lux__shot psx-lux__shot--square" data-psx-reveal style="--d: 1">
           {{ shot_third | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 36vw, 90vw', alt: title }}
+        </div>
+      {%- elsif media_third != nil -%}
+        {%- assign third_alt = media_third.alt | default: title -%}
+        <div class="psx-lux__shot{% if third_square %} psx-lux__shot--square{% endif %}" data-psx-reveal style="--d: 1">
+          {{ media_third | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 36vw, 90vw', alt: third_alt }}
         </div>
       {%- elsif studio != nil -%}
         <div class="psx-lux__shot" data-psx-reveal style="--d: 1">
@@ -345,10 +359,12 @@
                 assign kind = 'pack'
               elsif media.preview_image.aspect_ratio > 1.05
                 assign kind = 'fit'
+              elsif media.preview_image.aspect_ratio > 0.95
+                assign kind = 'square'
               endif
               assign media_alt = media.alt | default: title
             -%}
-            <div class="psx-lux__frame psx-lux__frame--tall psx-lux__frame--{{ kind }}">
+            <div class="psx-lux__frame{% unless kind == 'square' %} psx-lux__frame--tall{% endunless %} psx-lux__frame--{{ kind }}">
               {{ media | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 30vw, 78vw', alt: media_alt }}
             </div>
           {%- endfor -%}
