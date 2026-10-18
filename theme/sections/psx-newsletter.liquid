@@ -1,0 +1,178 @@
+{% render 'psx-assets' %}
+{%- liquid
+  assign kl_key = section.settings.klaviyo_public_key | strip
+  assign kl_list = section.settings.klaviyo_list_id | strip
+  assign use_klaviyo = false
+  if kl_key != blank and kl_list != blank
+    assign use_klaviyo = true
+  endif
+  assign source = section.settings.source | default: template.name
+-%}
+
+<section class="psx psxn" id="psx-newsletter-{{ section.id }}">
+  <div class="psxn__wrap">
+    <div class="psxn__panel">
+      <div class="psxn__copy">
+        {%- if section.settings.eyebrow != blank -%}<p class="psxn__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        <h2 class="psxn__title">{{ section.settings.heading | escape }}</h2>
+        {%- if section.settings.text != blank -%}<p class="psxn__text">{{ section.settings.text | escape }}</p>{%- endif -%}
+        <ul class="psxn__perks">
+          {%- for i in (1..3) -%}
+            {%- assign key = 'perk_' | append: i -%}
+            {%- if section.settings[key] != blank -%}<li>{{ section.settings[key] | escape }}</li>{%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <div class="psxn__formwrap">
+        {%- if use_klaviyo -%}
+          <form class="psxn__form" data-psxn-form data-key="{{ kl_key | escape }}" data-list="{{ kl_list | escape }}" data-source="{{ source | escape }}" novalidate>
+            <label class="psxn__field">
+              <span>Email</span>
+              <input type="email" name="email" autocomplete="email" placeholder="you@email.com" required>
+            </label>
+            <label class="psxn__field">
+              <span>Phone <em>(optional, for texts)</em></span>
+              <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="(555) 123-4567">
+            </label>
+            <button type="submit" class="psxn__btn">{{ section.settings.button_label | escape }}</button>
+            <p class="psxn__msg" data-psxn-msg role="status" aria-live="polite"></p>
+            <p class="psxn__legal">{{ section.settings.sms_disclosure | escape }}</p>
+          </form>
+        {%- else -%}
+          {%- form 'customer', class: 'psxn__form', id: 'psxn-shopify-form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter, {{ source | escape }}">
+            {%- if form.posted_successfully? -%}
+              <p class="psxn__done">{{ section.settings.success | escape }}</p>
+            {%- else -%}
+              <label class="psxn__field">
+                <span>Email</span>
+                <input type="email" name="contact[email]" autocomplete="email" placeholder="you@email.com" required>
+              </label>
+              <button type="submit" class="psxn__btn">{{ section.settings.button_label | escape }}</button>
+              {%- if form.errors -%}<p class="psxn__msg is-error">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>{%- endif -%}
+              <p class="psxn__legal">{{ section.settings.email_disclosure | escape }}</p>
+            {%- endif -%}
+          {%- endform -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- if use_klaviyo -%}
+<script>
+  (function () {
+    var form = document.querySelector('#psx-newsletter-{{ section.id }} [data-psxn-form]');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = '1';
+    var msg = form.querySelector('[data-psxn-msg]');
+    var btn = form.querySelector('button');
+
+    function toE164(raw) {
+      var s = (raw || '').trim();
+      if (!s) return '';
+      var plus = s.charAt(0) === '+';
+      var d = s.replace(/\D/g, '');
+      if (plus) return d.length >= 8 ? '+' + d : null;
+      if (d.length === 10) return '+1' + d;
+      if (d.length === 11 && d.charAt(0) === '1') return '+' + d;
+      return null;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      msg.className = 'psxn__msg';
+      var email = form.email.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        msg.textContent = 'Please enter a valid email.'; msg.classList.add('is-error'); return;
+      }
+      var phone = toE164(form.phone.value);
+      if (phone === null) {
+        msg.textContent = 'Please enter a valid US phone number, or leave it empty.'; msg.classList.add('is-error'); return;
+      }
+      var subs = { email: { marketing: { consent: 'SUBSCRIBED' } } };
+      var attrs = { email: email, subscriptions: subs };
+      if (phone) { attrs.phone_number = phone; subs.sms = { marketing: { consent: 'SUBSCRIBED' } }; }
+
+      btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Joining...';
+      fetch('https://a.klaviyo.com/client/subscriptions?company_id=' + encodeURIComponent(form.dataset.key), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/vnd.api+json', 'revision': '2024-10-15' },
+        body: JSON.stringify({ data: { type: 'subscription', attributes: {
+          custom_source: 'PumpStack site: ' + form.dataset.source,
+          profile: { data: { type: 'profile', attributes: attrs } }
+        }, relationships: { list: { data: { type: 'list', id: form.dataset.list } } } } })
+      }).then(function (r) {
+        if (r.status === 202 || r.ok) {
+          form.innerHTML = '<p class="psxn__done">{{ section.settings.success | escape }}</p>';
+        } else { throw new Error(r.status); }
+      }).catch(function () {
+        btn.disabled = false; btn.textContent = btn.dataset.label;
+        msg.textContent = 'Something went wrong. Please try again.'; msg.classList.add('is-error');
+      });
+    });
+  })();
+</script>
+{%- endif -%}
+
+<style>
+  .psxn { --ink: #0b0b0c; --accent: #f7941e; --accent-2: #f15a24; padding: clamp(32px, 5vw, 64px) 0; background: var(--psxn-bg, transparent); }
+  .psxn *, .psxn *::before, .psxn *::after { box-sizing: border-box; }
+  .psxn__wrap { max-width: 1320px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+  .psxn__panel { position: relative; overflow: hidden; display: grid; gap: clamp(28px, 4vw, 56px); align-items: center;
+    padding: clamp(28px, 5vw, 64px); border-radius: 28px; background: var(--ink); color: #fff; }
+  .psxn__panel::before { content: ""; position: absolute; left: -10%; bottom: -60%; width: 60%; aspect-ratio: 1;
+    background: radial-gradient(closest-side, rgba(247, 148, 30, .35), transparent 70%); pointer-events: none; }
+  .psxn__copy, .psxn__formwrap { position: relative; z-index: 1; }
+  .psxn__eyebrow { margin: 0 0 14px; font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+  .psxn__title { margin: 0; font-family: var(--psx-font-picked, inherit); font-weight: 800; font-size: clamp(32px, 4.6vw, 60px); line-height: .98; letter-spacing: -.03em; text-transform: uppercase; }
+  .psxn__text { margin: 16px 0 0; max-width: 46ch; font-size: 16px; line-height: 1.55; color: rgba(255, 255, 255, .72); }
+  .psxn__perks { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .psxn__perks li { padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .18); font-size: 13px; font-weight: 600; }
+
+  .psxn__form { display: grid; gap: 12px; margin: 0; }
+  .psxn__field { display: grid; gap: 6px; }
+  .psxn__field span { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .7); }
+  .psxn__field em { font-style: normal; font-weight: 500; text-transform: none; letter-spacing: 0; color: rgba(255, 255, 255, .5); }
+  .psxn__field input { width: 100%; min-height: 54px; padding: 0 18px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, .16);
+    background: rgba(255, 255, 255, .06); color: #fff; font: inherit; font-size: 16px; }
+  .psxn__field input::placeholder { color: rgba(255, 255, 255, .38); }
+  .psxn__field input:focus { outline: none; border-color: var(--accent); background: rgba(255, 255, 255, .1); }
+  .psxn__btn { min-height: 56px; border: 0; border-radius: 999px; cursor: pointer; font: inherit; font-size: 14px; font-weight: 800;
+    letter-spacing: .06em; text-transform: uppercase; color: #111; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: transform .15s, filter .15s; }
+  .psxn__btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+  .psxn__btn[disabled] { opacity: .6; cursor: wait; transform: none; }
+  .psxn__msg { margin: 0; min-height: 1em; font-size: 13px; color: rgba(255, 255, 255, .8); }
+  .psxn__msg.is-error { color: #ff9b7a; }
+  .psxn__done { margin: 0; padding: 22px; border-radius: 16px; background: rgba(255, 255, 255, .06); font-size: 18px; font-weight: 700; text-align: center; }
+  .psxn__legal { margin: 2px 0 0; font-size: 11px; line-height: 1.5; color: rgba(255, 255, 255, .5); }
+
+  @media (min-width: 990px) { .psxn__panel { grid-template-columns: 1.1fr .9fr; } }
+</style>
+
+{% schema %}
+{
+  "name": "PSX Newsletter signup",
+  "tag": "div",
+  "settings": [
+    { "type": "header", "content": "Klaviyo" },
+    { "type": "paragraph", "content": "Add your Klaviyo public API key and list ID to send email and phone straight to Klaviyo. Until both are filled in, the form collects emails into Shopify's own customer list, which Klaviyo syncs once it is connected." },
+    { "type": "text", "id": "klaviyo_public_key", "label": "Klaviyo public API key (Site ID)", "info": "Klaviyo > Settings > API keys. It is 6 characters." },
+    { "type": "text", "id": "klaviyo_list_id", "label": "Klaviyo list ID", "info": "Klaviyo > Lists & segments > your list > Settings." },
+    { "type": "text", "id": "source", "label": "Source name", "info": "Shows in Klaviyo so you know which page the signup came from." },
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Join the stack" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Get first dibs." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "New drops, restocks and members-only offers. Straight to your inbox and phone. No spam." },
+    { "type": "text", "id": "perk_1", "label": "Perk 1", "default": "Early access to new flavors" },
+    { "type": "text", "id": "perk_2", "label": "Perk 2", "default": "Members-only offers" },
+    { "type": "text", "id": "perk_3", "label": "Perk 3", "default": "Restock alerts" },
+    { "type": "text", "id": "button_label", "label": "Button", "default": "Join the list" },
+    { "type": "text", "id": "success", "label": "Thank you message", "default": "You're in. Watch your inbox." },
+    { "type": "textarea", "id": "sms_disclosure", "label": "Text message consent wording", "default": "By signing up you agree to receive recurring automated marketing emails and, if you add your number, text messages from PumpStack at the number provided. Consent is not a condition of purchase. Msg and data rates may apply. Msg frequency varies. Reply STOP to unsubscribe or HELP for help. View our Privacy Policy and Terms." },
+    { "type": "textarea", "id": "email_disclosure", "label": "Email consent wording", "default": "By signing up you agree to receive marketing emails from PumpStack. Unsubscribe anytime." }
+  ],
+  "presets": [{ "name": "PSX Newsletter signup" }]
+}
+{% endschema %}
