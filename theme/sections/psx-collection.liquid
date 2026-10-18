@@ -96,6 +96,8 @@
             assign rating = product.metafields.reviews.rating.value
             assign rating_count = product.metafields.reviews.rating_count.value | default: 0
             assign img = product.featured_media
+            assign img_alt = img.alt | default: title
+            assign stars = rating.rating | round
             assign load = 'lazy'
             if forloop.index0 < 4
               assign load = 'eager'
@@ -109,7 +111,7 @@
                     widths: '400, 600, 800, 1000, 1200',
                     sizes: '(min-width: 1100px) 25vw, (min-width: 750px) 33vw, 50vw',
                     loading: load,
-                    alt: img.alt | default: title
+                    alt: img_alt
                   }}
                 {%- endif -%}
                 {%- if best > 0 -%}
@@ -123,7 +125,7 @@
 
                 {%- if rating != blank and rating_count > 0 -%}
                   <a class="psxc__rating" href="{{ product.url }}#psx-reviews">
-                    {% render 'psx-stars', rating: rating.rating | round %}
+                    {% render 'psx-stars', rating: stars %}
                     <span>{{ rating.rating | round: 1 }} ({{ rating_count }})</span>
                   </a>
                 {%- endif -%}
