@@ -1,0 +1,24 @@
+{
+  "sections": {
+    "main": {
+      "type": "psx-collection",
+      "settings": {
+        "eyebrow": "Third-party tested. Every dose on the label.",
+        "heading": "",
+        "text": "",
+        "chip_1": "Buy 2, save 15%. Buy 3, save 25%",
+        "chip_2": "Free US shipping over $75",
+        "chip_3": "30-day money-back guarantee",
+        "tabs_label": "Collections",
+        "show_sort": true,
+        "per_page": 24,
+        "offer_label": "Buy 2, save 15%. Buy 3, save 25%",
+        "add_label": "Add to cart",
+        "view_label": "View",
+        "font": "poppins_n8",
+        "note": "These statements have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure, or prevent any disease."
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,302 @@
+{% render 'psx-assets' %}
+{% render 'psx-font', font: section.settings.font %}
+{%- liquid
+  assign coll = collection
+  assign heading = section.settings.heading | default: coll.title
+  assign intro = section.settings.text
+  if intro == blank
+    assign intro = coll.description | strip_html | strip
+  endif
+-%}
+
+<div class="psx psxc" data-psxc>
+  {%- comment -%} ---------- Header ---------- {%- endcomment -%}
+  <section class="psxc__hero">
+    <div class="psxc__wrap">
+      {%- if section.settings.eyebrow != blank -%}<p class="psxc__eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      <h1 class="psxc__title">{{ heading | escape }}</h1>
+      {%- if intro != blank -%}<p class="psxc__intro">{{ intro | escape }}</p>{%- endif -%}
+
+      <ul class="psxc__chips">
+        {%- for i in (1..3) -%}
+          {%- assign key = 'chip_' | append: i -%}
+          {%- if section.settings[key] != blank -%}<li>{{ section.settings[key] | escape }}</li>{%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+
+  {%- paginate coll.products by section.settings.per_page -%}
+  {%- comment -%} ---------- Bar: other collections and sort ---------- {%- endcomment -%}
+  <div class="psxc__bar">
+    <div class="psxc__wrap psxc__bar-in">
+      <nav class="psxc__tabs" aria-label="{{ section.settings.tabs_label | escape }}">
+        {%- assign menu = linklists[section.settings.menu] -%}
+        {%- if menu.links.size > 0 -%}
+          {%- for link in menu.links -%}
+            <a href="{{ link.url }}"{% if link.current or link.url == coll.url %} class="is-current" aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for c in collections -%}
+            {%- if c.handle == 'frontpage' or c.products_count == 0 -%}{%- continue -%}{%- endif -%}
+            <a href="{{ c.url }}"{% if c.handle == coll.handle %} class="is-current" aria-current="page"{% endif %}>{{ c.title | escape }}</a>
+          {%- endfor -%}
+        {%- endif -%}
+      </nav>
+      <div class="psxc__meta">
+        <span class="psxc__count">{{ coll.products_count }} {% if coll.products_count == 1 %}product{% else %}products{% endif %}</span>
+        {%- if section.settings.show_sort -%}
+          <label class="psxc__sort">
+            <span class="visually-hidden">Sort by</span>
+            <select data-psxc-sort aria-label="Sort by">
+              {%- assign current = coll.sort_by | default: coll.default_sort_by -%}
+              {%- for option in coll.sort_options -%}
+                <option value="{{ option.value }}"{% if option.value == current %} selected{% endif %}>{{ option.name }}</option>
+              {%- endfor -%}
+            </select>
+          </label>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ---------- Grid ---------- {%- endcomment -%}
+  <section class="psxc__grid-wrap">
+    <div class="psxc__wrap">
+      <ul class="psxc__grid" role="list">
+        {%- for product in coll.products -%}
+          {%- liquid
+            assign title = product.title
+            assign prefix = product.vendor | append: ' '
+            assign lead = product.title | slice: 0, prefix.size
+            if product.vendor != blank and lead == prefix
+              assign title = product.title | remove_first: prefix
+            endif
+            assign title = title | remove_first: 'Pump Stack ' | remove_first: 'PumpStack '
+
+            assign first = product.selected_or_first_available_variant
+            assign base = product.price_min
+            assign best = 0
+            for variant in product.variants
+              if variant.compare_at_price > variant.price
+                assign diff = variant.compare_at_price | minus: variant.price | times: 100
+                assign pct = diff | divided_by: variant.compare_at_price
+                if pct > best
+                  assign best = pct
+                endif
+              endif
+            endfor
+            assign single_compare = 0
+            if product.variants.size == 1 and first.compare_at_price > first.price
+              assign single_compare = first.compare_at_price
+            endif
+
+            assign tagline = product.metafields.custom.tagline.value
+            assign facts = product.metafields.custom.key_facts.value
+            assign rating = product.metafields.reviews.rating.value
+            assign rating_count = product.metafields.reviews.rating_count.value | default: 0
+            assign img = product.featured_media
+            assign load = 'lazy'
+            if forloop.index0 < 4
+              assign load = 'eager'
+            endif
+          -%}
+          <li class="psxc__item" data-psx-reveal style="--d: {{ forloop.index0 | modulo: 4 }}">
+            <article class="psxc__card">
+              <a class="psxc__media" href="{{ product.url }}" aria-label="{{ title | escape }}">
+                {%- if img -%}
+                  {{ img | image_url: width: 1200 | image_tag:
+                    widths: '400, 600, 800, 1000, 1200',
+                    sizes: '(min-width: 1100px) 25vw, (min-width: 750px) 33vw, 50vw',
+                    loading: load,
+                    alt: img.alt | default: title
+                  }}
+                {%- endif -%}
+                {%- if best > 0 -%}
+                  <span class="psxc__badge">Save up to {{ best }}%</span>
+                {%- endif -%}
+              </a>
+
+              <div class="psxc__body">
+                {%- if product.type != blank -%}<p class="psxc__type">{{ product.type | escape }}</p>{%- endif -%}
+                <h2 class="psxc__name"><a href="{{ product.url }}">{{ title | escape }}</a></h2>
+
+                {%- if rating != blank and rating_count > 0 -%}
+                  <a class="psxc__rating" href="{{ product.url }}#psx-reviews">
+                    {% render 'psx-stars', rating: rating.rating | round %}
+                    <span>{{ rating.rating | round: 1 }} ({{ rating_count }})</span>
+                  </a>
+                {%- endif -%}
+
+                {%- if tagline != blank -%}<p class="psxc__tagline">{{ tagline | escape }}</p>{%- endif -%}
+
+                {%- if facts != blank -%}
+                  <ul class="psxc__facts" role="list">
+                    {%- for fact in facts limit: 3 -%}
+                      {%- assign parts = fact | split: '|' -%}
+                      <li><b>{{ parts[0] | strip | escape }}</b>{%- if parts.size > 1 -%}<small>{{ parts[1] | strip | escape }}</small>{%- endif -%}</li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+
+                <div class="psxc__foot">
+                  <div class="psxc__price">
+                    <span class="psxc__now">{% if product.variants.size > 1 %}<small>From</small> {% endif %}{{ base | money }}</span>
+                    {%- if single_compare > 0 -%}<s>{{ single_compare | money }}</s>{%- endif -%}
+                    {%- if product.variants.size > 1 and best > 0 -%}<span class="psxc__offer">{{ section.settings.offer_label | escape }}</span>{%- endif -%}
+                  </div>
+                  <div class="psxc__actions">
+                    {%- form 'product', product, class: 'psxc__form' -%}
+                      <input type="hidden" name="id" value="{{ first.id }}">
+                      <button type="submit" class="psxc__add" {% unless first.available %}disabled{% endunless %}>
+                        {%- if first.available -%}{{ section.settings.add_label | escape }}{%- else -%}Sold out{%- endif -%}
+                      </button>
+                    {%- endform -%}
+                    <a class="psxc__view" href="{{ product.url }}">{{ section.settings.view_label | escape }}</a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </li>
+        {%- else -%}
+          <li class="psxc__empty">No products in this collection yet.</li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="psxc__pages" aria-label="Pages">
+          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">Previous</a>{%- endif -%}
+          <span>Page {{ paginate.current_page }} of {{ paginate.pages }}</span>
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}">Next</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    </div>
+  </section>
+  {%- endpaginate -%}
+
+  {%- if section.settings.note != blank -%}
+    <p class="psxc__note psxc__wrap">{{ section.settings.note | escape }}</p>
+  {%- endif -%}
+</div>
+
+<script>
+  document.querySelectorAll('[data-psxc-sort]').forEach(function (s) {
+    s.addEventListener('change', function () {
+      var u = new URL(window.location.href);
+      u.searchParams.set('sort_by', s.value);
+      u.searchParams.delete('page');
+      window.location.href = u.toString();
+    });
+  });
+</script>
+
+<style>
+  .psxc { --ink: #0b0b0c; --bone: #f5f3ee; --line: #e2ddd2; --muted: #6b6b70; --accent: #f7941e; --accent-2: #f15a24;
+    font-family: var(--psx-font-picked, var(--font-body--family)); color: var(--ink); background: var(--bone); }
+  .psxc *, .psxc *::before, .psxc *::after { box-sizing: border-box; }
+  .psxc__wrap { max-width: 1320px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+
+  .psxc__hero { background: var(--ink); color: #fff; padding: clamp(56px, 9vw, 120px) 0 clamp(40px, 6vw, 72px); position: relative; overflow: hidden; }
+  .psxc__hero::after { content: ""; position: absolute; right: -15%; top: -40%; width: 70vw; max-width: 900px; aspect-ratio: 1;
+    background: radial-gradient(closest-side, rgba(247, 148, 30, .28), transparent 70%); pointer-events: none; }
+  .psxc__hero .psxc__wrap { position: relative; z-index: 1; }
+  .psxc__eyebrow { margin: 0 0 18px; font-size: 12px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+  .psxc__title { margin: 0; font-weight: 800; font-size: clamp(44px, 8vw, 112px); line-height: .95; letter-spacing: -.035em; text-transform: uppercase; }
+  .psxc__intro { margin: 22px 0 0; max-width: 56ch; font-size: clamp(16px, 1.5vw, 19px); line-height: 1.55; color: rgba(255,255,255,.72); }
+  .psxc__chips { list-style: none; margin: 30px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .psxc__chips li { padding: 10px 16px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; font-size: 13px; font-weight: 600; letter-spacing: .02em; }
+  .psxc__chips li:first-child { background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-color: transparent; color: #111; }
+
+  .psxc__bar { position: sticky; top: var(--header-height, 0px); z-index: 5; background: rgba(245, 243, 238, .92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .psxc__bar-in { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; }
+  .psxc__tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .psxc__tabs::-webkit-scrollbar { display: none; }
+  .psxc__tabs a { white-space: nowrap; padding: 9px 16px; border-radius: 999px; font-size: 13px; font-weight: 600; text-decoration: none; color: var(--ink); border: 1px solid var(--line); background: #fff; }
+  .psxc__tabs a.is-current, .psxc__tabs a:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .psxc__meta { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .psxc__count { font-size: 13px; color: var(--muted); }
+  .psxc__sort select { appearance: none; font: inherit; font-size: 13px; font-weight: 600; padding: 9px 34px 9px 14px; border-radius: 999px; border: 1px solid var(--line); background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%230b0b0c' stroke-width='1.6'/%3E%3C/svg%3E") right 13px center / 10px no-repeat; color: var(--ink); cursor: pointer; }
+
+  .psxc__grid-wrap { padding: clamp(28px, 4vw, 48px) 0 clamp(56px, 8vw, 96px); }
+  .psxc__grid { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(12px, 1.6vw, 22px); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 750px) { .psxc__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .psxc__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .psxc__item { display: flex; }
+  .psxc__card { display: flex; flex-direction: column; width: 100%; background: #fff; border-radius: 22px; overflow: hidden; border: 1px solid #ebe7de; transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s; }
+  .psxc__card:hover { transform: translateY(-4px); box-shadow: 0 24px 50px -24px rgba(11, 11, 12, .35); }
+
+  .psxc__media { position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; background: #e9e6df; }
+  .psxc__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+  .psxc__card:hover .psxc__media img { transform: scale(1.04); }
+  .psxc__badge { position: absolute; top: 14px; left: 14px; padding: 7px 12px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+
+  .psxc__body { display: flex; flex-direction: column; flex: 1; padding: clamp(14px, 1.6vw, 22px); gap: 8px; }
+  .psxc__type { margin: 0; font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .psxc__name { margin: 0; font-size: clamp(16px, 1.45vw, 20px); font-weight: 800; line-height: 1.15; letter-spacing: -.01em; }
+  .psxc__name a { color: inherit; text-decoration: none; }
+  .psxc__rating { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); text-decoration: none; }
+  .psxc__rating .psx-review__stars { display: inline-flex; gap: 1px; color: var(--accent); }
+  .psxc__rating svg { width: 13px; height: 13px; }
+  .psxc__rating svg.is-off { opacity: .25; }
+  .psxc__tagline { margin: 0; font-size: 13.5px; line-height: 1.45; color: #4a4a4f; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .psxc__facts { list-style: none; margin: 4px 0 0; padding: 10px 0 0; border-top: 1px solid #efebe3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .psxc__facts b { display: block; font-size: 15px; font-weight: 800; line-height: 1.1; }
+  .psxc__facts small { display: block; font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+
+  .psxc__foot { margin-top: auto; padding-top: 12px; display: grid; gap: 12px; }
+  .psxc__price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+  .psxc__now { font-size: 18px; font-weight: 800; }
+  .psxc__now small { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .psxc__price s { font-size: 14px; color: var(--muted); }
+  .psxc__offer { width: 100%; font-size: 11.5px; font-weight: 700; color: #c2410c; letter-spacing: .02em; }
+  .psxc__actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+  .psxc__form { margin: 0; }
+  .psxc__add { width: 100%; min-height: 46px; border: 0; border-radius: 999px; background: var(--ink); color: #fff; font: inherit; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; transition: background .2s; }
+  .psxc__add:hover { background: #26262a; }
+  .psxc__add[disabled] { opacity: .45; cursor: not-allowed; }
+  .psxc__view { display: grid; place-items: center; min-height: 46px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--line); font-size: 13px; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .psxc__view:hover { border-color: var(--ink); }
+
+  .psxc__pages { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 40px; font-size: 14px; }
+  .psxc__pages a { color: var(--ink); font-weight: 700; }
+  .psxc__empty { grid-column: 1 / -1; padding: 60px 0; text-align: center; color: var(--muted); }
+  .psxc__note { font-size: 11.5px; line-height: 1.5; color: var(--muted); padding-bottom: 40px; }
+
+  @media (max-width: 749px) {
+    .psxc__bar-in { flex-direction: column; align-items: stretch; gap: 10px; padding: 10px 0; }
+    .psxc__meta { justify-content: space-between; }
+    .psxc__facts { display: none; }
+    .psxc__actions { grid-template-columns: 1fr; }
+    .psxc__view { display: none; }
+    .psxc__card { border-radius: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .psxc__card, .psxc__media img { transition: none; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "PSX Luxury collection",
+  "tag": "div",
+  "settings": [
+    { "type": "paragraph", "content": "Every card reads its picture, title, type, price, tagline and label numbers from the product. Stars only show when a reviews app has real reviews for that product." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Third-party tested. Every dose on the label." },
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Leave empty to use the collection title." },
+    { "type": "textarea", "id": "text", "label": "Text", "info": "Leave empty to use the collection description." },
+    { "type": "text", "id": "chip_1", "label": "Offer chip 1", "default": "Buy 2, save 15%. Buy 3, save 25%" },
+    { "type": "text", "id": "chip_2", "label": "Offer chip 2", "default": "Free US shipping over $75" },
+    { "type": "text", "id": "chip_3", "label": "Offer chip 3", "default": "30-day money-back guarantee" },
+    { "type": "link_list", "id": "menu", "label": "Collection tabs menu", "info": "Leave empty to list every collection." },
+    { "type": "text", "id": "tabs_label", "label": "Tabs label for screen readers", "default": "Collections" },
+    { "type": "checkbox", "id": "show_sort", "label": "Show sort", "default": true },
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "text", "id": "offer_label", "label": "Offer line on multi-pack products", "default": "Buy 2, save 15%. Buy 3, save 25%" },
+    { "type": "text", "id": "add_label", "label": "Add button", "default": "Add to cart" },
+    { "type": "text", "id": "view_label", "label": "View button", "default": "View" },
+    { "type": "font_picker", "id": "font", "label": "Font", "default": "poppins_n8" },
+    { "type": "textarea", "id": "note", "label": "Small print", "default": "These statements have not been evaluated by the Food and Drug Administration. These products are not intended to diagnose, treat, cure, or prevent any disease." }
+  ],
+  "presets": [{ "name": "PSX Luxury collection" }]
+}
+{% endschema %}
